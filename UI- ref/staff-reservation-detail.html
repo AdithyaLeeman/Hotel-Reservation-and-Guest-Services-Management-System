@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stay workspace RSV-1002 — SkyNest Hotels</title>
+<meta name="description" content="Front-desk workspace for a SkyNest reservation.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --navy:#0f2a44;--navy-700:#183d5f;--teal:#2a8c85;--teal-dark:#226f6a;--sand:#b8912f;
+ --green:#1f7a4d;--green-bg:#e7f4ec;--amber:#a96b12;--amber-bg:#fdf1de;--red:#b3352c;--red-bg:#fbeceb;
+ --bg:#faf9f7;--surface:#ffffff;--line:#e6e3dd;--ink:#1d2430;--muted:#61697a;--teal-bg:#e6f2f1;--navy-bg:#eaeef3;
+ --radius:12px;--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06);
+}
+html,body{max-width:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--teal-dark)}
+:focus-visible{outline:3px solid #2a8c85;outline-offset:2px;border-radius:6px}
+h1{font-size:26px;line-height:1.25;letter-spacing:-.01em}
+h2{font-size:19px;margin-bottom:2px}
+h3{font-size:16px}
+p{color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;background:#fff;padding:10px 14px;z-index:99;border-radius:8px}
+
+/* header */
+.topbar{background:var(--navy);color:#fff;position:sticky;top:0;z-index:30}
+.topbar .wrap{display:flex;align-items:center;gap:18px;min-height:64px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;letter-spacing:.2px}
+.brand small{display:block;font-weight:500;font-size:11px;color:#b9c6d6;letter-spacing:.06em;text-transform:uppercase}
+.mainnav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.mainnav a{color:#dbe4ee;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:14px}
+.mainnav a:hover{background:rgba(255,255,255,.1);color:#fff}
+.mainnav a.active{background:rgba(255,255,255,.16);color:#fff;font-weight:600}
+.mainnav a.cta{background:var(--teal);color:#fff;font-weight:600}
+.mainnav a.ghost{border:1px solid rgba(255,255,255,.35)}
+
+/* layout */
+main{padding:28px 0 64px}
+.page-head{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px}
+.page-head .grow{flex:1;min-width:240px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-pad{padding:18px}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.card-head h2,.card-head h3{margin:0}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:start}
+.stack{display:grid;gap:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.right{margin-left:auto}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.mono{font-variant-numeric:tabular-nums}
+.sec{margin-top:26px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 16px;border-radius:10px;border:1px solid transparent;font:inherit;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;background:var(--teal);color:#fff}
+.btn:hover{background:var(--teal-dark)}
+.btn.secondary{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.secondary:hover{background:#f2f4f7}
+.btn.navy{background:var(--navy)}
+.btn.navy:hover{background:var(--navy-700)}
+.btn.danger{background:#fff;color:var(--red);border-color:#e7c3bf}
+.btn.sm{min-height:34px;padding:6px 12px;font-size:13px;border-radius:8px}
+.btn[disabled],.btn.disabled{background:#eceae6;color:#8b8f99;border-color:var(--line);cursor:not-allowed}
+.linkbtn{background:none;border:0;color:var(--teal-dark);font:inherit;font-weight:600;cursor:pointer;padding:4px}
+
+/* forms */
+label{display:block;font-weight:600;font-size:13px;margin-bottom:6px;color:#2c3545}
+.field{margin-bottom:14px}
+input,select,textarea{width:100%;min-height:42px;padding:9px 12px;border:1px solid #d6d2ca;border-radius:10px;background:#fff;font:inherit;color:var(--ink)}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);outline:3px solid rgba(42,140,133,.25);outline-offset:0}
+.hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.err{font-size:12.5px;color:var(--red);margin-top:5px;font-weight:600}
+input.invalid{border-color:var(--red);background:#fffafa}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:500;font-size:13.5px;color:#2c3545}
+.check input{width:18px;min-height:18px;height:18px;margin-top:2px}
+fieldset{border:0}
+legend{font-weight:700;margin-bottom:10px}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:700;border:1px solid transparent;white-space:nowrap}
+.b-green{background:var(--green-bg);color:var(--green);border-color:#bfe0cd}
+.b-amber{background:var(--amber-bg);color:var(--amber);border-color:#f0d6a8}
+.b-red{background:var(--red-bg);color:var(--red);border-color:#eec6c2}
+.b-navy{background:var(--navy-bg);color:var(--navy);border-color:#cfd8e3}
+.b-teal{background:var(--teal-bg);color:var(--teal-dark);border-color:#bcdedb}
+.b-grey{background:#f1efec;color:#5c626e;border-color:#e0ddd7}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+
+/* tables */
+.tablewrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px;font-size:14px}
+caption{text-align:left;padding:0 18px 10px;color:var(--muted);font-size:13px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:#f7f6f3}
+tbody tr:hover{background:#fbfaf8}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:700;background:#f7f6f3}
+
+/* KPI */
+.kpi{padding:16px 18px}
+.kpi .v{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.kpi .l{font-size:13px;color:var(--muted);font-weight:600}
+.kpi .d{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+/* notices */
+.notice{display:flex;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid;font-size:14px;align-items:flex-start}
+.n-info{background:var(--teal-bg);border-color:#bcdedb;color:#1d5b57}
+.n-warn{background:var(--amber-bg);border-color:#f0d6a8;color:#7d4f0c}
+.n-err{background:var(--red-bg);border-color:#eec6c2;color:#8e2b23}
+.n-ok{background:var(--green-bg);border-color:#bfe0cd;color:#155f38}
+.notice strong{display:block}
+
+/* misc blocks */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{font-weight:600;text-align:right}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:0 8px}
+.tabs a,.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:11px 14px;font:inherit;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;text-decoration:none}
+.tabs .on{color:var(--navy);border-bottom-color:var(--teal)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;color:#39414f;text-decoration:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.empty{text-align:center;padding:40px 20px}
+.empty .ico{width:48px;height:48px;border-radius:50%;background:var(--navy-bg);margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.timeline{list-style:none;display:grid;gap:14px}
+.timeline li{display:grid;grid-template-columns:14px 1fr;gap:12px;font-size:14px}
+.timeline .pt{width:11px;height:11px;border-radius:50%;background:var(--teal);margin-top:6px}
+.timeline time{display:block;color:var(--muted);font-size:12.5px}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;list-style:none}
+.stepper li{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--muted)}
+.stepper li .n{width:22px;height:22px;border-radius:50%;background:#eceae6;color:#5c626e;display:flex;align-items:center;justify-content:center;font-size:12px}
+.stepper li.done{color:var(--green);border-color:#bfe0cd;background:var(--green-bg)}
+.stepper li.done .n{background:var(--green);color:#fff}
+.stepper li.now{color:#fff;background:var(--navy);border-color:var(--navy)}
+.stepper li.now .n{background:var(--teal);color:#fff}
+.modal{border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);max-width:460px;width:100%}
+.modal .mh{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.modal .mb{padding:18px}
+.modal .mf{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fbfaf8;border-radius:0 0 var(--radius) var(--radius)}
+.bar{height:8px;border-radius:999px;background:#eceae6;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--teal)}
+.chart{display:flex;gap:10px;align-items:flex-end;height:150px;padding-top:8px}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
+.chart .bx{width:100%;background:var(--teal);border-radius:8px 8px 0 0;min-height:4px}
+.chart .bx.alt{background:var(--navy)}
+.skel{background:linear-gradient(90deg,#efedea,#f7f6f4,#efedea);border-radius:8px;height:14px}
+.hero{background:var(--navy);color:#fff;border-radius:16px;padding:40px 32px}
+.hero h1{font-size:34px;max-width:18ch}
+.hero p{color:#c7d3e0;max-width:56ch;margin-top:10px}
+.sandline{height:4px;width:64px;background:var(--sand);border-radius:2px;margin-bottom:16px}
+footer.site{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px;background:#fff}
+
+/* staff shell */
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.side{background:var(--navy);color:#cfdae6;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.side a{display:flex;gap:10px;align-items:center;color:#cfdae6;text-decoration:none;padding:10px 12px;border-radius:9px;font-size:14px;font-weight:500}
+.side a:hover{background:rgba(255,255,255,.09);color:#fff}
+.side a.on{background:var(--teal);color:#fff;font-weight:700}
+.side .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8ea3bb;padding:14px 12px 4px}
+.staffbar{background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.who{display:flex;gap:10px;align-items:center}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--navy-bg);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.content{padding:24px 24px 64px;min-width:0}
+.mobilenav{display:none}
+
+@media (max-width:1000px){
+ .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .split{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:760px){
+ body{font-size:14.5px}
+ h1{font-size:22px}
+ .hero{padding:26px 20px}
+ .hero h1{font-size:26px}
+ .g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}
+ .shell{grid-template-columns:minmax(0,1fr)}
+ .side{display:none}
+ .content{padding:16px 14px 90px}
+ .wrap{padding:0 14px}
+ .mobilenav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:40;justify-content:space-around;padding:6px 4px;box-shadow:0 -2px 12px rgba(0,0,0,.18)}
+ .mobilenav a{color:#cfdae6;text-decoration:none;font-size:11px;font-weight:600;padding:8px 6px;border-radius:8px;text-align:center;min-width:56px}
+ .mobilenav a.on{color:#fff;background:rgba(255,255,255,.14)}
+ .hide-sm{display:none!important}
+ .cards-sm table{min-width:0}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="shell">
+<nav class="side" aria-label="Staff sections">
+<a class="brand" href="staff-dashboard.html" style="padding:10px 12px"><span aria-hidden="true"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="#2a8c85"/><path d="M8 22V13l8-5 8 5v9" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 22v-5h8v5" stroke="#b8912f" stroke-width="2" stroke-linejoin="round"/></svg></span><span>SkyNest Staff<small>HRGSMS</small></span></a>
+<div class="lbl">Operations</div><a href="staff-dashboard.html" class="">Dashboard</a><a href="staff-reservations.html" class="on">Reservations</a><a href="staff-admin.html#guests" class="">Guests</a><a href="staff-rooms.html" class="">Rooms</a><a href="staff-reservation-detail.html#services" class="">Stay Services</a><a href="staff-billing.html" class="">Billing &amp; Payments</a><a href="staff-reports.html" class="">Reports</a><div class="lbl">Restricted</div><a href="staff-admin.html" class="">Administration</a>
+<div style="margin-top:auto;padding:12px"><a href="staff-login.html" style="border:1px solid rgba(255,255,255,.25)">Sign out</a></div>
+</nav>
+<div>
+<header class="staffbar">
+  <div><div style="font-weight:700">Reservation RSV-1002</div><div class="small muted">Branch scope: Colombo</div></div>
+  <div class="right row">
+    <label class="hide-sm" for="branch" style="margin:0">Branch</label>
+    <select id="branch" class="hide-sm" style="width:auto"><option>Colombo Branch</option><option>Kandy Branch</option><option>Galle Branch</option></select>
+    <button class="btn secondary sm" aria-label="Notifications: 3 unread">Alerts <span class="badge b-amber">3</span></button>
+    <div class="who"><span class="avatar">NP</span><div class="small hide-sm"><strong>Nadeesha Perera</strong><div class="muted">Receptionist — Colombo Branch</div></div></div>
+    <button class="btn secondary sm">Profile</button>
+  </div>
+</header>
+<main id="main" class="content">
+<p class="small"><a href="staff-reservations.html">Reservations</a> / RSV-1002</p>
+<div class="page-head"><div class="grow"><h1>RSV-1002 — Dilhani Fernando</h1>
+<div class="row" style="margin-top:8px"><span class="badge b-teal"><span class="dot"></span>Checked In</span><span class="badge b-amber"><span class="dot"></span>Partially Paid</span><span class="badge b-grey">Source: Front Desk</span><span class="badge b-navy">Colombo Branch</span></div></div>
+<div class="row"><button class="btn secondary">Check in</button><button class="btn secondary">Add service usage</button>
+<button class="btn">Record payment</button><button class="btn disabled" disabled aria-describedby="cko">Check out</button>
+<button class="btn danger">Cancel reservation</button></div></div>
+<div class="notice n-err" id="cko" style="margin-bottom:18px"><span aria-hidden="true">!</span><div><strong>Checkout is unavailable until the outstanding balance is fully paid.</strong>Outstanding balance: LKR&nbsp;71,450.</div></div>
+
+<div class="tabs card" style="margin-bottom:16px"><a class="on" href="#overview">Overview</a><a href="#services">Services</a><a href="#bill">Bill &amp; Payments</a><a href="#activity">Activity</a></div>
+
+<div class="split">
+ <div class="stack">
+  <section class="card" id="overview"><div class="card-head"><h2>Reservation &amp; guest</h2></div>
+   <div class="card-pad grid g2 small">
+    <div><div class="muted">Guest</div><strong>Dilhani Fernando</strong><div class="muted">dilhani.fernando@example.lk · +94 77 884 1290</div></div>
+    <div><div class="muted">Identification</div><strong>NIC •••• 7734</strong></div>
+    <div><div class="muted">Dates</div><strong>15–19 Sep 2026 · 4 nights</strong></div>
+    <div><div class="muted">Assigned rooms</div><strong>R-305 · Suite</strong></div>
+    <div><div class="muted">Captured nightly rate</div><strong class="mono">LKR&nbsp;28,000</strong></div>
+    <div><div class="muted">Booking source</div><strong>Front Desk</strong></div>
+   </div></section>
+
+  <section class="card" id="services"><div class="card-head"><h2>Service usage</h2><button class="btn secondary sm right">Add service usage</button></div>
+   <div class="tablewrap"><table><thead><tr><th>Room</th><th>Service</th><th class="num">Qty</th><th class="num">Captured unit price</th><th class="num">Line total</th></tr></thead>
+   <tbody><tr><td>R-305</td><td>Room Service</td><td class="num">2</td><td class="num mono">LKR&nbsp;2,800</td><td class="num mono">LKR&nbsp;5,600</td></tr><tr><td>R-305</td><td>Spa Treatment</td><td class="num">1</td><td class="num mono">LKR&nbsp;6,500</td><td class="num mono">LKR&nbsp;6,500</td></tr><tr><td>R-305</td><td>Laundry</td><td class="num">1</td><td class="num mono">LKR&nbsp;1,500</td><td class="num mono">LKR&nbsp;1,500</td></tr></tbody>
+   <tfoot><tr><td colspan="4">Service charges</td><td class="num mono">LKR&nbsp;12,500</td></tr></tfoot></table></div>
+   <div class="card-pad small muted">Catalogue: Room Service, Spa Treatment, Laundry, Minibar, Airport Transfer, Late Checkout.</div></section>
+
+  <section class="card" id="bill"><div class="card-head"><h2>Payment history</h2></div>
+   <div class="tablewrap"><table><thead><tr><th>Date</th><th>Method</th><th>Reference</th><th>Processed by</th><th class="num">Amount</th></tr></thead>
+   <tbody>
+    <tr><td>15 Sep 2026</td><td>Card</td><td>TXN-55102</td><td>Nadeesha Perera</td><td class="num mono">LKR&nbsp;40,000</td></tr>
+    <tr><td>16 Sep 2026</td><td>Cash</td><td>TXN-55188</td><td>Nadeesha Perera</td><td class="num mono">LKR&nbsp;20,000</td></tr>
+   </tbody><tfoot><tr><td colspan="4">Total paid</td><td class="num mono">LKR&nbsp;60,000</td></tr></tfoot></table></div></section>
+
+  <section class="card" id="activity"><div class="card-head"><h2>Activity</h2></div><div class="card-pad">
+   <ul class="timeline">
+    <li><span class="pt"></span><div><strong>Reservation created at front desk</strong><time>11 Sep 2026, 16:40 · Nadeesha Perera</time></div></li>
+    <li><span class="pt"></span><div><strong>Payment recorded — LKR&nbsp;40,000</strong><time>15 Sep 2026, 13:12</time></div></li>
+    <li><span class="pt"></span><div><strong>Checked in — room R-305</strong><time>15 Sep 2026, 13:30</time></div></li>
+    <li><span class="pt"></span><div><strong>Service usage added — Spa Treatment ×1</strong><time>16 Sep 2026, 10:05</time></div></li>
+    <li><span class="pt"></span><div><strong>Checkout attempt blocked — outstanding balance</strong><time>17 Sep 2026, 09:58</time></div></li>
+   </ul></div></section>
+ </div>
+
+ <aside class="stack">
+  <section class="card"><div class="card-head"><h2>Bill</h2></div><div class="card-pad"><dl class="kv">
+   <dt>Room charges</dt><dd class="mono">LKR&nbsp;112,000</dd>
+   <dt>Service charges</dt><dd class="mono">LKR&nbsp;12,500</dd>
+   <dt>Discount</dt><dd class="mono">−LKR&nbsp;5,000</dd>
+   <dt>Tax</dt><dd class="mono">LKR&nbsp;11,950</dd>
+   <dt style="font-weight:700;color:var(--ink)">Grand total</dt><dd class="mono" style="font-size:18px">LKR&nbsp;131,450</dd>
+   <dt>Total paid</dt><dd class="mono" style="color:var(--green)">LKR&nbsp;60,000</dd>
+   <dt>Outstanding balance</dt><dd class="mono" style="color:var(--red)">LKR&nbsp;71,450</dd>
+  </dl></div></section>
+
+  <h2 class="sec">Dialog examples</h2>
+  <div class="modal"><div class="mh">Confirm check-in</div><div class="mb small">Assign room R-305 to Dilhani Fernando and mark the reservation as <strong>Checked In</strong> from 15 Sep 2026?</div>
+   <div class="mf"><button class="btn secondary sm">Cancel</button><button class="btn sm">Confirm check-in</button></div></div>
+
+  <div class="modal"><div class="mh">Add service usage</div><div class="mb">
+   <div class="field"><label for="m-room">Room</label><select id="m-room"><option>R-305 · Suite</option></select></div>
+   <div class="field"><label for="m-svc">Service</label><select id="m-svc"><option>Room Service — LKR 2,800</option><option>Spa Treatment — LKR 6,500</option><option>Laundry — LKR 1,500</option><option>Minibar — LKR 1,200</option><option>Airport Transfer — LKR 7,500</option><option>Late Checkout — LKR 4,000</option></select></div>
+   <div class="field"><label for="m-qty">Quantity</label><input id="m-qty" type="number" value="1" min="1"></div>
+   <p class="hint">The unit price is captured from the catalogue at the time of use.</p></div>
+   <div class="mf"><button class="btn secondary sm">Cancel</button><button class="btn sm">Add service</button></div></div>
+
+  <div class="modal"><div class="mh">Record payment</div><div class="mb">
+   <div class="field"><label for="m-amt">Amount (LKR)</label><input id="m-amt" value="71,450"></div>
+   <div class="field"><label for="m-meth">Method</label><select id="m-meth"><option>Cash</option><option>Card</option><option>Bank transfer</option></select></div>
+   <div class="field"><label for="m-ref">Transaction reference</label><input id="m-ref" value="TXN-55240"></div>
+   <div class="notice n-warn small"><div>Partial payments are allowed. Outstanding balance after this payment: LKR 0.</div></div></div>
+   <div class="mf"><button class="btn secondary sm">Cancel</button><button class="btn sm">Record payment</button></div></div>
+
+  <div class="modal"><div class="mh">Confirm check-out</div><div class="mb">
+   <div class="notice n-err"><div><strong>Checkout blocked</strong>Outstanding balance LKR&nbsp;71,450 must be settled before check-out can be completed.</div></div></div>
+   <div class="mf"><button class="btn secondary sm">Close</button><button class="btn sm disabled" disabled>Complete check-out</button></div></div>
+ </aside>
+</div>
+</main>
+</div></div>
+<nav class="mobilenav" aria-label="Staff sections (mobile)"><a href="staff-dashboard.html" class="">Dashboard</a><a href="staff-reservations.html" class="on">Reservations</a><a href="staff-rooms.html" class="">Rooms</a><a href="staff-billing.html" class="">Billing</a><a href="staff-reports.html" class="">Reports</a></nav>
+</body></html>
