@@ -60,6 +60,9 @@ Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancel
 - Write first SQL: `P01-M01-T02-01_create_enums.sql`
 - Start prompt in `docs/member-prompts/member-1-prompt.md`
 
+**M2: P02-M02-T05 COMPLETED (REVIEW)** — on branch `feat/P02-M02-SP2.3-room-api-mock`
+- Next for M2 (Sun Sep 20): `P02-M02-T06` — Room service layer (`services/room.service.ts`)
+
 ## Integration Checkpoints
 - P0 → P1: Phase 0 DONE. Human push needed.
 - P1 integration owner: Member 1
