@@ -1,36 +1,65 @@
 /**
  * Database Pool — singleton pg Pool for the entire application.
  *
- * PHASE 1 NOTE: pg is installed in P01-M01-T01.
- * When pg is installed, replace this stub with:
+ * P01-M01-T02: Implement real pg Pool
  *
- *   import { Pool } from 'pg';
- *   export type { PoolClient } from 'pg';
- *   export const pool = new Pool({ connectionString: process.env.DATABASE_URL, ... });
+ * Uses a single Pool instance per process (Next.js caches modules in dev
+ * via the `global` trick below to survive hot-reloads without exhausting
+ * connection limits).
  *
- * Until then this file exports a typed stub that satisfies all imports.
- * See context/05-library-patterns.md for the full usage pattern.
+ * Environment variable required:
+ *   DATABASE_URL=postgres://user:password@host:5432/dbname
+ *
+ * Optional overrides (all have sensible defaults):
+ *   DB_POOL_MAX          max connections (default: 10)
+ *   DB_POOL_IDLE_MS      idle timeout in ms (default: 30000)
+ *   DB_POOL_CONNECT_MS   connection timeout in ms (default: 5000)
+ *
+ * See context/05-library-patterns.md for query and transaction patterns.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Pool } from 'pg';
+export type { PoolClient } from 'pg';
 
-// Stub pool — replaced by real pg.Pool in P01-M01-T01
-export const pool: {
-  connect: () => Promise<any>;
-  query: (sql: string, params?: any[]) => Promise<any>;
-  on: (event: string, cb: (...args: any[]) => void) => void;
-  end: () => Promise<void>;
-} = {
-  connect: () => { throw new Error('pg Pool not yet installed — run P01-M01-T01'); },
-  query: () => { throw new Error('pg Pool not yet installed — run P01-M01-T01'); },
-  on: () => { /* noop stub */ },
-  end: () => { throw new Error('pg Pool not yet installed — run P01-M01-T01'); },
-};
+// ------------------------------------------------------------------
+// Singleton guard — prevents multiple Pool instances during Next.js
+// hot-reloads in development (each reload re-evaluates modules but
+// the `global` object persists for the lifetime of the Node process).
+// ------------------------------------------------------------------
+declare global {
+  // eslint-disable-next-line no-var
+  var __pgPool: Pool | undefined;
+}
 
-// PoolClient stub — replaced by real pg.PoolClient in P01-M01-T01
-export type PoolClient = {
-  query: (sql: string, params?: any[]) => Promise<any>;
-  release: () => void;
-};
+function createPool(): Pool {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      '[pool.ts] DATABASE_URL is not set. ' +
+      'Add it to your .env.local file:\n' +
+      '  DATABASE_URL=postgres://user:password@localhost:5432/hrgsms'
+    );
+  }
 
-/* eslint-enable @typescript-eslint/no-explicit-any */
+  const p = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: Number(process.env.DB_POOL_MAX ?? 10),
+    idleTimeoutMillis: Number(process.env.DB_POOL_IDLE_MS ?? 30_000),
+    connectionTimeoutMillis: Number(process.env.DB_POOL_CONNECT_MS ?? 5_000),
+    // Always use UTC so DATE / TIMESTAMPTZ values are unambiguous
+    options: '-c timezone=UTC',
+  });
+
+  // Log unexpected pool errors instead of crashing the process
+  p.on('error', (err) => {
+    console.error('[pool] Unexpected idle client error:', err);
+  });
+
+  return p;
+}
+
+// In production, create once at module load.
+// In development, reuse across hot-reloads via global.
+export const pool: Pool =
+  process.env.NODE_ENV === 'production'
+    ? createPool()
+    : (global.__pgPool ??= createPool());
