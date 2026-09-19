@@ -24,9 +24,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T01 | Install pg + @types/pg | 🟢 PARALLEL | `package.json` | DONE |
 | P01-M01-T02 | Implement real pg Pool | 🔴 SERIAL | `lib/db/pool.ts` | DONE |
 | P01-M01-T03 | Implement migration runner | 🟢 PARALLEL | `lib/db/migrate.ts` | DONE |
-| P01-M01-T04 | Publish shared contracts doc | 🟢 PARALLEL | `docs/21_shared-contracts.md` | TODO |
+| P01-M01-T04 | Publish shared contracts doc | 🟢 PARALLEL | `docs/21_shared-contracts.md` | DONE |
 
-**Gate:** SP1.1 DONE → all members can start 🟡 MOCK-FIRST tasks. M1 proceeds to SP1.2.
+**Gate:** SP1.1 DONE ✅ → all members can start 🟡 MOCK-FIRST tasks. M1 proceeds to SP1.2.
 
 ---
 
