@@ -64,7 +64,7 @@ _Last updated: Plan restructured — parallel development strategy applied. 2026
 | Member | Immediate Next Task | Can Start? |
 |---|---|---|
 | M1 | P01-M01-T01 — Install pg + @types/pg | ✅ Now |
-| M2 | P02-M02-T05 — Room repository (mock) + P01-M02-T01 (DDL after SP1.1) | ✅ Mock work now |
+| M2 | P02-M02-T06 — Room service (mock) [P02-M02-T05 in REVIEW] | ✅ Mock work now |
 | M3 | P03-M03-T07 — Reservation repository (mock) | ✅ Mock work now |
 | M4 | P04-M04-T09 — Service usage repository (mock) | ✅ Mock work now |
 | M5 | P05-M05-T08 — Payment repository (mock) + P04-M05-T05 (billing, mock) | ✅ Mock work now |
