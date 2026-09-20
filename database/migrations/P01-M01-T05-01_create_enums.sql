@@ -53,7 +53,7 @@ do $$ begin
     'Online',
     'Reception', 
     'Phone'
-  );
+  );git push -u origin create_enums
 exception
   when duplicate_object then NULL;
 end $$;
