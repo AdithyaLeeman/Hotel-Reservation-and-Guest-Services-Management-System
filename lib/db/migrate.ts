@@ -41,7 +41,7 @@ async function ensureTrackingTable(): Promise<void> {
 // Lines inside the fenced code block that are not blank and not comments
 // (#) and end in .sql are treated as migration filenames.
 // ---------------------------------------------------------------------------
-function parseManifest(content: string): string[] {
+export function parseManifest(content: string): string[] {
   const files: string[] = [];
   let inApplyBlock = false;
 
@@ -68,7 +68,7 @@ function parseManifest(content: string): string[] {
 // ---------------------------------------------------------------------------
 // Simple FNV-1a 32-bit checksum — catches accidental edits to applied files
 // ---------------------------------------------------------------------------
-function checksum(content: string): string {
+export function checksum(content: string): string {
   let hash = 0x811c9dc5;
   for (let i = 0; i < content.length; i++) {
     hash ^= content.charCodeAt(i);
@@ -126,7 +126,7 @@ async function applyMigration(filename: string): Promise<void> {
 // ---------------------------------------------------------------------------
 // Main entry point
 // ---------------------------------------------------------------------------
-async function runMigrations(): Promise<void> {
+export async function runMigrations(): Promise<void> {
   console.log('[migrate] Starting...');
 
   // 1. Ensure the tracking table exists before anything else
