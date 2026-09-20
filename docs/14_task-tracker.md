@@ -34,7 +34,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|---|
-| P01-M01-T05 | M1 | Enums DDL (all PostgreSQL enums) | 🔴 SERIAL | `database/migrations/P01-M01-T05-01_create_enums.sql` | SP1.1 executed | TODO |
+| P01-M01-T05 | M1 | Enums DDL (all PostgreSQL enums) | 🔴 SERIAL | `database/migrations/P01-M01-T05-01_create_enums.sql` | SP1.1 executed | DONE |
 | P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | TODO |
 | P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | TODO |
 | P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | TODO |

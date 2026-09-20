@@ -14,14 +14,16 @@
  * Role must come from server-side session — never from client state.
  */
 
+import Link from 'next/link';
+
 export default function StaffNav() {
   // TODO: Implement — read role from server component session
   return (
     <nav aria-label="Staff navigation">
       {/* Placeholder — implement in P01-M01-T13 */}
-      <a href="/staff/dashboard">Dashboard</a>
-      <a href="/staff/reservations">Reservations</a>
-      <a href="/staff/rooms">Rooms</a>
+      <Link href="/staff/dashboard">Dashboard</Link>
+      <Link href="/staff/reservations">Reservations</Link>
+      <Link href="/staff/rooms">Rooms</Link>
     </nav>
   );
 }
