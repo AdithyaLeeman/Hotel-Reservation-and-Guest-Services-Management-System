@@ -27,7 +27,6 @@ export type { PoolClient } from 'pg';
 // the `global` object persists for the lifetime of the Node process).
 // ------------------------------------------------------------------
 declare global {
-  // eslint-disable-next-line no-var
   var __pgPool: Pool | undefined;
 }
 

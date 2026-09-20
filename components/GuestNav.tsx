@@ -10,15 +10,17 @@
  * session-aware links (show My Reservations only when logged in).
  */
 
+import Link from 'next/link';
+
 export default function GuestNav() {
   // TODO: Implement
   return (
     <nav aria-label="Guest navigation">
       {/* Placeholder — implement in P01-M01-T13 */}
-      <a href="/">SkyNest Hotels</a>
-      <a href="/search">Search Rooms</a>
-      <a href="/guest/login">Login</a>
-      <a href="/guest/register">Register</a>
+      <Link href="/">SkyNest Hotels</Link>
+      <Link href="/search">Search Rooms</Link>
+      <Link href="/guest/login">Login</Link>
+      <Link href="/guest/register">Register</Link>
     </nav>
   );
 }

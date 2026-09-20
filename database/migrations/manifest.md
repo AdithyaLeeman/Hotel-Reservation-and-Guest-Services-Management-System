@@ -12,8 +12,7 @@ _Apply with: `npm run migrate`_
 
 ```
 # Phase 1 — Foundation
-# (Files to be added as tasks complete)
-# P01-M01-T05-01_create_enums.sql
+P01-M01-T05-01_create_enums.sql
 # P01-M01-T06-01_create_user_account.sql
 # P01-M01-T07-01_create_branch.sql
 # P01-M01-T08-01_create_employee.sql
