@@ -118,7 +118,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
 | P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | REVIEW |
-| P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | TODO |
+| P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | REVIEW |
 | P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | TODO |
 | P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | TODO |
 | P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | TODO |
