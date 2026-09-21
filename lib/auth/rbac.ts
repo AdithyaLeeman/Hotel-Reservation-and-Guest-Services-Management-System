@@ -1,19 +1,32 @@
 import type { SessionData } from '@/types/session';
 import type { UserRole } from '@/types/enums';
+import type { IronSession } from 'iron-session';
 
 /**
  * RBAC middleware helpers.
  *
- * All protected routes call requireRole() or requireBranchScope() before business logic.
- * Role and branch scope are read from the server-side session — never from the request body.
+ * Every protected route handler must call requireRole() (and optionally
+ * requireBranchScope()) before any business logic.
  *
- * See docs/11_security-and-rbac.md for the full RBAC matrix.
- * See docs/21_shared-contracts.md Section 8 for the branch scope contract.
+ * Role and branch scope are read from the server-side iron-session — never
+ * from the request body, query params, or headers supplied by the browser.
  *
- * TODO (P01-M01-T14): Implement these helpers once session management is done.
+ * Authorization sequence (docs/21_shared-contracts.md Section 12):
+ *   1. getSession()
+ *   2. requireRole(session, [...allowed roles])    → throws AuthError(401/403)
+ *   3. requireBranchScope(session, branchId)       → throws AuthError(403)
+ *   4. validateInput(schema)                       → Zod validation
+ *   5. call service / repository
+ *   6. return response
+ *
+ * Task: P01-M01-T19
  * Lecture alignment: L07 (RBAC, application security)
  */
 
+/**
+ * Thrown by requireRole and requireBranchScope when auth or authorization fails.
+ * Route handlers catch this and return the appropriate HTTP status.
+ */
 export class AuthError extends Error {
   constructor(
     public readonly status: 401 | 403,
@@ -25,36 +38,66 @@ export class AuthError extends Error {
 }
 
 /**
- * Verify the session contains a valid authenticated user with one of the required roles.
- * Throws AuthError(401) if no session; AuthError(403) if wrong role.
+ * Assert that the session belongs to an authenticated user whose role is in
+ * the allowed list. After this guard the session is guaranteed to be fully
+ * populated (userId and role are non-null).
  *
- * @param session - The session from getSession()
- * @param allowedRoles - Roles that are permitted to access this resource
+ * @param session - The IronSession returned by getSession()
+ * @param allowedRoles - Roles permitted to access this route
+ * @throws AuthError(401) if no userId in session (not authenticated)
+ * @throws AuthError(403) if role is not in allowedRoles (insufficient role)
  */
 export function requireRole(
-  session: Partial<SessionData>,
+  session: IronSession<SessionData>,
   allowedRoles: UserRole[]
-): asserts session is SessionData {
-  // TODO: Implement
-  // if (!session.userId) throw new AuthError(401, 'Not authenticated');
-  // if (!allowedRoles.includes(session.role)) throw new AuthError(403, 'Insufficient role');
-  throw new Error('requireRole not yet implemented — P01-M01-T14');
+): asserts session is IronSession<SessionData> & SessionData {
+  if (!session.userId) {
+    throw new AuthError(401, 'Not authenticated');
+  }
+  if (!session.role || !allowedRoles.includes(session.role)) {
+    throw new AuthError(
+      403,
+      `Access requires one of: ${allowedRoles.join(', ')}. Your role: ${session.role}`
+    );
+  }
 }
 
 /**
- * For Receptionist: enforce that the request targets their assigned branch.
- * Manager and Admin are not restricted by branch.
+ * For Receptionist: enforce that the resource belongs to the staff member's
+ * assigned branch. Manager and Admin have all-branch access and always pass.
+ *
+ * Must be called AFTER requireRole() so the session is guaranteed populated.
  *
  * @param session - The authenticated session (after requireRole)
  * @param targetBranchId - The branch_id of the resource being accessed
+ * @throws AuthError(403) if Receptionist tries to access another branch
  */
 export function requireBranchScope(
-  session: SessionData,
+  session: IronSession<SessionData> & SessionData,
   targetBranchId: number
 ): void {
-  // TODO: Implement
-  // if (session.role === 'Receptionist' && session.branchId !== targetBranchId) {
-  //   throw new AuthError(403, 'Access restricted to your branch');
-  // }
-  throw new Error('requireBranchScope not yet implemented — P01-M01-T14');
+  if (session.role === 'Receptionist' && session.branchId !== targetBranchId) {
+    throw new AuthError(
+      403,
+      'Access restricted to your assigned branch'
+    );
+  }
+}
+
+/**
+ * Convert an AuthError into the standard API error response shape.
+ * Use inside route handler catch blocks alongside isSqlState().
+ *
+ * @example
+ * } catch (err) {
+ *   if (err instanceof AuthError) return authErrorResponse(err);
+ *   ...
+ * }
+ */
+export function authErrorResponse(err: AuthError): Response {
+  const code = err.status === 401 ? 'NOT_AUTHENTICATED' : 'INSUFFICIENT_ROLE';
+  return Response.json(
+    { error: { code, message: err.message } },
+    { status: err.status }
+  );
 }
