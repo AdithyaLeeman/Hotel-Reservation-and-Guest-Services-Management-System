@@ -48,10 +48,10 @@ _Last updated: Plan restructured — parallel development strategy applied. 2026
 
 | Subphase | Tasks | Status |
 |---|---|---|
-| SP1.1 — DB Infrastructure | T01–T04 | **READY** (M1 starts here) |
-| SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | TODO (after SP1.1) |
-| SP1.3 — Auth System | T10–T21 | TODO (after SP1.2 DB) |
-| SP1.4 — UI Shell | T22–T29 | TODO (after SP1.3) |
+| SP1.1 — DB Infrastructure | T01–T04 | **DONE** (M1) |
+| SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **IN_PROGRESS** (M1 DDLs & seed DONE) |
+| SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (M1 password, session, RBAC, Zod schemas DONE) |
+| SP1.4 — UI Shell | T22–T29 | TODO (Next step) |
 
 ## Blocked Items
 - `develop` branch creation — **BLOCKED on human manual push.**
