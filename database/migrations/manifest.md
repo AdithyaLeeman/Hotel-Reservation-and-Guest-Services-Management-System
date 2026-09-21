@@ -13,10 +13,10 @@ _Apply with: `npm run migrate`_
 ```
 # Phase 1 — Foundation
 P01-M01-T05-01_create_enums.sql
-# P01-M01-T06-01_create_user_account.sql
-# P01-M01-T07-01_create_branch.sql
-# P01-M01-T08-01_create_employee.sql
-# P01-M01-T09-01_create_guest.sql
+P01-M01-T06-01_create_user_account.sql
+P01-M01-T07-01_create_branch.sql
+P01-M01-T08-01_create_employee.sql
+P01-M01-T09-01_create_guest.sql
 # P01-M02-T01-01_create_room_type.sql
 # P01-M02-T02-01_create_amenity.sql
 # P01-M02-T03-01_create_room_type_amenity.sql
