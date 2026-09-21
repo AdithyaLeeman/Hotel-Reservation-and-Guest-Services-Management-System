@@ -119,9 +119,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|
 | P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | REVIEW |
 | P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | REVIEW |
-| P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | TODO |
-| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | TODO |
-| P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | TODO |
+| P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | REVIEW |
+| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | REVIEW |
+| P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | REVIEW |
 | P02-M02-T10 | GET `/api/staff/rooms` route handler (list) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | TODO |
 | P02-M02-T11 | POST `/api/staff/rooms` route handler (create) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | TODO |
 | P02-M02-T12 | PATCH `/api/staff/rooms/[id]` route handler (update status) | 🟡 MOCK-FIRST | `app/api/staff/rooms/[id]/route.ts` | TODO |
