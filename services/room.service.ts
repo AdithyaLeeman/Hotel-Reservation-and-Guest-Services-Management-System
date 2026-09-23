@@ -44,6 +44,12 @@ export class RoomValidationError extends Error {
 // Input types
 
 
+export interface ListRoomsFilter {
+  branchId?: number;
+  status?: RoomStatus;
+  typeId?: number;
+}
+
 export interface UpdateRoomStatusInput {
   status: RoomStatus;
   /**
@@ -59,26 +65,52 @@ export interface UpdateRoomStatusInput {
 
 export const roomService = {
   /**
-   * List rooms, optionally filtered by branch.
+   * List rooms, optionally filtered by branch, status, and/or room type.
    * Returns rooms joined with their room_type detail.
    */
-  async listRooms(branchId?: number): Promise<RoomWithDetails[]> {
-    if (branchId !== undefined) {
-      return roomRepository.listWithDetailsByBranch(branchId);
+  async listRooms(
+    filterOrBranchId?: number | ListRoomsFilter
+  ): Promise<RoomWithDetails[]> {
+    let branchId: number | undefined;
+    let status: RoomStatus | undefined;
+    let typeId: number | undefined;
+
+    if (typeof filterOrBranchId === 'number') {
+      branchId = filterOrBranchId;
+    } else if (filterOrBranchId) {
+      branchId = filterOrBranchId.branchId;
+      status = filterOrBranchId.status;
+      typeId = filterOrBranchId.typeId;
     }
 
-    // For all branches, get all rooms and map their details
-    const rooms = await roomRepository.listAll();
-    const roomTypes = await roomRepository.listRoomTypes();
+    let roomsWithDetails: RoomWithDetails[];
 
-    return rooms.map((r) => {
-      const type = roomTypes.find((t) => t.type_id === r.type_id);
-      return {
-        ...r,
-        room_type: type ? { ...type } : undefined,
-        amenities: [],
-      };
-    });
+    if (branchId !== undefined) {
+      roomsWithDetails = await roomRepository.listWithDetailsByBranch(branchId);
+    } else {
+      // For all branches, get all rooms and map their details
+      const rooms = await roomRepository.listAll();
+      const roomTypes = await roomRepository.listRoomTypes();
+
+      roomsWithDetails = rooms.map((r) => {
+        const type = roomTypes.find((t) => t.type_id === r.type_id);
+        return {
+          ...r,
+          room_type: type ? { ...type } : undefined,
+          amenities: [],
+        };
+      });
+    }
+
+    if (status !== undefined) {
+      roomsWithDetails = roomsWithDetails.filter((r) => r.status === status);
+    }
+
+    if (typeId !== undefined) {
+      roomsWithDetails = roomsWithDetails.filter((r) => r.type_id === typeId);
+    }
+
+    return roomsWithDetails;
   },
 
   /**
