@@ -54,13 +54,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | — | DONE |
 | P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | REVIEW |
 | P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | REVIEW |
-| P01-M01-T14 | Guest registration API route | 🟡 MOCK-FIRST | `app/api/guest/register/route.ts` | T13 | TODO |
-| P01-M01-T15 | Guest login API route | 🟡 MOCK-FIRST | `app/api/guest/login/route.ts` | T13 | TODO |
-| P01-M01-T16 | Guest logout API route | 🟢 PARALLEL | `app/api/guest/logout/route.ts` | T11 | TODO |
-| P01-M01-T17 | Staff login API route | 🟡 MOCK-FIRST | `app/api/staff/login/route.ts` | T13 | TODO |
-| P01-M01-T18 | Staff logout API route | 🟢 PARALLEL | `app/api/staff/logout/route.ts` | T11 | TODO |
+| P01-M01-T14 | Guest registration API route | 🟡 MOCK-FIRST | `app/api/guest/register/route.ts` | T13 | DONE |
+| P01-M01-T15 | Guest login API route | 🟡 MOCK-FIRST | `app/api/guest/login/route.ts` | T13 | DONE |
+| P01-M01-T16 | Guest logout API route | 🟢 PARALLEL | `app/api/guest/logout/route.ts` | T11 | DONE |
+| P01-M01-T17 | Staff login API route | 🟡 MOCK-FIRST | `app/api/staff/login/route.ts` | T13 | DONE |
+| P01-M01-T18 | Staff logout API route | 🟢 PARALLEL | `app/api/staff/logout/route.ts` | T11 | DONE |
 | P01-M01-T19 | RBAC helpers (requireRole, requireBranchScope) | 🟢 PARALLEL | `lib/auth/rbac.ts` | T11 | DONE |
-| P01-M01-T20 | Next.js middleware for route protection | 🟢 PARALLEL | `middleware.ts` | T19 | TODO |
+| P01-M01-T20 | Next.js middleware for route protection | 🟢 PARALLEL | `middleware.ts` | T19 | DONE |
 | P01-M01-T21 | Zod auth validation schemas | 🟢 PARALLEL | `lib/validation/auth.schema.ts` | — | DONE |
 
 ---
