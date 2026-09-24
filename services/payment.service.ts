@@ -29,7 +29,7 @@ export const paymentService = {
   ): Promise<Payment> => {
     return paymentRepository.postPayment({
       invoice_id: input.invoice_id,
-      amount_paid: input.amount.toFixed(2),       // convert number → NUMERIC string
+      amount_paid: input.amount.toFixed(2), // convert number → NUMERIC string
       payment_method: input.payment_method,
       processed_by_employee_id: processedByEmployeeId,
       paid_by_user_id: paidByUserId,
