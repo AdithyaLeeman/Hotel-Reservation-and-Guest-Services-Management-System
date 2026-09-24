@@ -1,23 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { availabilityService, AvailabilityValidationError } from '@/services/availability.service';
 
-/**
- * GET /api/availability
- * 
- * Public endpoint to search for available rooms for a given date range and branch.
- * 
- * Query parameters:
- * - branchId: number (1 = Colombo, 2 = Kandy, 3 = Galle)
- * - checkIn: YYYY-MM-DD
- * - checkOut: YYYY-MM-DD
- * 
- * Owned by: Member 2 (M2) | Task: P02-M02-T09
- */
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    
-    // Parse query parameters
+
     const branchIdStr = searchParams.get('branchId');
     const checkIn = searchParams.get('checkIn');
     const checkOut = searchParams.get('checkOut');
