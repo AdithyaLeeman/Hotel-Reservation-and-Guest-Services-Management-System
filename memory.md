@@ -43,12 +43,16 @@ None. All 220 unit and integration tests passing.
 See `.agent/open-questions.md` and `docs/19_open-questions-and-assumptions.md`.
 Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancellation policy), OQ-10 (revenue report accrual).
 
-## Next Up by Member
-- **M1:** `P01-M01-T14..T18` — Auth route handlers (`/api/guest/register`, `/api/guest/login`, logout) & `middleware.ts` session check
-- **M2:** `P01-M02-T01` — `room_type` table DDL migration & `amenity` DDL
-- **M3:** `P03-M03-T14` — Guest booking form UI page (`app/guest/book/page.tsx`)
-- **M4:** `P04-M04-T12` — Check-in API route handler (`app/api/staff/reservations/[id]/checkin/route.ts`)
-- **M5:** `P05-M05-T10` — Payment API route handler (`app/api/guest/payments/route.ts`)
+## Next Task
+**M1: P01-M01-T01** — `feat/P01-M01-T01-db-pool`
+- Install: `pg`, `iron-session`, `bcryptjs`, `zod`, `@types/pg`, `@types/bcryptjs`, `vitest`
+- Implement real migration runner with `schema_migrations` tracking
+- Write first SQL: `P01-M01-T02-01_create_enums.sql`
+- Start prompt in `docs/member-prompts/member-1-prompt.md`
+
+**M2: P01-M02-T01 COMPLETED (REVIEW)** — `room_type` table DDL on branch `room-type-ddl`
+- Prior completed: SP2.3 (Room API: T05..T12) & SP2.4 (Room UI: T13..T16)
+- Next for M2: `P01-M02-T02` — `amenity` table DDL (`database/migrations/P01-M02-T02-01_create_amenity.sql`) & `P01-M02-T03` (`room_type_amenity`)
 
 ## Integration Checkpoints
 - P1 integration owner: Member 1
