@@ -35,10 +35,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Member | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|---|
 | P01-M01-T05 | M1 | Enums DDL (all PostgreSQL enums) | 🔴 SERIAL | `database/migrations/P01-M01-T05-01_create_enums.sql` | SP1.1 executed | DONE |
-| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | TODO |
-| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | TODO |
-| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | TODO |
-| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | TODO |
+| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | DONE |
+| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | DONE |
+| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | DONE |
+| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | DONE |
 | P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | TODO |
 | P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | TODO |
 | P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | TODO |
@@ -50,18 +50,18 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P01-M01-T10 | bcrypt password hashing utility | 🟢 PARALLEL | `lib/auth/password.ts` | — | TODO |
-| P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | — | TODO |
-| P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | TODO |
-| P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | TODO |
+| P01-M01-T10 | bcrypt password hashing utility | 🟢 PARALLEL | `lib/auth/password.ts` | — | DONE |
+| P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | — | DONE |
+| P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | REVIEW |
+| P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | REVIEW |
 | P01-M01-T14 | Guest registration API route | 🟡 MOCK-FIRST | `app/api/guest/register/route.ts` | T13 | TODO |
 | P01-M01-T15 | Guest login API route | 🟡 MOCK-FIRST | `app/api/guest/login/route.ts` | T13 | TODO |
 | P01-M01-T16 | Guest logout API route | 🟢 PARALLEL | `app/api/guest/logout/route.ts` | T11 | TODO |
 | P01-M01-T17 | Staff login API route | 🟡 MOCK-FIRST | `app/api/staff/login/route.ts` | T13 | TODO |
 | P01-M01-T18 | Staff logout API route | 🟢 PARALLEL | `app/api/staff/logout/route.ts` | T11 | TODO |
-| P01-M01-T19 | RBAC helpers (requireRole, requireBranchScope) | 🟢 PARALLEL | `lib/auth/rbac.ts` | T11 | TODO |
+| P01-M01-T19 | RBAC helpers (requireRole, requireBranchScope) | 🟢 PARALLEL | `lib/auth/rbac.ts` | T11 | DONE |
 | P01-M01-T20 | Next.js middleware for route protection | 🟢 PARALLEL | `middleware.ts` | T19 | TODO |
-| P01-M01-T21 | Zod auth validation schemas | 🟢 PARALLEL | `lib/validation/auth.schema.ts` | — | TODO |
+| P01-M01-T21 | Zod auth validation schemas | 🟢 PARALLEL | `lib/validation/auth.schema.ts` | — | DONE |
 
 ---
 
@@ -132,10 +132,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T13 | Public availability search page | 🟡 MOCK-FIRST | `app/search/page.tsx` | TODO |
-| P02-M02-T14 | Room card component (search result item) | 🟢 PARALLEL | `components/RoomCard.tsx` | TODO |
-| P02-M02-T15 | Staff rooms list page | 🟡 MOCK-FIRST | `app/staff/rooms/page.tsx` | TODO |
-| P02-M02-T16 | Staff room form/edit component | 🟢 PARALLEL | `components/RoomForm.tsx` | TODO |
+| P02-M02-T13 | Public availability search page | 🟡 MOCK-FIRST | `app/search/page.tsx` | REVIEW |
+| P02-M02-T14 | Room card component (search result item) | 🟢 PARALLEL | `components/RoomCard.tsx` | REVIEW |
+| P02-M02-T15 | Staff rooms list page | 🟡 MOCK-FIRST | `app/staff/rooms/page.tsx` | REVIEW |
+| P02-M02-T16 | Staff room form/edit component | 🟢 PARALLEL | `components/RoomForm.tsx` | REVIEW |
 
 ---
 
@@ -184,13 +184,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T07 | Reservation repository — create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | TODO |
-| P03-M03-T08 | Reservation repository — list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | TODO |
-| P03-M03-T09 | Reservation repository — get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | TODO |
-| P03-M03-T10 | Reservation service — orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` | TODO |
-| P03-M03-T11 | POST `/api/guest/reservations` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | TODO |
-| P03-M03-T12 | GET `/api/guest/reservations` route handler (list) | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | TODO |
-| P03-M03-T13 | GET `/api/guest/reservations/[id]` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/route.ts` | TODO |
+| P03-M03-T07 | Reservation repository — create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | REVIEW |
+| P03-M03-T08 | Reservation repository — list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | REVIEW |
+| P03-M03-T09 | Reservation repository — get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | REVIEW |
+| P03-M03-T10 | Reservation service — orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` | REVIEW |
+| P03-M03-T11 | POST `/api/guest/reservations` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | REVIEW |
+| P03-M03-T12 | GET `/api/guest/reservations` route handler (list) | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | REVIEW |
+| P03-M03-T13 | GET `/api/guest/reservations/[id]` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/route.ts` | REVIEW |
 
 ---
 
@@ -209,9 +209,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T18 | POST `/api/staff/reservations` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | TODO |
-| P03-M03-T19 | GET `/api/staff/reservations` route handler (list + filters) | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | TODO |
-| P03-M03-T20 | PATCH `/api/staff/reservations/[id]/cancel` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/cancel/route.ts` | TODO |
+| P03-M03-T18 | POST `/api/staff/reservations` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | REVIEW |
+| P03-M03-T19 | GET `/api/staff/reservations` route handler (list + filters) | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | REVIEW |
+| P03-M03-T20 | PATCH `/api/staff/reservations/[id]/cancel` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/cancel/route.ts` | REVIEW |
 | P03-M03-T21 | Staff reservations list page | 🟡 MOCK-FIRST | `app/staff/reservations/page.tsx` | TODO |
 | P03-M03-T22 | Staff reservation detail page | 🟡 MOCK-FIRST | `app/staff/reservations/[id]/page.tsx` | TODO |
 
@@ -264,9 +264,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P04-M04-T09 | Service usage repository | 🟡 MOCK-FIRST | `repositories/service-usage.repository.ts` | TODO |
-| P04-M04-T10 | Check-in service layer | 🟡 MOCK-FIRST | `services/checkin.service.ts` | TODO |
-| P04-M04-T11 | Service usage service layer | 🟡 MOCK-FIRST | `services/service-usage.service.ts` | TODO |
+| P04-M04-T09 | Service usage repository | 🟡 MOCK-FIRST | `repositories/service-usage.repository.ts` | REVIEW |
+| P04-M04-T10 | Check-in service layer | 🟡 MOCK-FIRST | `services/checkin.service.ts` | REVIEW |
+| P04-M04-T11 | Service usage service layer | 🟡 MOCK-FIRST | `services/service-usage.service.ts` | REVIEW |
 | P04-M04-T12 | POST `/api/staff/reservations/[id]/checkin` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkin/route.ts` | TODO |
 | P04-M04-T13 | POST `/api/staff/reservations/[id]/services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/services/route.ts` | TODO |
 | P04-M04-T14 | GET `/api/staff/services` route handler (catalogue list) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | TODO |
@@ -305,8 +305,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P04-M05-T05 | Billing repository | 🟡 MOCK-FIRST | `repositories/billing.repository.ts` | TODO |
-| P04-M05-T06 | Billing service layer | 🟡 MOCK-FIRST | `services/billing.service.ts` | TODO |
+| P04-M05-T05 | Billing repository | 🟡 MOCK-FIRST | `repositories/billing.repository.ts` | REVIEW |
+| P04-M05-T06 | Billing service layer | 🟡 MOCK-FIRST | `services/billing.service.ts` | REVIEW |
 | P04-M05-T07 | GET `/api/guest/reservations/[id]/invoice` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/invoice/route.ts` | TODO |
 
 **Phase 4 Completion Criteria:**
@@ -356,8 +356,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` | TODO |
-| P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` | TODO |
+| P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` | REVIEW |
+| P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` | REVIEW |
 | P05-M05-T10 | POST `/api/guest/payments` route handler | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` | TODO |
 | P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` | TODO |
 
