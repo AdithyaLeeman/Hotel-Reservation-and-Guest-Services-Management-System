@@ -28,7 +28,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent } from 'react';
-import GuestNav from '@/components/GuestNav';
+
 import Link from 'next/link';
 
 // ---------------------------------------------------------------------------
@@ -330,7 +330,6 @@ export default function NewReservationPage() {
 
   return (
     <>
-      <GuestNav />
 
       <main
         className="

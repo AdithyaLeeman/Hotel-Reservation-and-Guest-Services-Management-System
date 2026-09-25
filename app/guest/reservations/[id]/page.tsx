@@ -29,7 +29,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import GuestNav from '@/components/GuestNav';
+
 import type { ReservationDetail, ReservationRoomDetail } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
 
@@ -645,7 +645,6 @@ export default function ReservationDetailPage() {
 
   return (
     <>
-      <GuestNav />
 
       <main
         className="
