@@ -316,9 +316,14 @@ export default function NewReservationPage() {
       const { reservation_id } = (json as ApiSuccessResponse).data;
       setSubmitted(true);
 
+<<<<<<< HEAD
       // Redirect to booking confirmation page (T15 — /guest/book/confirm?id=...)
       // T15 then provides a link forward to the full detail page (T17)
       router.push(`/guest/book/confirm?id=${reservation_id}`);
+=======
+      // Redirect to reservation detail page (T17 — /guest/reservations/[id])
+      router.push(`/guest/reservations/${reservation_id}`);
+>>>>>>> feat/service-usage-mock
     } catch {
       setSubmitError('Could not reach the server. Please check your connection and try again.');
     } finally {
