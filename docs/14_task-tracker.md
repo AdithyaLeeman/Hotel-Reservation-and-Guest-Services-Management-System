@@ -35,10 +35,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Member | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|---|
 | P01-M01-T05 | M1 | Enums DDL (all PostgreSQL enums) | 🔴 SERIAL | `database/migrations/P01-M01-T05-01_create_enums.sql` | SP1.1 executed | DONE |
-| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | TODO |
-| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | TODO |
-| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | TODO |
-| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | TODO |
+| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | DONE |
+| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07-seed_branches.sql` | T05 | DONE |
+| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | DONE |
+| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | DONE |
 | P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | DONE |
 | P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | DONE |
 | P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | DONE |
@@ -71,7 +71,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | — | DONE |
 | P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | DONE |
-| P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | TODO |
+| P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | DONE |
 | P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx` | T22 | TODO |
 | P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx` | T14 | TODO |
 | P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx` | T15 | TODO |
@@ -198,10 +198,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T14 | Guest booking form page | 🟡 MOCK-FIRST | `app/guest/book/page.tsx` | TODO |
-| P03-M03-T15 | Booking confirmation page | 🟡 MOCK-FIRST | `app/guest/book/confirm/page.tsx` | TODO |
-| P03-M03-T16 | My reservations list page | 🟡 MOCK-FIRST | `app/guest/reservations/page.tsx` | TODO |
-| P03-M03-T17 | Reservation detail page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/page.tsx` | TODO |
+| P03-M03-T14 | Guest booking form page | 🟡 MOCK-FIRST | `app/guest/reservations/new/page.tsx` | REVIEW |
+| P03-M03-T15 | Booking confirmation page | 🟡 MOCK-FIRST | `app/guest/book/confirm/page.tsx` | REVIEW |
+| P03-M03-T16 | My reservations list page | 🟡 MOCK-FIRST | `app/guest/reservations/page.tsx` | REVIEW |
+| P03-M03-T17 | Reservation detail page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/page.tsx` | REVIEW |
 
 ---
 

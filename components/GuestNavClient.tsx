@@ -1,19 +1,5 @@
 'use client';
 
-/**
- * GuestNavClient — Interactive client layer for GuestNav.
- *
- * Handles:
- *  - Mobile hamburger menu toggle (ARIA-compliant)
- *  - Dark/light theme toggle (persisted to localStorage as 'skynest-theme')
- *  - Logout form submission
- *
- * Props are injected by the parent GuestNav Server Component which reads
- * the iron-session server-side. NEVER accept isLoggedIn from a query param.
- *
- * Task: P01-M01-T24
- */
-
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useId } from 'react';

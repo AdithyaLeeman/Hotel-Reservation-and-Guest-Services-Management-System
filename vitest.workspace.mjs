@@ -1,13 +1,3 @@
-/**
- * Vitest workspace configuration.
- *
- * Two projects:
- *  1. node-tests  — all existing tests (node env, no DOM)
- *  2. react-tests — component tests (jsdom env, *.tsx test files)
- *
- * This keeps the existing 220 node tests unaffected while adding
- * proper DOM support for React component tests.
- */
 import { defineWorkspace } from 'vitest/config';
 import path from 'path';
 
