@@ -39,10 +39,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | TODO |
 | P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | TODO |
 | P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | TODO |
-| P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | REVIEW |
-| P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | TODO |
-| P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | TODO |
-| P01-M02-T04 | M2 | Seed room types + amenities | 🔴 SERIAL | `database/seeds/P01-M02-T04_seed_room_types.sql` | P01-M02-T01, T02 | TODO |
+| P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | DONE |
+| P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | DONE |
+| P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | DONE |
+| P01-M02-T04 | M2 | Seed room types + amenities | 🔴 SERIAL | `database/seeds/P01-M02-T04_seed_room_types.sql` | P01-M02-T01, T02 | DONE |
 
 ---
 
@@ -97,8 +97,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | TODO |
-| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | TODO |
+| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | REVIEW |
+| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | REVIEW |
 
 ---
 

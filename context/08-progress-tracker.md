@@ -52,6 +52,7 @@ _Last updated: 42 tasks complete / reviewed across Phase 1–5. 220 tests passin
 | SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **IN_PROGRESS** (M1 DDLs T05–T09 & seed DONE) |
 | SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T19, T21 DONE; T12, T13 in REVIEW) |
 | SP1.4 — UI Shell | T22–T29 | IN_PROGRESS |
+| SP2.1 — Room Schema | T01–T02 | **REVIEW** (M2 room table DDL & 15-room seeds) |
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |
 | SP2.4 — Room UI | T13–T16 | **REVIEW** (M2 availability search page, staff rooms page, cards/forms) |
 | SP3.3 / SP3.5 — Reservation API | T07–T13, T18–T20 | **REVIEW** (M3 repository, services, API handlers) |
@@ -69,7 +70,7 @@ _Last updated: 42 tasks complete / reviewed across Phase 1–5. 220 tests passin
 | Member | Immediate Next Task | Can Start? |
 |---|---|---|
 | M1 | P01-M01-T14 — Guest registration API route & auth middleware (T20) | ✅ Now |
-| M2 | P01-M02-T01 — `room_type` table DDL (serial DB execution) | ✅ Branch table DONE |
+| M2 | P02-M02-T03 — `fn_get_available_rooms` PostgreSQL function | ✅ Draft now |
 | M3 | P03-M03-T14 — Guest booking form page UI | ✅ Now |
 | M4 | P04-M04-T12 — POST `/api/staff/reservations/[id]/checkin` API handler | ✅ Now |
 | M5 | P05-M05-T10 — POST `/api/guest/payments` API route handler | ✅ Now |
