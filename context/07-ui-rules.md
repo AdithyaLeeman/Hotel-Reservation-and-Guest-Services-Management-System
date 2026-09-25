@@ -2,6 +2,30 @@
 
 _Rules for all pages and components. Run `/imprint` after meaningful UI work to capture patterns in `ui-registry.md`._
 
+---
+
+## Reference Priority (MANDATORY — read before any UI task)
+
+When implementing any UI page, component, or style, look up references in this order:
+
+1. **Implemented code — highest priority**
+   - `app/globals.css` — all CSS custom properties, utility classes, button variants, badge variants, form classes, animations. **Use these tokens and classes first.**
+   - Existing built components in `components/` — copy patterns, don't reinvent them.
+   - `ui-registry.md` — registry of approved patterns; check before creating a new pattern.
+   - `context/06-ui-tokens.md` — canonical list of token names and values.
+
+2. **HTML reference files — secondary / inspiration only**
+   - Files in `UI-ref/` are static HTML mockups used during early planning.
+   - Use them for layout structure or content ideas **only when no implemented code covers the case**.
+   - **Never copy raw styles or colour values from `UI-ref/` files** — always translate them to the project's CSS variables and utility classes defined in `globals.css`.
+   - If a `UI-ref/` file conflicts with `globals.css`, `globals.css` wins.
+
+3. **`context/06-ui-tokens.md`** for any token value not yet visible in an implemented component.
+
+> **Rule in one sentence:** Implemented code → `ui-registry.md` → `UI-ref/` HTML (inspiration only). Never go to `UI-ref/` first.
+
+---
+
 ## General Layout
 
 - Single-column layouts on mobile, multi-column on md+
