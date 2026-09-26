@@ -72,7 +72,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | — | DONE |
 | P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | DONE |
 | P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | DONE |
-| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx` | T22 | TODO |
+| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx`, `components/StaffNavClient.tsx`, `components/StaffNavClient.test.tsx` | T22 | REVIEW |
 | P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx` | T14 | TODO |
 | P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx` | T15 | TODO |
 | P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx` | T17 | TODO |
