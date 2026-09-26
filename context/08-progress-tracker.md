@@ -53,6 +53,7 @@ _Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passin
 | SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T14-T21 DONE; T12, T13 in REVIEW) |
 | SP1.4 — UI Shell | T22–T29 | **IN_PROGRESS** (T22, T23, T24 GuestNav DONE; T25-T29 TODO) |
 | SP2.1 — Room Schema | T01–T02 | **REVIEW** (M2 room table DDL & 15-room seeds) |
+| SP2.2 — Availability DB | T03–T04, T17 | **REVIEW** (M2 fn_get_available_rooms, indexes, test suite) |
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |
 | SP2.4 — Room UI | T13–T16 | **REVIEW** (M2 availability search page, staff rooms page, cards/forms) |
 | SP3.3 / SP3.4 / SP3.5 — Reservation API & UI | T07–T20 | **REVIEW** (M3 repository, services, API handlers, and UI pages) |

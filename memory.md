@@ -50,10 +50,11 @@ Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancel
 - Write first SQL: `P01-M01-T02-01_create_enums.sql`
 - Start prompt in `docs/member-prompts/member-1-prompt.md`
 
-**M2: SP1.2 (T01..T04) DONE; SP2.1 (P02-M02-T01, T02) COMPLETED (REVIEW)** on branch `create-room`
-- Prior completed: SP1.2 DDL/seeds (T01..T04), SP2.3 (Room API: T05..T12) & SP2.4 (Room UI: T13..T16)
-- Created: `database/migrations/P02-M02-T01-01_create_room.sql` & `database/seeds/P02-M02-T02_seed_rooms.sql`
-- Next for M2: `P02-M02-T03` — `fn_get_available_rooms` function (SP2.2) and `P02-M02-T04` (composite index)
+**M2: SP1.2, SP2.1, SP2.2 (P02-M02-T03, T04, T17), SP2.3, SP2.4 COMPLETED (REVIEW)** on branch `get-available-rooms`
+- Created: `database/routines/availability/fn_get_available_rooms.sql` (P02-M02-T03)
+- Created: `database/indexes/idx_reservation_rooms_dates.sql` & `idx_reservation_rooms_room_dates.sql` (P02-M02-T04)
+- Created: `database/tests/test_availability.sql` (P02-M02-T17)
+- Next for M2: Phase 5 Occupancy Report (P05-M02-T01, T02) or EXPLAIN ANALYZE (P02-M02-T18) once DB migrations execute.
 
 ## Integration Checkpoints
 - P1 integration owner: Member 1

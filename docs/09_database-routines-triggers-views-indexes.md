@@ -18,7 +18,7 @@ _Living inventory. Each entry documents: purpose, signature, inputs/outputs, tab
 ### `fn_get_available_rooms`
 **Purpose:** Return rooms available for booking in a given branch and date range.
 **File:** `database/routines/availability/fn_get_available_rooms.sql`
-**Status:** TODO (P02-M02-T03)
+**Status:** REVIEW (P02-M02-T03)
 
 ```sql
 -- Signature:
@@ -29,6 +29,7 @@ CREATE OR REPLACE FUNCTION fn_get_available_rooms(
 ) RETURNS TABLE (
   room_id       BIGINT,
   room_number   VARCHAR(10),
+  branch_id     BIGINT,
   type_id       BIGINT,
   type_name     VARCHAR(50),
   capacity      INT,
@@ -256,8 +257,8 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 
 ### `idx_reservation_rooms_room_dates`
 **Purpose:** Speed up availability overlap queries.
-**File:** `database/indexes/idx_reservation_rooms_room_dates.sql`
-**Status:** TODO (P02-M02-T09)
+**File:** `database/indexes/idx_reservation_rooms_dates.sql`
+**Status:** REVIEW (P02-M02-T04)
 **Definition:**
 ```sql
 CREATE INDEX idx_reservation_rooms_room_dates
