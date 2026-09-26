@@ -106,8 +106,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | TODO |
-| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | TODO |
+| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | REVIEW |
+| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | REVIEW |
 
 > **Note:** Write the SQL file now; execute after P03-M03-T02 is merged.
 
@@ -143,7 +143,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | SP2.2 done | TODO |
+| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | REVIEW |
 | P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md` (append) | SP2.2 done | TODO |
 
 **Phase 2 Completion Criteria:**
