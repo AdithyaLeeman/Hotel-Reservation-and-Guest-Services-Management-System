@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 42 tasks complete / reviewed across Phase 1–5. 220 tests passing. 2026-09-24._
+_Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passing. 2026-09-25._
 
 ## Current Phase: 1 (Foundation & Security) & 2 (Room Inventory & Availability) — Active Parallel Development
 
@@ -10,14 +10,14 @@ _Last updated: 42 tasks complete / reviewed across Phase 1–5. 220 tests passin
 | Phase | Subphases | Tasks | Status | Integration Owner |
 |---|---|---|---|---|
 | P0 — Initialization | — | — | **DONE** | — |
-| P1 — Foundation | SP1.1–SP1.4 | 29 | **IN_PROGRESS** (SP1.1 DONE, SP1.2/SP1.3 DDL & Auth logic DONE/REVIEW) | M1 |
-| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | 🟢 **IN_PROGRESS** (SP2.3 API & SP2.4 UI pages in REVIEW) | M2 |
-| P3 — Reservations | SP3.1–SP3.6 | 24 | 🟢 **IN_PROGRESS** (SP3.3 API & SP3.5 Staff routes in REVIEW) | M3 |
+| P1 — Foundation | SP1.1–SP1.4 | 29 | **IN_PROGRESS** (SP1.1, SP1.2 DDLs, GuestNav DONE; Auth API in REVIEW) | M1 |
+| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | 🟢 **IN_PROGRESS** (SP1.2/SP2.1 DDLs, SP2.3 API & SP2.4 UI pages in REVIEW) | M2 |
+| P3 — Reservations | SP3.1–SP3.6 | 24 | 🟢 **IN_PROGRESS** (SP3.3 API, SP3.4 UI pages & SP3.5 Staff routes in REVIEW) | M3 |
 | P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (SP4.3 Service repo & SP4.7 Billing repo in REVIEW) | M4 + M5 |
 | P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **IN_PROGRESS** (SP5.4 Payment repo in REVIEW) | M5 |
 | P6 — Integration & Testing | SP6.1–SP6.5 | 19 | TODO | All |
 
-> **Status Summary:** 42 of 139 tasks implemented in code (30.2% overall completion). All 220 vitest unit/integration tests are PASSING.
+> **Status Summary:** 51 of 139 tasks implemented in code (36.7% overall completion). All 298 vitest unit/integration tests across 30 test suites are PASSING.
 
 ## Phase 0 — Completed Tasks
 
@@ -49,13 +49,13 @@ _Last updated: 42 tasks complete / reviewed across Phase 1–5. 220 tests passin
 | Subphase | Tasks | Status |
 |---|---|---|
 | SP1.1 — DB Infrastructure | T01–T04 | **DONE** (M1) |
-| SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **IN_PROGRESS** (M1 DDLs T05–T09 & seed DONE) |
-| SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T19, T21 DONE; T12, T13 in REVIEW) |
-| SP1.4 — UI Shell | T22–T29 | IN_PROGRESS |
+| SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **DONE** (All M1 & M2 core DDLs & seed SQL files written) |
+| SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T14-T21 DONE; T12, T13 in REVIEW) |
+| SP1.4 — UI Shell | T22–T29 | **IN_PROGRESS** (T22, T23, T24 GuestNav DONE; T25-T29 TODO) |
 | SP2.1 — Room Schema | T01–T02 | **REVIEW** (M2 room table DDL & 15-room seeds) |
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |
 | SP2.4 — Room UI | T13–T16 | **REVIEW** (M2 availability search page, staff rooms page, cards/forms) |
-| SP3.3 / SP3.5 — Reservation API | T07–T13, T18–T20 | **REVIEW** (M3 repository, services, API handlers) |
+| SP3.3 / SP3.4 / SP3.5 — Reservation API & UI | T07–T20 | **REVIEW** (M3 repository, services, API handlers, and UI pages) |
 | SP4.3 / SP4.7 — Service & Billing API | T09–T11 (M4), T05–T06 (M5) | **REVIEW** (M4 & M5 repositories and services) |
 | SP5.4 — Payment API | T08–T09 (M5) | **REVIEW** (M5 payment repository & service) |
 

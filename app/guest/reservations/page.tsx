@@ -22,7 +22,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import GuestNav from '@/components/GuestNav';
+
 import type { Reservation } from '@/types/domain';
 import type { ReservationStatus } from '@/types/enums';
 
@@ -520,7 +520,6 @@ export default function MyReservationsPage() {
 
   return (
     <>
-      <GuestNav />
 
       <main
         className="
