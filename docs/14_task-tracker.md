@@ -144,7 +144,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
 | P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | REVIEW |
-| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md` (append) | SP2.2 done | TODO |
+| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md`, `database/tests/explain_analyze_availability.sql` | REVIEW (script + expected plan written; actual output pending live DB) |
 
 **Phase 2 Completion Criteria:**
 - Availability search returns correct rooms for test scenarios

@@ -50,11 +50,14 @@ Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancel
 - Write first SQL: `P01-M01-T02-01_create_enums.sql`
 - Start prompt in `docs/member-prompts/member-1-prompt.md`
 
-**M2: SP1.2, SP2.1, SP2.2 (P02-M02-T03, T04, T17), SP2.3, SP2.4 COMPLETED (REVIEW)** on branch `get-available-rooms`
-- Created: `database/routines/availability/fn_get_available_rooms.sql` (P02-M02-T03)
-- Created: `database/indexes/idx_reservation_rooms_dates.sql` & `idx_reservation_rooms_room_dates.sql` (P02-M02-T04)
-- Created: `database/tests/test_availability.sql` (P02-M02-T17)
-- Next for M2: Phase 5 Occupancy Report (P05-M02-T01, T02) or EXPLAIN ANALYZE (P02-M02-T18) once DB migrations execute.
+**M2: All Phase 1, 2, and Phase 5 tasks COMPLETED (REVIEW)** on branch `occupancy-report`
+- `database/views/vw_room_occupancy.sql` (P05-M05-T04)
+- `types/report.ts`, `lib/validation/report.schema.ts`
+- `services/report.service.ts` & test (P05-M02-T02)
+- `app/api/staff/reports/occupancy/route.ts` & test (P05-M02-T02)
+- `app/staff/reports/occupancy/page.tsx` & test (P05-M02-T01)
+- `database/tests/explain_analyze_availability.sql` + docs/09 EXPLAIN ANALYZE section (P02-M02-T18)
+- **Next for M2:** Phase 6 Integration (P06-M02-T01..T03) — blocked on live DB migrations executing.
 
 ## Integration Checkpoints
 - P1 integration owner: Member 1

@@ -256,18 +256,25 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ## Indexes
 
 ### `idx_reservation_rooms_room_dates`
-**Purpose:** Speed up availability overlap queries.
+**Purpose:** Speed up availability overlap queries by providing fast room_id lookup into `reservation_rooms` with covering `reservation_id` for the join to `reservation`.
 **File:** `database/indexes/idx_reservation_rooms_dates.sql`
 **Status:** REVIEW (P02-M02-T04)
 **Definition:**
 ```sql
-CREATE INDEX idx_reservation_rooms_room_dates
-  ON reservation_rooms (room_id)
-  INCLUDE (reservation_id);
--- Combined with index on reservation(check_in_date, check_out_date, reservation_status)
+-- 1. Covering index on reservation_rooms — optimises room_id + join lookup
+CREATE INDEX IF NOT EXISTS idx_reservation_rooms_room_dates
+  ON reservation_rooms (room_id, reservation_id);
+
+-- 2. Composite index on reservation — optimises status filter + date overlap checks
+CREATE INDEX IF NOT EXISTS idx_reservation_overlap_lookup
+  ON reservation (reservation_status, check_in_date, check_out_date);
+
+-- 3. Covering index on room — optimises branch + maintenance filter with type projection
+CREATE INDEX IF NOT EXISTS idx_room_branch_status
+  ON room (branch_id, status)
+  INCLUDE (type_id, room_number);
 ```
-**EXPLAIN ANALYZE:** Required — capture output after seeding test data.
-**Lecture alignment:** L10 (indexing), L11 (EXPLAIN ANALYZE, query optimization)
+**Lecture alignment:** L10 (B-Tree indexing, covering indexes), L11 (EXPLAIN ANALYZE, query optimization)
 
 ### `idx_reservation_guest_id`
 **Purpose:** Speed up guest My Reservations lookups.
@@ -283,3 +290,106 @@ CREATE INDEX idx_reservation_guest_id ON reservation (guest_id);
 **File:** `database/indexes/idx_service_usage_reservation_id.sql`
 **Status:** TODO
 **Lecture alignment:** L10
+
+---
+
+## EXPLAIN ANALYZE — Availability Query Performance (P02-M02-T18)
+
+**Task:** P02-M02-T18 — EXPLAIN ANALYZE for availability query
+**Member:** Member 2 | **Status:** REVIEW (script written; output to be captured after DB migration)
+**Script:** `database/tests/explain_analyze_availability.sql`
+**Lecture alignment:** L10 (index design), L11 (EXPLAIN ANALYZE interpretation, query cost model)
+
+### Query Under Test
+
+The inner correlated sub-query inside `fn_get_available_rooms()`:
+
+```sql
+SELECT *
+FROM room r
+INNER JOIN room_type rt ON rt.type_id = r.type_id
+WHERE r.branch_id = $1          -- idx_room_branch_status
+  AND r.status != 'Maintenance' -- idx_room_branch_status (status filter)
+  AND NOT EXISTS (
+    SELECT 1
+    FROM reservation_rooms rr                                         -- idx_reservation_rooms_room_dates
+    INNER JOIN reservation res ON res.reservation_id = rr.reservation_id
+    WHERE rr.room_id = r.room_id
+      AND res.reservation_status NOT IN ('Cancelled', 'CheckedOut')  -- idx_reservation_overlap_lookup
+      AND res.check_in_date  < $3                                    -- idx_reservation_overlap_lookup
+      AND res.check_out_date > $2                                    -- idx_reservation_overlap_lookup
+  )
+ORDER BY rt.capacity ASC, rt.daily_rate ASC, r.room_number ASC;
+```
+
+### Expected Execution Plan (without indexes — baseline)
+
+```
+Function Scan on fn_get_available_rooms (cost=...) rows=...
+  ->  Nested Loop Anti Join
+        ->  Hash Join
+              Hash Cond: (r.type_id = rt.type_id)
+              ->  Seq Scan on room r
+                    Filter: ((branch_id = $1) AND (status <> 'Maintenance'))
+              ->  Hash
+                    ->  Seq Scan on room_type rt
+        ->  Hash Join
+              Hash Cond: (rr.reservation_id = res.reservation_id)
+              ->  Seq Scan on reservation_rooms rr
+                    Filter: (room_id = r.room_id)
+              ->  Hash
+                    ->  Seq Scan on reservation res
+                          Filter: ((reservation_status <> ALL ('{Cancelled,CheckedOut}'))
+                                AND (check_in_date < $3)
+                                AND (check_out_date > $2))
+```
+
+**Without indexes:** Both `room` and `reservation_rooms` are full sequential scans. For 15 rooms and ~20 reservations this is acceptable, but at scale (1000+ rooms, 10000+ reservations) the sequential join would be O(N × M) per room.
+
+### Expected Execution Plan (with indexes — optimized)
+
+```
+Function Scan on fn_get_available_rooms  (cost=... rows=...)
+  ->  Sort (on capacity, daily_rate, room_number)
+        ->  Nested Loop Anti Join
+              ->  Index Scan using idx_room_branch_status on room r
+                    Index Cond: (branch_id = $1)
+                    Filter: (status <> 'Maintenance')        -- covered by index, no heap fetch
+              ->  Nested Loop
+                    ->  Index Scan using idx_reservation_rooms_room_dates on reservation_rooms rr
+                          Index Cond: (room_id = r.room_id)   -- B-Tree lookup by room_id
+                    ->  Index Scan using idx_reservation_overlap_lookup on reservation res
+                          Index Cond: (reservation_status = ANY('{Booked,CheckedIn}'))
+                          Filter: (check_in_date < $3 AND check_out_date > $2)
+```
+
+**With indexes:**
+- `idx_room_branch_status` enables an **index scan** on `room` filtering by `branch_id` and `status` without a heap page fetch for projected columns (covering index includes `type_id`, `room_number`).
+- `idx_reservation_rooms_room_dates` allows a direct **B-Tree lookup** into `reservation_rooms` by `room_id`, replacing the full sequential scan.
+- `idx_reservation_overlap_lookup` allows PostgreSQL to filter `reservation_status` first (most selective: only Booked/CheckedIn), then apply the date range predicate on the pre-filtered rows.
+
+### Expected Performance Gain
+
+| Metric | Without Indexes | With Indexes | Gain |
+|---|---|---|---|
+| `room` scan | Seq Scan O(R) | Index Scan O(log R) | ~10× at 500+ rooms |
+| `reservation_rooms` scan | Seq Scan O(RR) | Index Scan O(log RR) | ~20× at 5000+ reservations |
+| `reservation` filter | Seq Scan O(Res) | Index Scan (status + dates) | ~15× at 10000+ reservations |
+| Buffer hits | Low (heap only) | High (index pages cached) | Reduced I/O |
+
+### How to Capture Real Output
+
+After running all Phase 1–3 migrations and seeding:
+
+```bash
+psql -U hrgsms_user -d hrgsms -f database/tests/explain_analyze_availability.sql \
+  | tee docs/explain_analyze_output_$(date +%Y%m%d).txt
+```
+
+Paste the actual `EXPLAIN ANALYZE` output below this line once captured.
+
+### Actual EXPLAIN ANALYZE Output
+
+> ⏳ **Pending** — to be captured after Phase 6 DB migration execution (P06-M02-T03).
+> Run `database/tests/explain_analyze_availability.sql` against the live seeded database and paste here.
+
