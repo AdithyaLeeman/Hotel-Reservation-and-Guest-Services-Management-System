@@ -51,7 +51,7 @@ _Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passin
 | SP1.1 — DB Infrastructure | T01–T04 | **DONE** (M1) |
 | SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **DONE** (All M1 & M2 core DDLs & seed SQL files written) |
 | SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T14-T21 DONE; T12, T13 in REVIEW) |
-| SP1.4 — UI Shell | T22–T29 | **IN_PROGRESS** (T22, T23, T24 GuestNav DONE; T25-T29 TODO) |
+| SP1.4 — UI Shell | T22–T29 | **IN_PROGRESS** (T22, T23, T24 DONE; T25, T26, T27, T28 in REVIEW; T29 TODO) |
 | SP2.1 — Room Schema | T01–T02 | **REVIEW** (M2 room table DDL & 15-room seeds) |
 | SP2.2 — Availability DB | T03–T04, T17 | **REVIEW** (M2 fn_get_available_rooms, indexes, test suite) |
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |
