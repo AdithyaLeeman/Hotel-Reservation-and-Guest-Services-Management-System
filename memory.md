@@ -38,6 +38,7 @@ None. All 220 unit and integration tests passing.
 - `billing_summary` is a stored table; `vw_invoice_totals` computes running totals — D006
 - Tailwind CSS v4 retained
 - No ORM — direct parameterized SQL via `pg`
+- Branch naming rule: Include a descriptive functionality suffix in branch names (e.g., `feat/P04-M04-T12-checkin-route-handler` instead of just `feat/P04-M04-T12`)
 
 ## Open Questions (Requiring Lecturer / Team Approval)
 See `.agent/open-questions.md` and `docs/19_open-questions-and-assumptions.md`.
