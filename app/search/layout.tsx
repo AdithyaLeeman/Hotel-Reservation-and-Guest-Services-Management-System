@@ -1,14 +1,20 @@
 /**
- * Search route layout — provides SEO metadata for all /search pages.
+ * Search route layout — provides SEO metadata and guest navigation for /search.
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T13
  *
- * Metadata is defined here (server component) because page.tsx
- * is a 'use client' component and cannot export metadata.
+ * GuestNav is a React Server Component that reads the iron-session via
+ * next/headers. It MUST live in a Server Component (this layout), not be
+ * imported from the 'use client' page.tsx below it. Placing it here keeps
+ * the server/client boundary correct: layout (server) → children (client).
+ *
+ * Metadata is defined here because page.tsx is 'use client' and cannot
+ * export metadata directly.
  */
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import GuestNav from '@/components/GuestNav';
 
 export const metadata: Metadata = {
   title: 'Search Available Rooms — SkyNest Hotels',
@@ -18,5 +24,10 @@ export const metadata: Metadata = {
 };
 
 export default function SearchLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <GuestNav />
+      {children}
+    </>
+  );
 }

@@ -24,7 +24,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import GuestNav from '@/components/GuestNav';
+
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -113,7 +113,6 @@ export default function BookingConfirmPage() {
 
   return (
     <>
-      <GuestNav />
 
       <main
         className="

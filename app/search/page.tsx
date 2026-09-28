@@ -24,7 +24,6 @@ import { useState, useCallback } from 'react';
 import type { FormEvent } from 'react';
 import RoomCard from '@/components/RoomCard';
 import type { AvailableRoom } from '@/repositories/availability.repository';
-import GuestNav from '@/components/GuestNav';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -199,8 +198,6 @@ export default function SearchPage() {
 
   return (
     <>
-      {/* ── Temporary nav (M1 will implement GuestNav fully in P01-M01-T13) ── */}
-      <GuestNav />
 
       <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900">
 

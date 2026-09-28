@@ -1,34 +1,10 @@
 'use client';
 
-/**
- * Guest Booking Form Page — /guest/reservations/new
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T14
- * Type: MOCK-FIRST — calls POST /api/guest/reservations (currently mock data).
- *
- * Responsibilities:
- *   - Read roomId, checkIn, checkOut from URL search params (set by RoomCard CTA)
- *   - Allow the guest to review the room selection and submit the booking
- *   - Call POST /api/guest/reservations with a validated payload
- *   - On success, redirect to /guest/reservations/[id] (the detail page, T17)
- *   - Handle and display API error states (overlap 409, maintenance 422, etc.)
- *
- * Security invariant:
- *   guest_id is NEVER sent in the request body. It is sourced from the
- *   server-side session inside POST /api/guest/reservations (T11 route handler).
- *
- * Business rules:
- *   - booking_source is always 'Online' for guest-portal bookings (service layer enforces this)
- *   - Availability and overlap checks run entirely in sp_create_reservation() on the DB
- *   - Rate figures are display-only; no price computation happens in this component
- *
- * TODO (P06-M03-T01): Replace mock session stub in the API with real iron-session.
- */
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent } from 'react';
-import GuestNav from '@/components/GuestNav';
+
 import Link from 'next/link';
 
 // ---------------------------------------------------------------------------
@@ -46,14 +22,14 @@ const BRANCHES: Record<number, string> = {
 // ---------------------------------------------------------------------------
 
 interface FormErrors {
-  roomId?:  string;
+  roomId?: string;
   checkIn?: string;
   checkOut?: string;
 }
 
 interface ApiErrorResponse {
   error: {
-    code:    string;
+    code: string;
     message: string;
     fields?: Record<string, string>;
   };
@@ -81,15 +57,15 @@ function formatDate(iso: string): string {
   const d = new Date(iso + 'T00:00:00'); // avoid UTC-offset day shift
   return d.toLocaleDateString('en-GB', {
     weekday: 'short',
-    day:     '2-digit',
-    month:   'short',
-    year:    'numeric',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 }
 
 /** Validate URL search params before rendering the booking form. */
 function validateParams(
-  roomId:  string | null,
+  roomId: string | null,
   checkIn: string | null,
   checkOut: string | null,
 ): FormErrors {
@@ -120,10 +96,10 @@ function SummaryCard({
   checkOut,
   nights,
 }: {
-  roomId:  string;
+  roomId: string;
   checkIn: string;
   checkOut: string;
-  nights:  number;
+  nights: number;
 }) {
   return (
     <div
@@ -235,12 +211,12 @@ function ParamErrorBanner({ errors }: { errors: FormErrors }) {
 // ---------------------------------------------------------------------------
 
 export default function NewReservationPage() {
-  const router       = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   // Read URL params (set by RoomCard reserve CTA)
-  const rawRoomId   = searchParams.get('roomId');
-  const rawCheckIn  = searchParams.get('checkIn');
+  const rawRoomId = searchParams.get('roomId');
+  const rawCheckIn = searchParams.get('checkIn');
   const rawCheckOut = searchParams.get('checkOut');
   const rawBranchId = searchParams.get('branchId');
 
@@ -249,15 +225,15 @@ export default function NewReservationPage() {
   const paramsValid = Object.keys(paramErrors).length === 0;
 
   // Submission state
-  const [submitting, setSubmitting]   = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitted, setSubmitted]     = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   // Derived safe values (only used when paramsValid === true)
-  const roomId   = rawRoomId   ?? '';
-  const checkIn  = rawCheckIn  ?? '';
+  const roomId = rawRoomId ?? '';
+  const checkIn = rawCheckIn ?? '';
   const checkOut = rawCheckOut ?? '';
-  const nights   = countNights(checkIn, checkOut);
+  const nights = countNights(checkIn, checkOut);
   const branchId = rawBranchId ? parseInt(rawBranchId, 10) : null;
   const branchName = branchId !== null ? (BRANCHES[branchId] ?? null) : null;
 
@@ -277,18 +253,18 @@ export default function NewReservationPage() {
        * booking_source 'Online' is enforced again by the service layer for guest paths.
        */
       const payload = {
-        branch_id:      branchId ?? 1,          // branchId from URL; fallback for safety
-        check_in_date:  checkIn,
+        branch_id: branchId ?? 1,          // branchId from URL; fallback for safety
+        check_in_date: checkIn,
         check_out_date: checkOut,
-        room_ids:       [parseInt(roomId, 10)],
+        room_ids: [parseInt(roomId, 10)],
         booking_source: 'Online' as const,
         // discount_percentage omitted — guests cannot self-apply discounts
       };
 
       const response = await fetch('/api/guest/reservations', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
+        body: JSON.stringify(payload),
       });
 
       const json = (await response.json()) as ApiSuccessResponse | ApiErrorResponse;
@@ -330,7 +306,6 @@ export default function NewReservationPage() {
 
   return (
     <>
-      <GuestNav />
 
       <main
         className="

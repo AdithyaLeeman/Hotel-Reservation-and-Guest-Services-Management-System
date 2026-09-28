@@ -18,11 +18,11 @@ P01-M01-T07-01_create_branch.sql
 P01-M01-T08-01_create_employee.sql
 P01-M01-T09-01_create_guest.sql
 P01-M02-T01-01_create_room_type.sql
-# P01-M02-T02-01_create_amenity.sql
-# P01-M02-T03-01_create_room_type_amenity.sql
+P01-M02-T02-01_create_amenity.sql
+P01-M02-T03-01_create_room_type_amenity.sql
 
 # Phase 2 — Rooms
-# P02-M02-T01-01_create_room.sql
+P02-M02-T01-01_create_room.sql
 
 # Phase 3 — Reservations
 # P03-M03-T01-01_create_reservation.sql

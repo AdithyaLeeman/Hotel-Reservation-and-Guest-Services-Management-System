@@ -35,14 +35,14 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Member | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|---|
 | P01-M01-T05 | M1 | Enums DDL (all PostgreSQL enums) | 🔴 SERIAL | `database/migrations/P01-M01-T05-01_create_enums.sql` | SP1.1 executed | DONE |
-| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | TODO |
-| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07_seed_branches.sql` | T05 | TODO |
-| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | TODO |
-| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | TODO |
-| P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | REVIEW |
-| P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | TODO |
-| P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | TODO |
-| P01-M02-T04 | M2 | Seed room types + amenities | 🔴 SERIAL | `database/seeds/P01-M02-T04_seed_room_types.sql` | P01-M02-T01, T02 | TODO |
+| P01-M01-T06 | M1 | `user_account` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T06-01_create_user_account.sql` | T05 | DONE |
+| P01-M01-T07 | M1 | `branch` table DDL + seed 3 branches | 🔴 SERIAL | `database/migrations/P01-M01-T07-01_create_branch.sql`, `database/seeds/P01-M01-T07-seed_branches.sql` | T05 | DONE |
+| P01-M01-T08 | M1 | `employee` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T08-01_create_employee.sql` | T06, T07 | DONE |
+| P01-M01-T09 | M1 | `guest` table DDL | 🔴 SERIAL | `database/migrations/P01-M01-T09-01_create_guest.sql` | T06 | DONE |
+| P01-M02-T01 | M2 | `room_type` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T01-01_create_room_type.sql` | T07 | DONE |
+| P01-M02-T02 | M2 | `amenity` table DDL | 🔴 SERIAL | `database/migrations/P01-M02-T02-01_create_amenity.sql` | T07 | DONE |
+| P01-M02-T03 | M2 | `room_type_amenity` junction DDL | 🔴 SERIAL | `database/migrations/P01-M02-T03-01_create_room_type_amenity.sql` | T01, T02 | DONE |
+| P01-M02-T04 | M2 | Seed room types + amenities | 🔴 SERIAL | `database/seeds/P01-M02-T04_seed_room_types.sql` | P01-M02-T01, T02 | DONE |
 
 ---
 
@@ -69,14 +69,14 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css`, `tailwind.config.ts` | — | TODO |
-| P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | TODO |
-| P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | TODO |
-| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx` | T22 | TODO |
-| P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx` | T14 | TODO |
-| P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx` | T15 | TODO |
-| P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx` | T17 | TODO |
-| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx` | T17 | TODO |
+| P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | — | DONE |
+| P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | DONE |
+| P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | DONE |
+| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx`, `components/StaffNavClient.tsx`, `components/StaffNavClient.test.tsx` | T22 | REVIEW |
+| P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx`, `app/guest/register/page.test.tsx` | T14 | REVIEW |
+| P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx`, `app/guest/login/page.test.tsx` | T15 | REVIEW |
+| P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx`, `app/staff/login/page.test.tsx` | T17 | REVIEW |
+| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx`, `app/staff/dashboard/page.test.tsx` | T17 | REVIEW |
 
 **Phase 1 Completion Criteria:**
 - `npm run migrate` runs on empty DB, all tables + enums created
@@ -97,8 +97,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | TODO |
-| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | TODO |
+| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | REVIEW |
+| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | REVIEW |
 
 ---
 
@@ -106,8 +106,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | TODO |
-| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | TODO |
+| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | REVIEW |
+| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | REVIEW |
 
 > **Note:** Write the SQL file now; execute after P03-M03-T02 is merged.
 
@@ -143,8 +143,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | SP2.2 done | TODO |
-| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md` (append) | SP2.2 done | TODO |
+| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | REVIEW |
+| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md`, `database/tests/explain_analyze_availability.sql` | REVIEW (script + expected plan written; actual output pending live DB) |
 
 **Phase 2 Completion Criteria:**
 - Availability search returns correct rooms for test scenarios
@@ -198,10 +198,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T14 | Guest booking form page | 🟡 MOCK-FIRST | `app/guest/book/page.tsx` | TODO |
-| P03-M03-T15 | Booking confirmation page | 🟡 MOCK-FIRST | `app/guest/book/confirm/page.tsx` | TODO |
-| P03-M03-T16 | My reservations list page | 🟡 MOCK-FIRST | `app/guest/reservations/page.tsx` | TODO |
-| P03-M03-T17 | Reservation detail page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/page.tsx` | TODO |
+| P03-M03-T14 | Guest booking form page | 🟡 MOCK-FIRST | `app/guest/reservations/new/page.tsx` | REVIEW |
+| P03-M03-T15 | Booking confirmation page | 🟡 MOCK-FIRST | `app/guest/book/confirm/page.tsx` | REVIEW |
+| P03-M03-T16 | My reservations list page | 🟡 MOCK-FIRST | `app/guest/reservations/page.tsx` | REVIEW |
+| P03-M03-T17 | Reservation detail page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/page.tsx` | REVIEW |
 
 ---
 

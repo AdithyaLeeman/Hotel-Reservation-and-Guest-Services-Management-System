@@ -51,9 +51,14 @@ Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancel
 - Write first SQL: `P01-M01-T02-01_create_enums.sql`
 - Start prompt in `docs/member-prompts/member-1-prompt.md`
 
-**M2: P01-M02-T01 COMPLETED (REVIEW)** — `room_type` table DDL on branch `room-type-ddl`
-- Prior completed: SP2.3 (Room API: T05..T12) & SP2.4 (Room UI: T13..T16)
-- Next for M2: `P01-M02-T02` — `amenity` table DDL (`database/migrations/P01-M02-T02-01_create_amenity.sql`) & `P01-M02-T03` (`room_type_amenity`)
+**M2: All Phase 1, 2, and Phase 5 tasks COMPLETED (REVIEW)** on branch `occupancy-report`
+- `database/views/vw_room_occupancy.sql` (P05-M05-T04)
+- `types/report.ts`, `lib/validation/report.schema.ts`
+- `services/report.service.ts` & test (P05-M02-T02)
+- `app/api/staff/reports/occupancy/route.ts` & test (P05-M02-T02)
+- `app/staff/reports/occupancy/page.tsx` & test (P05-M02-T01)
+- `database/tests/explain_analyze_availability.sql` + docs/09 EXPLAIN ANALYZE section (P02-M02-T18)
+- **Next for M2:** Phase 6 Integration (P06-M02-T01..T03) — blocked on live DB migrations executing.
 
 ## Integration Checkpoints
 - P1 integration owner: Member 1

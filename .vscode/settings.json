@@ -1,0 +1,18 @@
+{
+  // Tailwind v4 uses custom at-rules (@theme, @layer utilities, etc.) that the
+  // built-in VS Code CSS validator does not recognise. Disable it to prevent
+  // false-positive squiggles on valid Tailwind syntax.
+  // The actual validation happens at build time via PostCSS + @tailwindcss/postcss.
+  "css.validate": false,
+
+  // Similarly suppress SCSS/Less validators if those are ever used.
+  "scss.validate": false,
+
+  // Recommended TypeScript version: use the workspace's own tsc rather than VS Code's built-in.
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Tailwind IntelliSense (if the extension is installed) — point it at globals.css.
+  "tailwindCSS.experimental.configFile": {
+    "app/globals.css": "**"
+  }
+}
