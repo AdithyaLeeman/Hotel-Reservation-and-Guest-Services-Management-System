@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import StaffNav from '@/components/StaffNav';
 import { getSession } from '@/lib/auth/session';
 import type { StaffRole } from '@/types/enums';
 
@@ -295,7 +294,6 @@ export default async function StaffDashboardPage() {
       <title>Dashboard — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
-        <StaffNav />
 
         <main
           id="staff-dashboard-main"

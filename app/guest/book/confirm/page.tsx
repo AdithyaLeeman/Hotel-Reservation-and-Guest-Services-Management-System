@@ -22,6 +22,7 @@
  *                                              /guest/reservations/[id] (T17)
  */
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -101,10 +102,11 @@ function MissingIdBanner() {
 }
 
 // ---------------------------------------------------------------------------
-// Page component
+// Page component (inner — must be wrapped in Suspense because it uses
+// useSearchParams, per Next.js App Router requirements)
 // ---------------------------------------------------------------------------
 
-export default function BookingConfirmPage() {
+function BookingConfirmContent() {
   const searchParams = useSearchParams();
   const reservationId = searchParams.get('id');
 
@@ -464,5 +466,24 @@ export default function BookingConfirmPage() {
         </section>
       </main>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Default export — wraps the client component in Suspense so Next.js can
+// prerender the shell and avoid the missing-suspense-with-csr-bailout error.
+// ---------------------------------------------------------------------------
+
+export default function BookingConfirmPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900">
+          <div className="text-neutral-400 text-sm">Loading confirmation…</div>
+        </main>
+      }
+    >
+      <BookingConfirmContent />
+    </Suspense>
   );
 }
