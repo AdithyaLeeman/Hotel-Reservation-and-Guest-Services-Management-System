@@ -105,10 +105,14 @@ describe('StaffDashboardPage — rendering', () => {
     vi.resetModules();
   });
 
-  it('renders StaffNav', async () => {
+  it('StaffNav is rendered by the staff layout, not the page itself', async () => {
+    // StaffNav was moved to app/staff/layout.tsx so that the 'use client'
+    // rooms page can no longer trigger a 'next/headers' import error.
+    // This unit test renders only the page component (not the layout), so
+    // data-testid="staff-nav" is intentionally absent here.
     mockGetSession.mockResolvedValue(receptionistSession());
     await renderDashboard();
-    expect(screen.getByTestId('staff-nav')).toBeInTheDocument();
+    expect(screen.queryByTestId('staff-nav')).not.toBeInTheDocument();
   });
 
   it('renders the page h1 greeting', async () => {

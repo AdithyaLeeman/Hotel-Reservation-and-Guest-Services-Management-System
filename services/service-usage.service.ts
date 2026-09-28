@@ -114,7 +114,7 @@ export const serviceUsageService = {
    * @throws ServiceUsageServiceError INVALID_QUANTITY if quantity < 1.
    */
   logUsage: async (
-    params: LogServiceUsageInput,
+    params: Omit<LogServiceUsageInput, 'logged_by_employee_id'>,
     employeeId: number
   ): Promise<ServiceUsage> => {
     try {

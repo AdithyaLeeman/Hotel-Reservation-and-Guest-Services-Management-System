@@ -1,7 +1,7 @@
 'use client';
 
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent } from 'react';
 
@@ -210,7 +210,7 @@ function ParamErrorBanner({ errors }: { errors: FormErrors }) {
 // Page component
 // ---------------------------------------------------------------------------
 
-export default function NewReservationPage() {
+function NewReservationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -728,5 +728,24 @@ export default function NewReservationPage() {
         </section>
       </main>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Default export — wraps the client component in Suspense so Next.js can
+// prerender the shell and avoid the missing-suspense-with-csr-bailout error.
+// ---------------------------------------------------------------------------
+
+export default function NewReservationPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900">
+          <div className="text-neutral-400 text-sm">Loading reservation form…</div>
+        </main>
+      }
+    >
+      <NewReservationContent />
+    </Suspense>
   );
 }

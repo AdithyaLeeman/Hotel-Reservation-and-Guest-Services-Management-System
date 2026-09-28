@@ -22,7 +22,6 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import StaffNav from '@/components/StaffNav';
 import RoomForm from '@/components/RoomForm';
 import type { RoomWithDetails } from '@/repositories/room.repository';
 
@@ -269,8 +268,6 @@ export default function StaffRoomsPage() {
 
   return (
     <>
-      <StaffNav />
-
       <main id="main-content" className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
 

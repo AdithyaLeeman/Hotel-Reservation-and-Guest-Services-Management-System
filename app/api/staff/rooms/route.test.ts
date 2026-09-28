@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET, POST } from './route';
 import { roomRepository } from '@/repositories/room.repository';
@@ -14,19 +14,20 @@ describe('GET and POST /api/staff/rooms', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   describe('GET /api/staff/rooms', () => {
     it('returns 401 if unauthenticated', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({} as any);
 
-      // Set NODE_ENV to production temporarily to test unauthenticated rejection
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      // Stub NODE_ENV to 'production' to test unauthenticated rejection
+      vi.stubEnv('NODE_ENV', 'production');
 
       const req = new NextRequest('http://localhost:3000/api/staff/rooms');
       const res = await GET(req);
       const json = await res.json();
-
-      process.env.NODE_ENV = originalEnv;
 
       expect(res.status).toBe(401);
       expect(json.error.code).toBe('NOT_AUTHENTICATED');
