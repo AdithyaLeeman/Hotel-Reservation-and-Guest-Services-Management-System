@@ -76,7 +76,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx`, `app/guest/register/page.test.tsx` | T14 | REVIEW |
 | P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx`, `app/guest/login/page.test.tsx` | T15 | REVIEW |
 | P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx`, `app/staff/login/page.test.tsx` | T17 | REVIEW |
-| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx` | T17 | TODO |
+| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx`, `app/staff/dashboard/page.test.tsx` | T17 | REVIEW |
 
 **Phase 1 Completion Criteria:**
 - `npm run migrate` runs on empty DB, all tables + enums created
