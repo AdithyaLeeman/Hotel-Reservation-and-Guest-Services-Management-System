@@ -31,9 +31,9 @@ function makeSession(
     role: 'Guest',
     ...overrides,
     // iron-session shape extras (not used in guard logic)
-    save: async () => {},
-    destroy: () => {},
-    updateConfig: () => {},
+    save: async () => { },
+    destroy: () => { },
+    updateConfig: () => { },
   } as unknown as IronSession<SessionData>;
 }
 
