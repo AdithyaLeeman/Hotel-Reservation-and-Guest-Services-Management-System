@@ -267,7 +267,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P04-M04-T09 | Service usage repository | 🟡 MOCK-FIRST | `repositories/service-usage.repository.ts` | REVIEW |
 | P04-M04-T10 | Check-in service layer | 🟡 MOCK-FIRST | `services/checkin.service.ts` | REVIEW |
 | P04-M04-T11 | Service usage service layer | 🟡 MOCK-FIRST | `services/service-usage.service.ts` | REVIEW |
-| P04-M04-T12 | POST `/api/staff/reservations/[id]/checkin` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkin/route.ts` | TODO |
+| P04-M04-T12 | POST `/api/staff/reservations/[id]/checkin` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkin/route.ts` | REVIEW |
 | P04-M04-T13 | POST `/api/staff/reservations/[id]/services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/services/route.ts` | TODO |
 | P04-M04-T14 | GET `/api/staff/services` route handler (catalogue list) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | TODO |
 | P04-M04-T15 | POST `/api/staff/services` route handler (add item) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | TODO |
@@ -347,7 +347,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P05-M05-T04 | M5 | `vw_room_occupancy` view | 🔴 SERIAL | `database/views/vw_room_occupancy.sql` | SP3-SP4 done | TODO |
 | P05-M05-T05 | M5 | `vw_guest_billing_summary` view | 🔴 SERIAL | `database/views/vw_guest_billing_summary.sql` | SP4-SP5 done | TODO |
 | P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | TODO |
-| P05-M03-T01 | M3 | `vw_top_services` view | 🔴 SERIAL | `database/views/vw_top_services.sql` | SP4.1 done | TODO |
+| P05-M03-T01 | M3 | `vw_top_services` view | 🔴 SERIAL | `database/views/vw_top_services.sql` | SP4.1 done | REVIEW |
 | P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql` | All tables done | TODO |
 
 ---
@@ -358,8 +358,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|
 | P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` | REVIEW |
 | P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` | REVIEW |
-| P05-M05-T10 | POST `/api/guest/payments` route handler | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` | TODO |
-| P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` | TODO |
+| P05-M05-T10 | POST `/api/guest/payments` route handler | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` | REVIEW |
+| P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` | REVIEW |
 
 ---
 
@@ -370,7 +370,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P05-M02-T02 | M2 | GET `/api/staff/reports/occupancy` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/occupancy/route.ts` | TODO |
 | P05-M05-T12 | M5 | GET `/api/staff/reports/billing` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/billing/route.ts` | TODO |
 | P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | TODO |
-| P05-M03-T02 | M3 | GET `/api/staff/reports/top-services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/top-services/route.ts` | TODO |
+| P05-M03-T02 | M3 | GET `/api/staff/reports/top-services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/top-services/route.ts` | REVIEW |
 
 ---
 

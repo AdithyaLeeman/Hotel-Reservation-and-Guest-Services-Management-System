@@ -25,7 +25,7 @@ function makeParams(id = 'res-uuid-0001'): { params: Promise<{ id: string }> } {
   return { params: Promise.resolve({ id }) };
 }
 
-function mockReceptionistSession(branchId?: number): void {
+function mockReceptionistSession(branchId: number | undefined = 1): void {
   const session: Record<string, unknown> = {
     userId:     'user-mock-staff-001',
     role:       'Receptionist',
@@ -65,10 +65,12 @@ function mockGuestSession(): void {
 describe('POST /api/staff/reservations/[id]/checkout — P05-M05-T11', () => {
   beforeEach(() => {
     paymentRepository._resetMockStore();
-  vi.resetAllMocks();
-  // Restore: use vi.clearAllMocks() to only clear history, keeping implementations stable
-  vi.clearAllMocks();
-
+    vi.resetAllMocks();
+    vi.clearAllMocks();
+    // Default: getSession returns an empty object so resolveSession() does not
+    // fall through to the dev-session stub (which has branchId: 1).
+    // Individual tests override this with a specific session mock.
+    mockedGetSession().mockResolvedValue({} as any);
   });
 
   describe('Authentication', () => {
@@ -101,7 +103,13 @@ describe('POST /api/staff/reservations/[id]/checkout — P05-M05-T11', () => {
 
   describe('RBAC', () => {
     it('returns 403 when Receptionist session is missing branchId', async () => {
-      mockReceptionistSession(undefined);
+      // Provide a Receptionist session explicitly WITHOUT branchId
+      mockedGetSession().mockResolvedValue({
+        userId:     'user-mock-staff-001',
+        role:       'Receptionist',
+        employeeId: 1,
+        // branchId intentionally absent
+      } as any);
 
       const res = await POST(makeReq(), makeParams());
       const json = await res.json();

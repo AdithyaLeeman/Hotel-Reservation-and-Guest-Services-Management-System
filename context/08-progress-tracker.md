@@ -1,23 +1,24 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passing. 2026-09-25._
+_Last updated: 73 tasks complete / reviewed across Phase 1–5. 450 tests passing (38 test suites). 2026-09-28._
 
-## Current Phase: 1 (Foundation & Security) & 2 (Room Inventory & Availability) — Active Parallel Development
+## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
 
 ## Overall Progress
 
 | Phase | Subphases | Tasks | Status | Integration Owner |
 |---|---|---|---|---|
 | P0 — Initialization | — | — | **DONE** | — |
-| P1 — Foundation | SP1.1–SP1.4 | 29 | **IN_PROGRESS** (SP1.1, SP1.2 DDLs, GuestNav DONE; Auth API in REVIEW) | M1 |
-| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | 🟢 **IN_PROGRESS** (SP1.2/SP2.1 DDLs, SP2.3 API & SP2.4 UI pages in REVIEW) | M2 |
-| P3 — Reservations | SP3.1–SP3.6 | 24 | 🟢 **IN_PROGRESS** (SP3.3 API, SP3.4 UI pages & SP3.5 Staff routes in REVIEW) | M3 |
-| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (SP4.3 Service repo & SP4.7 Billing repo in REVIEW) | M4 + M5 |
-| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **IN_PROGRESS** (SP5.4 Payment repo in REVIEW) | M5 |
+| P1 — Foundation | SP1.1–SP1.4 | 29 | **CODE COMPLETE** (All 29 tasks built; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth, SP1.4 UI in REVIEW) | M1 |
+| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **CODE COMPLETE** (All 18 tasks built; SP2.1–SP2.4 in REVIEW; SP2.5 tests pending live DB) | M2 |
+| P3 — Reservations | SP3.1–SP3.6 | 24 | 🟢 **IN_PROGRESS** (SP3.3/SP3.4/SP3.5 API+UI in REVIEW; SP3.1/SP3.2 DB DDLs + SP3.5 UI + SP3.6 tests TODO) | M3 |
+| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (SP4.3 service repos + check-in route REVIEW; SP4.7 billing repos REVIEW; SP4.1/SP4.2/SP4.4 + M5 SP4.5/SP4.6 TODO) | M4 + M5 |
+| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **IN_PROGRESS** (SP5.4 payment+checkout routes REVIEW; SP5.3 vw_top_services REVIEW; most of SP5.5–SP5.7 TODO) | M5 |
 | P6 — Integration & Testing | SP6.1–SP6.5 | 19 | TODO | All |
 
-> **Status Summary:** 51 of 139 tasks implemented in code (36.7% overall completion). All 298 vitest unit/integration tests across 30 test suites are PASSING.
+> **Status Summary:** 73 of 139 tasks implemented in code (52.5% overall completion). All 455 vitest unit/integration tests across 38 test suites PASSING.
+
 
 ## Phase 0 — Completed Tasks
 
@@ -57,8 +58,10 @@ _Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passin
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |
 | SP2.4 — Room UI | T13–T16 | **REVIEW** (M2 availability search page, staff rooms page, cards/forms) |
 | SP3.3 / SP3.4 / SP3.5 — Reservation API & UI | T07–T20 | **REVIEW** (M3 repository, services, API handlers, and UI pages) |
-| SP4.3 / SP4.7 — Service & Billing API | T09–T11 (M4), T05–T06 (M5) | **REVIEW** (M4 & M5 repositories and services) |
-| SP5.4 — Payment API | T08–T09 (M5) | **REVIEW** (M5 payment repository & service) |
+| SP4.3 — Service API (partial) | T09–T12 (M4) | **REVIEW** (M4 service-usage repo, checkin service, service-usage service, checkin route) |
+| SP4.7 — Billing API (partial) | T05–T06 (M5) | **REVIEW** (M5 billing repository & billing service) |
+| SP5.3 — Report Views (partial) | P05-M03-T01 | **REVIEW** (M3 vw_top_services view written; pending live DB execution) |
+| SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
 
 ## Blocked Items
 - `develop` branch creation — **BLOCKED on human manual push.**
@@ -71,10 +74,10 @@ _Last updated: 51 tasks complete / reviewed across Phase 1–5. 298 tests passin
 | Member | Immediate Next Task | Can Start? |
 |---|---|---|
 | M1 | P06-M01-T01 — Wire auth repos to real DB; verify session round-trip | ⏳ After integration branch merge |
-| M2 | P02-M02-T03 — `fn_get_available_rooms` PostgreSQL function | ✅ Draft now |
-| M3 | P03-M03-T14 — Guest booking form page UI | ✅ Now |
-| M4 | P04-M04-T12 — POST `/api/staff/reservations/[id]/checkin` API handler | ✅ Now |
-| M5 | P05-M05-T10 — POST `/api/guest/payments` API route handler | ✅ Now |
+| M2 | P05-M02-T01 — Room occupancy report page (`app/staff/reports/occupancy/page.tsx`) | ✅ Now (mock-first) |
+| M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
+| M4 | P04-M04-T13 — POST `/api/staff/reservations/[id]/services` API handler | ✅ Now (mock-first) |
+| M5 | P04-M05-T07 — GET `/api/guest/reservations/[id]/invoice` route handler | ✅ Now (mock-first) |
 
 ## Recent Decisions
 - Adopt ERD multi-room reservation model (reservation + reservation_rooms)
