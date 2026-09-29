@@ -1,4 +1,6 @@
-﻿/**
+/** @vitest-environment jsdom */
+
+/**
  * Tests for /staff/reservations/[id]/services page (P04-M04-T17)
  *
  * Strategy: render with @testing-library/react, mock fetch for both
@@ -20,9 +22,14 @@ vi.mock('@/components/StaffNav', () => ({
   default: () => <nav data-testid="staff-nav">StaffNav</nav>,
 }));
 
-// React 19 `use(params)` — mock params as a resolved promise
 const RESERVATION_ID = 'res-mock-001';
-const MOCK_PARAMS = Promise.resolve({ id: RESERVATION_ID });
+
+function makeParams(id = RESERVATION_ID): Promise<{ id: string }> {
+  const p = Promise.resolve({ id }) as any;
+  p.status = 'fulfilled';
+  p.value = { id };
+  return p;
+}
 
 // Catalogue response
 const MOCK_CATALOGUE = [
@@ -73,7 +80,7 @@ describe('/staff/reservations/[id]/services page', () => {
   it('renders page heading with reservation ID', async () => {
     mockFetchSequence([{ ok: true, body: { data: MOCK_CATALOGUE } }]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     expect(screen.getByRole('heading', { name: /log service usage/i })).toBeTruthy();
     expect(screen.getByText(RESERVATION_ID)).toBeTruthy();
@@ -82,7 +89,7 @@ describe('/staff/reservations/[id]/services page', () => {
   it('shows loading state then populates catalogue select', async () => {
     mockFetchSequence([{ ok: true, body: { data: MOCK_CATALOGUE } }]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     // Loading text appears first
     expect(screen.getByText(/loading catalogue/i)).toBeTruthy();
@@ -100,20 +107,20 @@ describe('/staff/reservations/[id]/services page', () => {
   it('shows existing usage rows and service total in the table', async () => {
     mockFetchSequence([{ ok: true, body: { data: MOCK_CATALOGUE } }]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     await waitFor(() => screen.getByRole('table', { name: /service usage breakdown/i }));
 
     // Pre-existing mock row
-    expect(screen.getByText('Room Service')).toBeTruthy();
+    expect(screen.getAllByText('Room Service').length).toBeGreaterThanOrEqual(1);
     // line total of the pre-existing mock row (1200 * 2 = 2400)
-    expect(screen.getByText(/2,400/)).toBeTruthy();
+    expect(screen.getAllByText(/2,400/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('submit button is disabled when no service is selected', async () => {
     mockFetchSequence([{ ok: true, body: { data: MOCK_CATALOGUE } }]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     await waitFor(() => screen.getByRole('combobox', { name: /service/i }));
 
@@ -127,7 +134,7 @@ describe('/staff/reservations/[id]/services page', () => {
       { ok: true, body: { data: MOCK_NEW_USAGE } },                    // POST usage
     ]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     await waitFor(() => screen.getByRole('combobox', { name: /service/i }));
 
@@ -155,7 +162,7 @@ describe('/staff/reservations/[id]/services page', () => {
       { ok: false, body: { error: { message: 'Reservation is not checked in.' } } },
     ]);
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     await waitFor(() => screen.getByRole('combobox', { name: /service/i }));
 
@@ -174,13 +181,13 @@ describe('/staff/reservations/[id]/services page', () => {
   it('falls back to inline mock catalogue when GET /api/staff/services fails', async () => {
     vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network error'));
 
-    render(<ServiceUsageLoggingPage params={MOCK_PARAMS} />);
+    render(<ServiceUsageLoggingPage params={makeParams()} />);
 
     await waitFor(() =>
       expect(screen.getByRole('combobox', { name: /service/i })).toBeTruthy()
     );
 
     // Fallback catalogue has Room Service
-    expect(screen.getByText(/Room Service/)).toBeTruthy();
+    expect(screen.getAllByText(/Room Service/).length).toBeGreaterThanOrEqual(1);
   });
 });

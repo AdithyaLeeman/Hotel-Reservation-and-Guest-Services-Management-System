@@ -28,11 +28,13 @@ import type { ServiceCatalogueStatus } from '@/types/enums';
 
 export interface LogServiceUsageInput {
   reservation_id: string;
-  room_id: number;
+  room_id?: number;
   service_id: number;
   quantity: number;
   logged_by_employee_id: number;
   request_channel?: string | null;
+  channel?: string | null;
+  usage_date?: string;
 }
 
 export interface CreateCatalogueItemInput {
@@ -181,14 +183,14 @@ export const serviceUsageRepository = {
     // DO NOT compute charged_price * quantity here — that belongs to vw_service_usage_breakdown.
     const newUsage: ServiceUsage = {
       usage_id: nextUsageId++,
-      room_id: params.room_id,
+      room_id: params.room_id ?? 1,
       reservation_id: params.reservation_id,
       service_id: params.service_id,
-      usage_date: new Date().toISOString().split('T')[0],
+      usage_date: params.usage_date ?? new Date().toISOString().split('T')[0],
       quantity: params.quantity,
       charged_price: catalogueItem.current_price, // price snapshot — immutable after this point
       logged_by_employee_id: params.logged_by_employee_id,
-      request_channel: params.request_channel ?? null,
+      request_channel: params.request_channel ?? params.channel ?? null,
     };
 
     mockUsageRecords.push(newUsage);

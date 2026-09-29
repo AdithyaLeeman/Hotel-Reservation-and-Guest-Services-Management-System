@@ -6,18 +6,19 @@ _Updated at every session boundary. Keep concise. Do not turn into a transcript.
 Phases 1 & 2 Active (Parallel Development across Phase 1–5 in progress)
 
 ## Current Status
-**42 of 139 tasks COMPLETE / IN REVIEW (30.2% overall project completion).** All 220 vitest tests across 23 test files are **PASSING**. Documentation and progress trackers fully synchronized (2026-09-24).
+**80 of 139 tasks COMPLETE / IN REVIEW (57.6% overall project completion).** All 505 vitest tests across 43 test files are **PASSING**. TypeScript check (`tsc --noEmit`) clean with 0 errors. Documentation and progress trackers fully synchronized (2026-09-29).
 
 ## Completed Work
 - `AGENTS.md` — full 19-section development contract
 - `lib/db/` — pool.ts (singleton pg Pool), transaction.ts, migrate.ts (migration runner)
 - `database/migrations/` — 5 DDL migrations (`enums`, `user_account`, `branch`, `employee`, `guest`) + `P01-M01-T07_seed_branches.sql`
+- `database/views/` — `vw_top_services.sql` (P05-M03-T01), `vw_guest_billing_summary.sql` (P05-M05-T05)
 - `lib/auth/` — password.ts (bcryptjs), session.ts (iron-session config/types), rbac.ts helpers
-- `lib/validation/` — auth, room, reservation, payment Zod validation schemas
-- `repositories/` — user, guest, room, availability, reservation, service-usage, billing, payment repositories implemented with unit tests
+- `lib/validation/` — auth, room, reservation, payment, report Zod validation schemas
+- `repositories/` — user, guest, room, availability, reservation, service-usage, billing, billing-report, payment repositories implemented with unit tests
 - `services/` — auth, room, availability, reservation, checkin, service-usage, billing, payment services implemented with unit tests
-- `app/api/` — GET `/api/availability`, GET/POST `/api/staff/rooms`, PATCH `/api/staff/rooms/[id]`, POST/GET `/api/guest/reservations`, POST/GET `/api/staff/reservations`, PATCH `/api/staff/reservations/[id]/cancel`
-- `app/` & `components/` — `/search` availability search page (`RoomCard.tsx`), `/staff/rooms` management page (`RoomForm.tsx`)
+- `app/api/` — GET `/api/availability`, GET/POST `/api/staff/rooms`, PATCH `/api/staff/rooms/[id]`, POST/GET `/api/guest/reservations`, POST/GET `/api/staff/reservations`, PATCH `/api/staff/reservations/[id]/cancel`, POST `/api/staff/reservations/[id]/checkin`, POST `/api/staff/reservations/[id]/services`, GET/POST `/api/staff/services`, POST `/api/guest/payments`, POST `/api/staff/reservations/[id]/checkout`, GET `/api/staff/reports/top-services`, GET `/api/staff/reports/billing`
+- `app/` & `components/` — `/search` availability search page (`RoomCard.tsx`), `/staff/rooms` management page (`RoomForm.tsx`), `/staff/checkin` check-in page, `/staff/reservations/[id]/services` service usage logging page, `/staff/dashboard` staff dashboard, `/guest/login`, `/guest/register`, `/staff/login`, `/guest/reservations/new`, `/guest/book/confirm`
 - Documentation & Trackers — `docs/14_task-tracker.md`, `context/08-progress-tracker.md`, `.agent/current-state.md`, `.agent/members/member-1..5.md` fully synchronized!
 
 ## Human Action Required
@@ -27,7 +28,7 @@ git push -u origin develop
 ```
 
 ## Active Problems
-None. All 220 unit and integration tests passing.
+None. All 505 unit and integration tests passing. TypeScript compilation clean.
 
 ## Key Approved Decisions
 - ERD multi-room reservation model (reservation + reservation_rooms) — D001
