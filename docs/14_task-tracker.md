@@ -164,8 +164,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P03-M03-T01 | `reservation` table DDL | 🔴 SERIAL | `database/migrations/P03-M03-T01-01_create_reservation.sql` | P01-M01-T09, P01-M01-T07, P01-M01-T08 DB done | TODO |
-| P03-M03-T02 | `reservation_rooms` table DDL | 🔴 SERIAL | `database/migrations/P03-M03-T02-01_create_reservation_rooms.sql` | T01 + P02-M02-T01 DB done | TODO |
+| P03-M03-T01 | `reservation` table DDL | 🔴 SERIAL | `database/migrations/P03-M03-T01-01_create_reservation.sql` | P01-M01-T09, P01-M01-T07, P01-M01-T08 DB done | REVIEW |
+| P03-M03-T02 | `reservation_rooms` table DDL | 🔴 SERIAL | `database/migrations/P03-M03-T02-01_create_reservation_rooms.sql` | T01 + P02-M02-T01 DB done | REVIEW |
 
 ---
 
@@ -173,10 +173,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P03-M03-T03 | `sp_create_reservation()` atomic procedure | 🔴 SERIAL | `database/routines/reservations/sp_create_reservation.sql` | SP3.1 + SP2.2 done | TODO |
-| P03-M03-T04 | `fn_get_reservation_detail()` function | 🔴 SERIAL | `database/routines/reservations/fn_get_reservation_detail.sql` | SP3.1 done | TODO |
-| P03-M03-T05 | `sp_cancel_reservation()` stored procedure | 🔴 SERIAL | `database/routines/reservations/sp_cancel_reservation.sql` | SP3.1 done | TODO |
-| P03-M03-T06 | `vw_active_reservations` DB view | 🔴 SERIAL | `database/views/vw_active_reservations.sql` | SP3.1 done | TODO |
+| P03-M03-T03 | `sp_create_reservation()` atomic procedure | 🔴 SERIAL | `database/routines/reservations/sp_create_reservation.sql` | SP3.1 + SP2.2 done | REVIEW |
+| P03-M03-T04 | `fn_get_reservation_detail()` function | 🔴 SERIAL | `database/routines/reservations/fn_get_reservation_detail.sql` | SP3.1 done | REVIEW |
+| P03-M03-T05 | `sp_cancel_reservation()` stored procedure | 🔴 SERIAL | `database/routines/reservations/sp_cancel_reservation.sql` | SP3.1 done | REVIEW |
+| P03-M03-T06 | `vw_active_reservations` DB view | 🔴 SERIAL | `database/views/vw_active_reservations.sql` | SP3.1 done | REVIEW |
 
 ---
 
@@ -212,7 +212,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P03-M03-T18 | POST `/api/staff/reservations` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | REVIEW |
 | P03-M03-T19 | GET `/api/staff/reservations` route handler (list + filters) | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` | REVIEW |
 | P03-M03-T20 | PATCH `/api/staff/reservations/[id]/cancel` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/cancel/route.ts` | REVIEW |
-| P03-M03-T21 | Staff reservations list page | 🟡 MOCK-FIRST | `app/staff/reservations/page.tsx` | TODO |
+| P03-M03-T21 | Staff reservations list page | 🟡 MOCK-FIRST | `app/staff/reservations/page.tsx` | REVIEW |
 | P03-M03-T22 | Staff reservation detail page | 🟡 MOCK-FIRST | `app/staff/reservations/[id]/page.tsx` | TODO |
 
 ---
@@ -221,8 +221,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T23 | Ownership enforcement tests | 🔴 SERIAL | `database/tests/test_ownership.sql` | SP3.1 done | TODO |
-| P03-M03-T24 | Concurrent double-booking prevention test | 🔴 SERIAL | `database/tests/test_concurrency.sql` | SP3.2 done | TODO |
+| P03-M03-T23 | Ownership enforcement tests | 🔴 SERIAL | `database/tests/test_ownership.sql` | REVIEW |
+| P03-M03-T24 | Concurrent double-booking prevention test | 🔴 SERIAL | `database/tests/test_concurrency.sql` | REVIEW |
 
 **Phase 3 Completion Criteria:**
 - Booking creates both `reservation` and `reservation_rooms` atomically
@@ -242,9 +242,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M04-T01 | `service_catalogue` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T01-01_create_service_catalogue.sql` | SP3.1 done | TODO |
-| P04-M04-T02 | Seed 6 service catalogue items | 🔴 SERIAL | `database/seeds/P04-M04-T02_seed_services.sql` | T01 | TODO |
-| P04-M04-T03 | `service_usage` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T03-01_create_service_usage.sql` | T01, SP3.1 done | TODO |
+| P04-M04-T01 | `service_catalogue` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T01-01_create_service_catalogue.sql` | SP3.1 done | REVIEW |
+| P04-M04-T02 | Seed 6 service catalogue items | 🔴 SERIAL | `database/seeds/P04-M04-T02_seed_services.sql` | T01 | REVIEW |
+| P04-M04-T03 | `service_usage` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T03-01_create_service_usage.sql` | T01, SP3.1 done | REVIEW |
 
 ---
 
@@ -346,7 +346,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P05-M05-T04 | M5 | `vw_room_occupancy` view | 🔴 SERIAL | `database/views/vw_room_occupancy.sql` | SP3-SP4 done | TODO |
 | P05-M05-T05 | M5 | `vw_guest_billing_summary` view | 🔴 SERIAL | `database/views/vw_guest_billing_summary.sql` | SP4-SP5 done | REVIEW |
-| P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | TODO |
+| P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | REVIEW |
 | P05-M03-T01 | M3 | `vw_top_services` view | 🔴 SERIAL | `database/views/vw_top_services.sql` | SP4.1 done | REVIEW |
 | P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql` | All tables done | TODO |
 
@@ -369,7 +369,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P05-M02-T02 | M2 | GET `/api/staff/reports/occupancy` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/occupancy/route.ts` | TODO |
 | P05-M05-T12 | M5 | GET `/api/staff/reports/billing` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/billing/route.ts` | REVIEW |
-| P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | TODO |
+| P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | REVIEW |
 | P05-M03-T02 | M3 | GET `/api/staff/reports/top-services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/top-services/route.ts` | REVIEW |
 
 ---
@@ -389,7 +389,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | TODO |
 | P05-M02-T01 | M2 | Room occupancy report page | 🟡 MOCK-FIRST | `app/staff/reports/occupancy/page.tsx` | TODO |
-| P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | TODO |
+| P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | REVIEW |
 | P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | TODO |
 | P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | TODO |
 
