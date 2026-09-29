@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /**
  * Tests for /staff/reports/service-usage page (P05-M04-T01)
  *
