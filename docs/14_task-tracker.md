@@ -307,7 +307,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|
 | P04-M05-T05 | Billing repository | 🟡 MOCK-FIRST | `repositories/billing.repository.ts` | REVIEW |
 | P04-M05-T06 | Billing service layer | 🟡 MOCK-FIRST | `services/billing.service.ts` | REVIEW |
-| P04-M05-T07 | GET `/api/guest/reservations/[id]/invoice` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/invoice/route.ts` | TODO |
+| P04-M05-T07 | GET `/api/guest/reservations/[id]/invoice` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/invoice/route.ts` | REVIEW |
 
 **Phase 4 Completion Criteria:**
 - `vw_invoice_totals` returns LKR 26920 grand total for test scenario
@@ -378,8 +378,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P05-M05-T14 | Guest bill + pay form page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/pay/page.tsx` | TODO |
-| P05-M05-T15 | Payment success/confirmation component | 🟢 PARALLEL | `components/PaymentConfirmation.tsx` | TODO |
+| P05-M05-T14 | Guest bill + pay form page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/pay/page.tsx` | REVIEW |
+| P05-M05-T15 | Payment success/confirmation component | 🟢 PARALLEL | `components/PaymentConfirmation.tsx` | REVIEW |
 
 ---
 

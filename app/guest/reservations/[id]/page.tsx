@@ -558,6 +558,47 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
         </div>
       </div>
 
+      {/* ── Billing & Payment CTA card ───────────────────────────────────── */}
+      <div
+        id="reservation-billing-card"
+        className="
+          bg-white dark:bg-neutral-900
+          border border-neutral-200 dark:border-neutral-700
+          rounded-2xl shadow-sm overflow-hidden
+        "
+      >
+        <div className="h-2 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500" aria-hidden="true" />
+
+        <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+              Billing &amp; Payments
+            </h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+              View your itemized invoice breakdown, taxes, payment history, and settle outstanding balances online.
+            </p>
+          </div>
+
+          <Link
+            href={`/guest/reservations/${detail.reservation_id}/pay`}
+            id="detail-pay-bill-btn"
+            className="
+              inline-flex items-center gap-2 flex-shrink-0
+              px-5 py-2.5 rounded-xl
+              bg-blue-600 hover:bg-blue-700
+              text-white text-sm font-semibold
+              shadow-sm shadow-blue-500/20
+              transition-colors duration-200
+            "
+          >
+            <span>View Bill &amp; Pay</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+
     </div>
   );
 }
