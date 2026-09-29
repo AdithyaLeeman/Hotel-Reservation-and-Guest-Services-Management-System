@@ -1,4 +1,6 @@
-﻿/**
+/** @vitest-environment jsdom */
+
+/**
  * Tests for /staff/checkin page (P04-M04-T16)
  *
  * Strategy: render the page with @testing-library/react, interact with the
@@ -118,6 +120,7 @@ describe('/staff/checkin page', () => {
     fireEvent.click(screen.getByRole('button', { name: /search/i }));
 
     await act(async () => { vi.runAllTimers(); });
+    vi.useRealTimers();
 
     fireEvent.click(screen.getByRole('button', { name: /confirm check-in/i }));
 
@@ -136,6 +139,7 @@ describe('/staff/checkin page', () => {
     fireEvent.click(screen.getByRole('button', { name: /search/i }));
 
     await act(async () => { vi.runAllTimers(); });
+    vi.useRealTimers();
 
     fireEvent.click(screen.getByRole('button', { name: /confirm check-in/i }));
 

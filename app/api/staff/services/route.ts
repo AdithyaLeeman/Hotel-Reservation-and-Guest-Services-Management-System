@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Route: GET /api/staff/services  +  POST /api/staff/services
  *
  * GET  — Returns all Active service catalogue items (any staff role).
@@ -95,11 +95,11 @@ function isManagementRole(role: string | undefined): role is ManagementRole {
 // ---------------------------------------------------------------------------
 const AddCatalogueItemBody = z.object({
   service_name: z
-    .string({ required_error: 'service_name is required.' })
+    .string({ error: 'service_name is required.' })
     .min(1, 'service_name must not be empty.')
     .max(100, 'service_name must be 100 characters or fewer.'),
   current_price: z
-    .number({ required_error: 'current_price is required.' })
+    .number({ error: 'current_price is required.' })
     .nonnegative('current_price must be zero or positive.'),
   status: z.enum(['Active', 'Inactive']).optional().default('Active'),
 });
@@ -163,7 +163,10 @@ export async function POST(
   }
 
   try {
-    const item = await serviceUsageService.addCatalogueItem(parsed.data);
+    const item = await serviceUsageService.addCatalogueItem({
+      ...parsed.data,
+      current_price: String(parsed.data.current_price),
+    });
     return ok(item, 201);
   } catch (error) {
     if (error instanceof ServiceUsageServiceError) {

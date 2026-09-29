@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Route: POST /api/staff/reservations/[id]/services
  *
  * Logs a service usage entry against a checked-in reservation.
@@ -88,15 +88,15 @@ function isStaffRole(role: string | undefined): role is StaffRole {
 // ---------------------------------------------------------------------------
 const LogServiceUsageBody = z.object({
   service_id: z
-    .number({ required_error: 'service_id is required.' })
+    .number({ error: 'service_id is required.' })
     .int()
     .positive(),
   quantity: z
-    .number({ required_error: 'quantity is required.' })
+    .number({ error: 'quantity is required.' })
     .int()
     .min(1, 'Quantity must be at least 1.'),
   usage_date: z
-    .string({ required_error: 'usage_date is required.' })
+    .string({ error: 'usage_date is required.' })
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'usage_date must be in YYYY-MM-DD format.'),
   channel: z
     .enum(['RoomService', 'FrontDesk', 'Online'])
