@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { ZodError } from 'zod';
 import {
   GuestRegisterSchema,
   GuestLoginSchema,
@@ -203,24 +204,10 @@ describe('flattenZodErrors', () => {
   });
 
   it('returns an empty record when there are no field errors', () => {
-    const result = GuestRegisterSchema.safeParse({
-      username: 'valid_user',
-      password: 'ValidPass!',
-      email: 'user@example.com',
-      full_name: 'Valid Name',
-    });
-    // This should pass — just verifying flattenZodErrors handles empty correctly
-    // by constructing a synthetic empty ZodError scenario via a type-narrowed
-    // parse of a valid schema with an impossible refinement
-    const { z } = require('zod');
-    const always_fail = z.string().refine(() => false, 'always fails');
-    const bad = always_fail.safeParse('trigger');
-    if (!bad.success) {
-      const { ZodError } = require('zod');
-      // Construct a ZodError with no fieldErrors
-      const fakeError = new ZodError([]);
-      const errors = flattenZodErrors(fakeError);
-      expect(errors).toEqual({});
-    }
+    // Construct a ZodError with no field-level issues to confirm flattenZodErrors
+    // returns an empty record rather than throwing or returning unexpected keys.
+    const fakeError = new ZodError([]);
+    const errors = flattenZodErrors(fakeError);
+    expect(errors).toEqual({});
   });
 });
