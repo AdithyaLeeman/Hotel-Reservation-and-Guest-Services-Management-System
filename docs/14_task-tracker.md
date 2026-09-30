@@ -97,8 +97,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | REVIEW |
-| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | REVIEW |
+| P02-M02-T01 | `room` table DDL + RoomStatus enum | 🔴 SERIAL | `database/migrations/P02-M02-T01-01_create_room.sql` | P01-M01-T07, P01-M02-T01 DB done | DONE |
+| P02-M02-T02 | Seed 15 rooms across 3 branches | 🔴 SERIAL | `database/seeds/P02-M02-T02_seed_rooms.sql` | T01 | DONE |
 
 ---
 
@@ -106,8 +106,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | REVIEW |
-| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | REVIEW |
+| P02-M02-T03 | `fn_get_available_rooms()` PostgreSQL function | 🔴 SERIAL | `database/routines/availability/fn_get_available_rooms.sql` | SP2.1 + P03-M03-T02 DB done | DONE |
+| P02-M02-T04 | Composite index on `reservation_rooms` dates | 🔴 SERIAL | `database/indexes/idx_reservation_rooms_dates.sql` | P03-M03-T02 DB done | DONE |
 
 > **Note:** Write the SQL file now; execute after P03-M03-T02 is merged.
 
@@ -117,14 +117,14 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | REVIEW |
-| P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | REVIEW |
-| P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | REVIEW |
-| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | REVIEW |
-| P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | REVIEW |
-| P02-M02-T10 | GET `/api/staff/rooms` route handler (list) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | REVIEW |
-| P02-M02-T11 | POST `/api/staff/rooms` route handler (create) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | REVIEW |
-| P02-M02-T12 | PATCH `/api/staff/rooms/[id]` route handler (update status) | 🟡 MOCK-FIRST | `app/api/staff/rooms/[id]/route.ts` | REVIEW |
+| P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | DONE |
+| P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | DONE |
+| P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | DONE |
+| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | DONE |
+| P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | DONE |
+| P02-M02-T10 | GET `/api/staff/rooms` route handler (list) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | DONE |
+| P02-M02-T11 | POST `/api/staff/rooms` route handler (create) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | DONE |
+| P02-M02-T12 | PATCH `/api/staff/rooms/[id]` route handler (update status) | 🟡 MOCK-FIRST | `app/api/staff/rooms/[id]/route.ts` | DONE |
 
 ---
 
@@ -132,10 +132,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T13 | Public availability search page | 🟡 MOCK-FIRST | `app/search/page.tsx` | REVIEW |
-| P02-M02-T14 | Room card component (search result item) | 🟢 PARALLEL | `components/RoomCard.tsx` | REVIEW |
-| P02-M02-T15 | Staff rooms list page | 🟡 MOCK-FIRST | `app/staff/rooms/page.tsx` | REVIEW |
-| P02-M02-T16 | Staff room form/edit component | 🟢 PARALLEL | `components/RoomForm.tsx` | REVIEW |
+| P02-M02-T13 | Public availability search page | 🟡 MOCK-FIRST | `app/search/page.tsx` | DONE |
+| P02-M02-T14 | Room card component (search result item) | 🟢 PARALLEL | `components/RoomCard.tsx` | DONE |
+| P02-M02-T15 | Staff rooms list page | 🟡 MOCK-FIRST | `app/staff/rooms/page.tsx` | DONE |
+| P02-M02-T16 | Staff room form/edit component | 🟢 PARALLEL | `components/RoomForm.tsx` | DONE |
 
 ---
 
@@ -143,8 +143,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | REVIEW |
-| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md`, `database/tests/explain_analyze_availability.sql` | REVIEW (script + expected plan written; actual output pending live DB) |
+| P02-M02-T17 | Availability function tests (maintenance excluded, overlap excluded) | 🔴 SERIAL | `database/tests/test_availability.sql` | DONE |
+| P02-M02-T18 | EXPLAIN ANALYZE for availability query | 🔴 SERIAL | `docs/09_database-routines-triggers-views-indexes.md`, `database/tests/explain_analyze_availability.sql` | DONE |
 
 **Phase 2 Completion Criteria:**
 - Availability search returns correct rooms for test scenarios
@@ -367,7 +367,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
-| P05-M02-T02 | M2 | GET `/api/staff/reports/occupancy` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/occupancy/route.ts` | TODO |
+| P05-M02-T02 | M2 | GET `/api/staff/reports/occupancy` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/occupancy/route.ts` | DONE |
 | P05-M05-T12 | M5 | GET `/api/staff/reports/billing` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/billing/route.ts` | REVIEW |
 | P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | REVIEW |
 | P05-M03-T02 | M3 | GET `/api/staff/reports/top-services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/top-services/route.ts` | REVIEW |
