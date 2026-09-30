@@ -348,7 +348,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P05-M05-T05 | M5 | `vw_guest_billing_summary` view | 🔴 SERIAL | `database/views/vw_guest_billing_summary.sql` | SP4-SP5 done | REVIEW |
 | P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | REVIEW |
 | P05-M03-T01 | M3 | `vw_top_services` view | 🔴 SERIAL | `database/views/vw_top_services.sql` | SP4.1 done | REVIEW |
-| P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql` | All tables done | TODO |
+| P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql`, `database/migrations/P05-M05-T07-01_create_reservation_audit_log.sql`, `database/triggers/trg_audit_reservation_status.sql` | All tables done | REVIEW |
 
 ---
 

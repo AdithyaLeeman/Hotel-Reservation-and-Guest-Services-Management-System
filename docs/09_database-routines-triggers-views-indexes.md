@@ -190,11 +190,21 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ## Triggers
 
 ### `trg_audit_reservation_status`
-**Purpose:** Log reservation status changes to an audit table.
+**Purpose:** Log reservation status changes to `reservation_audit_log` for the audit trail.
 **File:** `database/triggers/trg_audit_reservation_status.sql`
-**Status:** TODO (design decision: audit table schema TBD)
-**Fires:** AFTER UPDATE OF reservation_status ON reservation FOR EACH ROW
-**Lecture alignment:** L08 (trigger, FOR EACH ROW)
+**Trigger function:** `fn_trg_audit_reservation_status()`
+**Status:** REVIEW (P05-M05-T07)
+**Fires:** `AFTER UPDATE OF reservation_status ON reservation FOR EACH ROW`
+**Skips:** Rows where `NEW.reservation_status = OLD.reservation_status` (no-op guard)
+**Security:** `SECURITY DEFINER` — runs as owner to guarantee INSERT access
+
+**Actor attribution (session variables, set with `SET LOCAL` inside SP/route transaction):**
+- `app.current_user_id` — UUID of the authenticated user
+- `app.current_employee_id` — BIGINT of the employee (NULL for guest-initiated changes)
+- `app.audit_reason` — optional human-readable reason string
+
+**Backed by table:** `reservation_audit_log` (created in `P05-M05-T07-01_create_reservation_audit_log.sql`)
+**Lecture alignment:** L08 (trigger, FOR EACH ROW, AFTER UPDATE, TG_ variables, SECURITY DEFINER)
 
 ---
 
