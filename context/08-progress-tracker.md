@@ -64,10 +64,11 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | SP4.1 — Service Schema | T01–T03 | **REVIEW** (M4 service_catalogue, service_usage DDLs, 6 catalogue seeds) |
 | SP4.3 — Service API | T09–T15 (M4) | **REVIEW** (M4 service-usage repo, checkin service, service-usage service, checkin route, services GET/POST route) |
 | SP4.4 — Service UI | T16–T17 (M4) | **REVIEW** (M4 staff checkin page, service usage logging page) |
-| SP4.7 — Billing API (partial) | T05–T06 (M5) | **REVIEW** (M5 billing repository & billing service) |
-| SP5.3 — Report Views (partial) | P05-M05-T05..T06, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary & vw_monthly_revenue, M3 vw_top_services views written) |
+| SP4.7 — Billing API | T05–T07 (M5) | **REVIEW** (M5 billing repository, billing service, guest invoice route) |
+| SP5.3 — Report Views (partial) | P05-M05-T05..T07, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary, vw_monthly_revenue, vw_audit_log + reservation_audit_log DDL + trg_audit_reservation_status; M3 vw_top_services) |
 | SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
 | SP5.5 — Reports API (partial) | P05-M05-T12..T13, P05-M03-T02 | **REVIEW** (M5 billing & revenue report routes; M3 top-services report route) |
+| SP5.6 — Payment UI | T14–T15 (M5) | **REVIEW** (M5 guest bill & pay form page, payment confirmation component) |
 | SP5.7 — Reports UI (partial) | P05-M04-T01 | **REVIEW** (M4 staff service-usage report UI page) |
 
 ## Blocked Items
@@ -84,7 +85,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | M2 | P05-M02-T01 — Room occupancy report page (`app/staff/reports/occupancy/page.tsx`) | ✅ Now (mock-first) |
 | M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
 | M4 | P04-M04-T01..T03 — `service_catalogue` / `service_usage` table DDLs | ⏳ After Phase 3 DB executed |
-| M5 | P04-M05-T07 — GET `/api/guest/reservations/[id]/invoice` route handler | ✅ Now (mock-first) |
+| M5 | P05-M05-T16 — Reports dashboard page (`app/staff/reports/page.tsx`) | ✅ Now (mock-first) |
 
 ## Recent Decisions
 - Adopt ERD multi-room reservation model (reservation + reservation_rooms)
