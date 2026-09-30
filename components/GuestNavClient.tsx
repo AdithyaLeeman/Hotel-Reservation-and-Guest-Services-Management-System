@@ -27,24 +27,20 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  /* ── Initialise theme from localStorage — lazy initializer avoids useEffect ── */
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const stored = localStorage.getItem('skynest-theme');
+    if (stored === 'dark') return true;
+    if (stored === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const [loggingOut, setLoggingOut] = useState(false);
   const menuId = useId();
 
-  /* ── Initialise theme from localStorage on mount ── */
-  useEffect(() => {
-    const stored = localStorage.getItem('skynest-theme');
-    if (stored === 'dark') {
-      setIsDark(true);
-    } else if (stored === 'light') {
-      setIsDark(false);
-    } else {
-      setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-  }, []);
-
   /* ── Close mobile menu on route change ── */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting local UI state on navigation is a side-effect response to pathname, not cascading render
     setMenuOpen(false);
   }, [pathname]);
 

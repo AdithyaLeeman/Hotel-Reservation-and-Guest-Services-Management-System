@@ -10,7 +10,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | Phase | Subphases | Tasks | Status | Integration Owner |
 |---|---|---|---|---|
 | P0 — Initialization | — | — | **DONE** | — |
-| P1 — Foundation | SP1.1–SP1.4 | 29 | **CODE COMPLETE** (All 29 tasks built; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth, SP1.4 UI in REVIEW) | M1 |
+| P1 — Foundation | SP1.1–SP1.4 | 29 | **DONE** (All 29 tasks built and reviewed; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth DONE; SP1.4 UI DONE — code-reviewed 2026-09-30) | M1 |
 | P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **CODE COMPLETE** (All 18 tasks built; SP2.1–SP2.4 in REVIEW; SP2.5 tests written) | M2 |
 | P3 — Reservations | SP3.1–SP3.6 | 24 | **NEARLY COMPLETE** (23 of 24 tasks built: SP3.1 DDLs, SP3.2 routines, SP3.3–SP3.5 API+UI, SP3.6 tests in REVIEW; T22 TODO) | M3 |
 | P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (14 of 27 tasks built: SP4.1 DDLs, SP4.3 service APIs, SP4.4 service UIs, SP4.7 billing repo/service in REVIEW) | M4 + M5 |
@@ -51,8 +51,8 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 |---|---|---|
 | SP1.1 — DB Infrastructure | T01–T04 | **DONE** (M1) |
 | SP1.2 — Core Schema DDL | T05–T09 (M1), T01–T04 (M2) | **DONE** (All M1 & M2 core DDLs & seed SQL files written) |
-| SP1.3 — Auth System | T10–T21 | **IN_PROGRESS** (T10, T11, T14-T21 DONE; T12, T13 in REVIEW) |
-| SP1.4 — UI Shell | T22–T29 | **REVIEW** (T22, T23, T24 DONE; T25, T26, T27, T28, T29 all in REVIEW — SP1.4 complete) |
+| SP1.3 — Auth System | T10–T21 | **DONE** (All tasks DONE; code review completed 2026-09-30; 546/546 tests pass; lint clean) |
+| SP1.4 — UI Shell | T22–T29 | **DONE** (All tasks DONE; code review completed 2026-09-30; GuestNavClient lint fixed; layout.tsx cleaned) |
 | SP2.1 — Room Schema | T01–T02 | **REVIEW** (M2 room table DDL & 15-room seeds) |
 | SP2.2 — Availability DB | T03–T04, T17 | **REVIEW** (M2 fn_get_available_rooms, indexes, test suite) |
 | SP2.3 — Room API | T05–T12 | **REVIEW** (M2 repository, services, API routes) |

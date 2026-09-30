@@ -52,8 +52,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P01-M01-T10 | bcrypt password hashing utility | 🟢 PARALLEL | `lib/auth/password.ts` | — | DONE |
 | P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | — | DONE |
-| P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | REVIEW |
-| P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | REVIEW |
+| P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | DONE |
+| P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | DONE |
 | P01-M01-T14 | Guest registration API route | 🟡 MOCK-FIRST | `app/api/guest/register/route.ts` | T13 | DONE |
 | P01-M01-T15 | Guest login API route | 🟡 MOCK-FIRST | `app/api/guest/login/route.ts` | T13 | DONE |
 | P01-M01-T16 | Guest logout API route | 🟢 PARALLEL | `app/api/guest/logout/route.ts` | T11 | DONE |
@@ -72,11 +72,11 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | — | DONE |
 | P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | DONE |
 | P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | DONE |
-| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx`, `components/StaffNavClient.tsx`, `components/StaffNavClient.test.tsx` | T22 | REVIEW |
-| P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx`, `app/guest/register/page.test.tsx` | T14 | REVIEW |
-| P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx`, `app/guest/login/page.test.tsx` | T15 | REVIEW |
-| P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx`, `app/staff/login/page.test.tsx` | T17 | REVIEW |
-| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx`, `app/staff/dashboard/page.test.tsx` | T17 | REVIEW |
+| P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx`, `components/StaffNavClient.tsx`, `components/StaffNavClient.test.tsx` | T22 | DONE |
+| P01-M01-T26 | Guest register page UI | 🟡 MOCK-FIRST | `app/guest/register/page.tsx`, `app/guest/register/page.test.tsx` | T14 | DONE |
+| P01-M01-T27 | Guest login page UI | 🟡 MOCK-FIRST | `app/guest/login/page.tsx`, `app/guest/login/page.test.tsx` | T15 | DONE |
+| P01-M01-T28 | Staff login page UI | 🟡 MOCK-FIRST | `app/staff/login/page.tsx`, `app/staff/login/page.test.tsx` | T17 | DONE |
+| P01-M01-T29 | Staff dashboard skeleton | 🟡 MOCK-FIRST | `app/staff/dashboard/page.tsx`, `app/staff/dashboard/page.test.tsx` | T17 | DONE |
 
 **Phase 1 Completion Criteria:**
 - `npm run migrate` runs on empty DB, all tables + enums created
