@@ -327,7 +327,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P05-M05-T01 | `payment` table DDL | 🔴 SERIAL | `database/migrations/P05-M05-T01-01_create_payment.sql` | SP4.5 done | TODO |
+| P05-M05-T01 | `payment` table DDL | 🔴 SERIAL | `database/migrations/P05-M05-T01-01_create_payment.sql` | SP4.5 done | IN_PROGRESS |
 
 ---
 
