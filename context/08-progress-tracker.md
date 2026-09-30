@@ -65,7 +65,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | SP4.3 — Service API | T09–T15 (M4) | **REVIEW** (M4 service-usage repo, checkin service, service-usage service, checkin route, services GET/POST route) |
 | SP4.4 — Service UI | T16–T17 (M4) | **REVIEW** (M4 staff checkin page, service usage logging page) |
 | SP4.7 — Billing API | T05–T07 (M5) | **REVIEW** (M5 billing repository, billing service, guest invoice route) |
-| SP5.3 — Report Views (partial) | P05-M05-T05..T06, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary & vw_monthly_revenue, M3 vw_top_services views written) |
+| SP5.3 — Report Views (partial) | P05-M05-T05..T07, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary, vw_monthly_revenue, vw_audit_log + reservation_audit_log DDL + trg_audit_reservation_status; M3 vw_top_services) |
 | SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
 | SP5.5 — Reports API (partial) | P05-M05-T12..T13, P05-M03-T02 | **REVIEW** (M5 billing & revenue report routes; M3 top-services report route) |
 | SP5.6 — Payment UI | T14–T15 (M5) | **REVIEW** (M5 guest bill & pay form page, payment confirmation component) |

@@ -34,8 +34,9 @@ P02-M02-T01-01_create_room.sql
 # P04-M05-T01-01_create_tax_policies.sql
 # P04-M05-T02-01_create_billing_summary.sql
 
-# Phase 5 — Payments
+# Phase 5 — Payments and Audit
 # P05-M05-T01-01_create_payment.sql
+# P05-M05-T07-01_create_reservation_audit_log.sql
 ```
 
 ## Merge Conflict Rules
