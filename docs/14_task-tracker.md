@@ -252,11 +252,11 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M04-T04 | `sp_check_in()` atomic procedure | 🔴 SERIAL | `database/routines/checkin/sp_check_in.sql` | SP4.1 done | TODO |
-| P04-M04-T05 | `sp_log_service_usage()` procedure (price snapshot) | 🔴 SERIAL | `database/routines/billing-inputs/sp_log_service_usage.sql` | SP4.1 done | TODO |
-| P04-M04-T06 | `fn_calc_room_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_room_charges.sql` | SP3.1 done | TODO |
-| P04-M04-T07 | `fn_calc_service_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_service_charges.sql` | SP4.1 done | TODO |
-| P04-M04-T08 | `vw_service_usage_breakdown` view | 🔴 SERIAL | `database/views/vw_service_usage_breakdown.sql` | SP4.1 done | TODO |
+| P04-M04-T04 | `sp_check_in()` atomic procedure | 🔴 SERIAL | `database/routines/checkin/sp_check_in.sql` | SP4.1 done | REVIEW |
+| P04-M04-T05 | `sp_log_service_usage()` procedure (price snapshot) | 🔴 SERIAL | `database/routines/billing-inputs/sp_log_service_usage.sql` | SP4.1 done | REVIEW |
+| P04-M04-T06 | `fn_calc_room_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_room_charges.sql` | SP3.1 done | REVIEW |
+| P04-M04-T07 | `fn_calc_service_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_service_charges.sql` | SP4.1 done | REVIEW |
+| P04-M04-T08 | `vw_service_usage_breakdown` view | 🔴 SERIAL | `database/views/vw_service_usage_breakdown.sql` | SP4.1 done | REVIEW |
 
 ---
 
