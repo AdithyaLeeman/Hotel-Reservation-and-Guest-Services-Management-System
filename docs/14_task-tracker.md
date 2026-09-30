@@ -335,7 +335,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P05-M05-T02 | `sp_post_payment()` procedure + idempotency check | 🔴 SERIAL | `database/routines/payments/sp_post_payment.sql` | SP5.1 done | TODO |
+| P05-M05-T02 | `sp_post_payment()` procedure + idempotency check | 🔴 SERIAL | `database/routines/payments/sp_post_payment.sql` | SP5.1 done | IN_PROGRESS |
 | P05-M05-T03 | `sp_checkout()` procedure (balance guard + room release) | 🔴 SERIAL | `database/routines/checkout/sp_checkout.sql` | SP5.1 done | TODO |
 
 ---
