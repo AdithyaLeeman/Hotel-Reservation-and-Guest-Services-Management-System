@@ -287,8 +287,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M05-T01 | `tax_policies` table DDL + seed 8% rate | 🔴 SERIAL | `database/migrations/P04-M05-T01-01_create_tax_policies.sql`, `database/seeds/P04-M05-T01_seed_tax.sql` | SP3.1 done | TODO |
-| P04-M05-T02 | `billing_summary` table DDL | 🔴 SERIAL | `database/migrations/P04-M05-T02-01_create_billing_summary.sql` | SP3.1 done | TODO |
+| P04-M05-T01 | `tax_policies` table DDL + seed 8% rate | 🔴 SERIAL | `database/migrations/P04-M05-T01-01_create_tax_policies.sql`, `database/seeds/P04-M05-T01_seed_tax.sql` | SP3.1 done | DONE |
+| P04-M05-T02 | `billing_summary` table DDL | 🔴 SERIAL | `database/migrations/P04-M05-T02-01_create_billing_summary.sql` | SP3.1 done | DONE |
 
 ---
 
@@ -387,11 +387,11 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
-| P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | TODO |
+| P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | REVIEW |
 | P05-M02-T01 | M2 | Room occupancy report page | 🟡 MOCK-FIRST | `app/staff/reports/occupancy/page.tsx`, `app/staff/reports/occupancy/page.test.tsx` | REVIEW |
 | P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | REVIEW |
-| P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | TODO |
-| P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | TODO |
+| P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | REVIEW |
+| P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | REVIEW |
 
 **Phase 5 Completion Criteria:**
 - Partial payment → balance decreases; full payment → balance = 0
