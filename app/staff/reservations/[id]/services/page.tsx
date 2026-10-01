@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Page: /staff/reservations/[id]/services
  *
  * Service Usage Logging page — allows Receptionist/Manager/Admin to:
@@ -34,7 +34,6 @@
 
 import { useState, useEffect, useTransition, use } from 'react';
 import Link from 'next/link';
-import StaffNav from '@/components/StaffNav';
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 
@@ -138,7 +137,7 @@ export default function ServiceUsageLoggingPage({
     fetch('/api/staff/services')
       .then((r) => r.json())
       .then((json) => {
-        setCatalogue((json as any).data ?? []);
+        setCatalogue((json as { data?: CatalogueItem[] }).data ?? []);
       })
       .catch(() => {
         // Fallback mock catalogue if fetch fails (dev mode)
@@ -187,7 +186,7 @@ export default function ServiceUsageLoggingPage({
 
         if (res.ok) {
           const json = await res.json();
-          const newUsage = (json as any).data;
+          const newUsage = (json as { data?: { usage_id?: string; charged_price?: number } }).data;
 
           // Find the service name from catalogue for display
           const cat = catalogue.find((c) => c.service_id === payload.service_id);
@@ -210,7 +209,7 @@ export default function ServiceUsageLoggingPage({
         } else {
           const json = await res.json().catch(() => ({}));
           setErrorMessage(
-            (json as any)?.error?.message ??
+            (json as { error?: { message?: string } })?.error?.message ??
               `Failed to log service (HTTP ${res.status}).`
           );
           setSubmitState('error');
@@ -229,8 +228,6 @@ export default function ServiceUsageLoggingPage({
       <title>Log Service Usage — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
-        <StaffNav />
-
         <main
           id="service-usage-main"
           className="flex-1 container-page py-8 space-y-6"

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Page: /staff/checkin
  *
  * Staff Check-In page — allows Receptionist/Manager/Admin to search for a
@@ -27,7 +27,6 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import StaffNav from '@/components/StaffNav';
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 
@@ -267,7 +266,7 @@ export default function StaffCheckinPage() {
           setState({
             stage: 'error',
             message:
-              (json as any)?.error?.message ??
+              (json as { error?: { message?: string } })?.error?.message ??
               `Check-in failed (HTTP ${res.status}). Please try again.`,
           });
         }
@@ -291,8 +290,6 @@ export default function StaffCheckinPage() {
       <title>Check-In Guest — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
-        <StaffNav />
-
         <main
           id="staff-checkin-main"
           className="flex-1 container-page py-8 space-y-6"

@@ -28,7 +28,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import type { ReservationDetail, ReservationRoomDetail } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
@@ -499,42 +499,48 @@ export default function StaffReservationDetailPage({
   const [actionState,  setActionState]  = useState<ActionState>({ stage: 'idle' });
 
   /* -- Fetch -- */
-  const fetchDetail = useCallback(async () => {
-    setLoadState('loading');
-    setDetail(null);
-    setErrorMessage('');
-
-    try {
-      const res  = await fetch(`/api/staff/reservations/${reservationId}`);
-      const json = (await res.json()) as ApiSuccess | ApiError;
-
-      if (res.status === 404) {
-        setLoadState('not_found');
-        return;
-      }
-
-      if (!res.ok) {
-        setErrorMessage(
-          (json as ApiError).error?.message ?? `Request failed (HTTP ${res.status}).`
-        );
-        setLoadState('error');
-        return;
-      }
-
-      setDetail((json as ApiSuccess).data);
-      setLoadState('success');
-    } catch {
-      setErrorMessage(
-        'Network error \u2014 unable to reach the server. Please try again.'
-      );
-      setLoadState('error');
-    }
-  }, [reservationId]);
-
   useEffect(() => {
-    void fetchDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchDetail, retryKey]);
+    let cancelled = false;
+
+    async function load() {
+      setLoadState('loading');
+      setDetail(null);
+      setErrorMessage('');
+
+      try {
+        const res  = await fetch(`/api/staff/reservations/${reservationId}`);
+        const json = (await res.json()) as ApiSuccess | ApiError;
+
+        if (cancelled) return;
+
+        if (res.status === 404) {
+          setLoadState('not_found');
+          return;
+        }
+
+        if (!res.ok) {
+          setErrorMessage(
+            (json as ApiError).error?.message ?? `Request failed (HTTP ${res.status}).`
+          );
+          setLoadState('error');
+          return;
+        }
+
+        setDetail((json as ApiSuccess).data);
+        setLoadState('success');
+      } catch {
+        if (!cancelled) {
+          setErrorMessage(
+            'Network error \u2014 unable to reach the server. Please try again.'
+          );
+          setLoadState('error');
+        }
+      }
+    }
+
+    void load();
+    return () => { cancelled = true; };
+  }, [reservationId, retryKey]);
 
   function handleRetry() {
     setRetryKey((k) => k + 1);

@@ -20,7 +20,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import StaffNav from '@/components/StaffNav';
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 
@@ -76,8 +75,6 @@ export default function ServiceUsageReportPage() {
       <title>Service Usage Report — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
-        <StaffNav />
-
         <main
           id="service-usage-report-main"
           className="flex-1 container-page py-8 space-y-6"

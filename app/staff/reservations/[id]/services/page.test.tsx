@@ -25,7 +25,8 @@ vi.mock('@/components/StaffNav', () => ({
 const RESERVATION_ID = 'res-mock-001';
 
 function makeParams(id = RESERVATION_ID): Promise<{ id: string }> {
-  const p = Promise.resolve({ id }) as any;
+  type UseablePromise = Promise<{ id: string }> & { status: string; value: { id: string } };
+  const p = Promise.resolve({ id }) as UseablePromise;
   p.status = 'fulfilled';
   p.value = { id };
   return p;

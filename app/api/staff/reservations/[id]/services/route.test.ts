@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 ﻿/**
  * Unit tests for POST /api/staff/reservations/[id]/services
  *
@@ -182,7 +183,6 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     );
 
     const res = await POST(makeRequest(VALID_BODY), makeParams());
-    const json = await res.json();
 
     expect(res.status).toBe(422);
   });

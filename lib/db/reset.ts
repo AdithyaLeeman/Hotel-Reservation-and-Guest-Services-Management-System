@@ -9,7 +9,7 @@
  * When pg is installed, replace the stub below with: import { Client } from 'pg';
  */
 
-import { execSync } from 'child_process';
+// execSync will be needed in Phase 6 when reset.ts is fully implemented
 
 async function resetDatabase(): Promise<void> {
   const adminUrl = process.env.POSTGRES_ADMIN_URL;

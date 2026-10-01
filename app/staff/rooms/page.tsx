@@ -213,7 +213,7 @@ export default function StaffRoomsPage() {
 
       // TODO: replace with real API call once SP2.1 is executed (P06-M02-T01)
       const res = await fetch(`/api/staff/rooms?${params.toString()}`);
-      const json = await res.json();
+      const json = await res.json() as { data?: RoomWithDetails[]; error?: { message?: string } };
 
       if (!res.ok) {
         setError(json?.error?.message ?? 'Failed to load rooms.');
@@ -229,7 +229,8 @@ export default function StaffRoomsPage() {
   }, [filters]);
 
   useEffect(() => {
-    fetchRooms();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchRooms();
   }, [fetchRooms]);
 
   const handleSort = (key: SortKey) => {

@@ -81,8 +81,8 @@ describe('Reservation Repository (Mock)', () => {
 
       try {
         await reservationRepository.callCreateReservation(mockClient, overlappingParams);
-      } catch (err: any) {
-        expect(err.code).toBe('45001');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('45001');
       }
     });
 
@@ -170,8 +170,8 @@ describe('Reservation Repository (Mock)', () => {
 
       try {
         await reservationRepository.callCancelReservation('res-mock-002', 'guest-mock-001', 'user-mock-001');
-      } catch (err: any) {
-        expect(err.code).toBe('45010');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('45010');
       }
     });
 

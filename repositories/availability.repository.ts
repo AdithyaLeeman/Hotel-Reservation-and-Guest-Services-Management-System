@@ -53,7 +53,7 @@ interface MockRoom {
   status: RoomStatus;
 }
 
-interface MockRoomType extends RoomType {}
+type MockRoomType = RoomType;
 
 interface MockReservation {
   reservation_id: string;

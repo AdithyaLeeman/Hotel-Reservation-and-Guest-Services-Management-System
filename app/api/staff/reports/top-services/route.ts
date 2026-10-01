@@ -17,7 +17,7 @@
  * Lecture alignment: L06 (REST), L07 (RBAC), L05 (views/aggregate)
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { topServicesRepository } from '@/repositories/top-services.repository';
 import { ERROR_CODES } from '@/types/api';
@@ -83,7 +83,8 @@ function isReportRole(role: string | undefined): role is ReportRole {
 // GET /api/staff/reports/top-services (P05-M03-T02)
 // ---------------------------------------------------------------------------
 
-export async function GET(_req: NextRequest): Promise<NextResponse> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_req?: Request): Promise<NextResponse> {
   try {
     const session = await resolveSession();
 
