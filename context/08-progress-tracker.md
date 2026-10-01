@@ -70,7 +70,7 @@ _Last updated: 97 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
 | SP5.5 — Reports API (partial) | P05-M05-T12..T13, P05-M03-T02 | **REVIEW** (M5 billing & revenue report routes; M3 top-services report route) |
 | SP5.6 — Payment UI | T14–T15 (M5) | **REVIEW** (M5 guest bill & pay form page, payment confirmation component) |
-| SP5.7 — Reports UI (partial) | P05-M04-T01 | **REVIEW** (M4 staff service-usage report UI page) |
+| SP5.7 — Reports UI (partial) | P05-M04-T01, P05-M02-T01 | **REVIEW** (M4 staff service-usage report UI page; M2 room occupancy report page) |
 
 ## Blocked Items
 - `develop` branch creation — **BLOCKED on human manual push.**
@@ -83,7 +83,7 @@ _Last updated: 97 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | Member | Immediate Next Task | Can Start? |
 |---|---|---|
 | M1 | P06-M01-T01 — Wire auth repos to real DB; verify session round-trip | ⏳ After integration branch merge |
-| M2 | P05-M02-T01 — Room occupancy report page (`app/staff/reports/occupancy/page.tsx`) | ✅ Now (mock-first) |
+| M2 | P06-M02-T01 — Wire room + availability repositories to real DB | ⏳ After integration branch merge (All Phase 1–5 M2 tasks in REVIEW/DONE) |
 | M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
 | M4 | P06-M04-T01 — Wire service-usage + checkin to real DB (after Phase 3+4 DB executed) | ⏳ After integration branch merge |
 | M5 | P05-M05-T16 — Reports dashboard page (`app/staff/reports/page.tsx`) | ✅ Now (mock-first) |
