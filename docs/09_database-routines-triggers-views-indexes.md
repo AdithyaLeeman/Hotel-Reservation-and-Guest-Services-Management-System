@@ -177,7 +177,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ### `sp_checkout`
 **Purpose:** Guard checkout (balance = 0), transition reservation to CheckedOut, release rooms to Available.
 **File:** `database/routines/checkout/sp_checkout.sql`
-**Status:** TODO (P05-M05-T05)
+**Status:** REVIEW (P05-M05-T03)
 
 **Inputs:** `p_reservation_id UUID`, `p_employee_id BIGINT`
 **SQLSTATE exceptions:**
