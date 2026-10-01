@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passing (46 test suites). 2026-09-29._
+_Last updated: 97 tasks complete / reviewed across Phase 1–5. 546 tests passing (46 test suites). 2026-09-30._
 
 ## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
 
@@ -13,7 +13,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | P1 — Foundation | SP1.1–SP1.4 | 29 | **DONE** (All 29 tasks built and reviewed; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth DONE; SP1.4 UI DONE — code-reviewed 2026-09-30) | M1 |
 | P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **CODE COMPLETE** (All 18 tasks built; SP2.1–SP2.4 in REVIEW; SP2.5 tests written) | M2 |
 | P3 — Reservations | SP3.1–SP3.6 | 24 | **NEARLY COMPLETE** (23 of 24 tasks built: SP3.1 DDLs, SP3.2 routines, SP3.3–SP3.5 API+UI, SP3.6 tests in REVIEW; T22 TODO) | M3 |
-| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (14 of 27 tasks built: SP4.1 DDLs, SP4.3 service APIs, SP4.4 service UIs, SP4.7 billing repo/service in REVIEW) | M4 + M5 |
+| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (19 of 27 tasks built: SP4.1 DDLs, SP4.2 service DB routines+view, SP4.3 service APIs, SP4.4 service UIs, SP4.7 billing repo/service in REVIEW) | M4 + M5 |
 | P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **IN_PROGRESS** (12 of 22 tasks built: SP5.3 report views, SP5.4 payment APIs, SP5.5 report APIs, SP5.7 service report UI in REVIEW) | M5 |
 | P6 — Integration & Testing | SP6.1–SP6.5 | 19 | TODO | All |
 
@@ -64,6 +64,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | SP4.1 — Service Schema | T01–T03 | **REVIEW** (M4 service_catalogue, service_usage DDLs, 6 catalogue seeds) |
 | SP4.3 — Service API | T09–T15 (M4) | **REVIEW** (M4 service-usage repo, checkin service, service-usage service, checkin route, services GET/POST route) |
 | SP4.4 — Service UI | T16–T17 (M4) | **REVIEW** (M4 staff checkin page, service usage logging page) |
+| SP4.2 — Service DB | T04–T08 (M4) | **REVIEW** (M4 sp_check_in, sp_log_service_usage, fn_calc_room_charges, fn_calc_service_charges, vw_service_usage_breakdown) |
 | SP4.7 — Billing API | T05–T07 (M5) | **REVIEW** (M5 billing repository, billing service, guest invoice route) |
 | SP5.3 — Report Views (partial) | P05-M05-T05..T07, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary, vw_monthly_revenue, vw_audit_log + reservation_audit_log DDL + trg_audit_reservation_status; M3 vw_top_services) |
 | SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
@@ -84,7 +85,7 @@ _Last updated: 96 tasks complete / reviewed across Phase 1–5. 546 tests passin
 | M1 | P06-M01-T01 — Wire auth repos to real DB; verify session round-trip | ⏳ After integration branch merge |
 | M2 | P05-M02-T01 — Room occupancy report page (`app/staff/reports/occupancy/page.tsx`) | ✅ Now (mock-first) |
 | M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
-| M4 | P04-M04-T01..T03 — `service_catalogue` / `service_usage` table DDLs | ⏳ After Phase 3 DB executed |
+| M4 | P06-M04-T01 — Wire service-usage + checkin to real DB (after Phase 3+4 DB executed) | ⏳ After integration branch merge |
 | M5 | P05-M05-T16 — Reports dashboard page (`app/staff/reports/page.tsx`) | ✅ Now (mock-first) |
 
 ## Recent Decisions
