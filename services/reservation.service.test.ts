@@ -14,7 +14,8 @@ describe('Reservation Service', () => {
       release: vi.fn(),
       query: vi.fn(),
     };
-    vi.spyOn(pool, 'connect').mockResolvedValue(dummyClient as any);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn(pool, 'connect').mockImplementation((() => Promise.resolve(dummyClient)) as any);
   });
 
   describe('createGuestReservation', () => {
@@ -64,9 +65,9 @@ describe('Reservation Service', () => {
 
       try {
         await reservationService.createGuestReservation(input, sessionWithoutGuest);
-      } catch (err: any) {
-        expect(err.code).toBe('NOT_FOUND');
-        expect(err.message).toContain('Guest profile not found in session');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('NOT_FOUND');
+        expect((err as Error).message).toContain('Guest profile not found in session');
       }
     });
 
@@ -91,8 +92,8 @@ describe('Reservation Service', () => {
 
       try {
         await reservationService.createGuestReservation(inputOverlapping, session);
-      } catch (err: any) {
-        expect(err.code).toBe('ROOM_OVERLAP');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('ROOM_OVERLAP');
       }
     });
   });
@@ -159,8 +160,8 @@ describe('Reservation Service', () => {
 
       try {
         await reservationService.cancelReservation('res-mock-002', 'user-mock-001', 'guest-mock-001');
-      } catch (err: any) {
-        expect(err.code).toBe('INVALID_STATUS_TRANSITION');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('INVALID_STATUS_TRANSITION');
       }
     });
 
@@ -171,8 +172,8 @@ describe('Reservation Service', () => {
 
       try {
         await reservationService.cancelReservation('res-mock-001', 'user-mock-001', 'wrong-guest');
-      } catch (err: any) {
-        expect(err.code).toBe('NOT_FOUND');
+      } catch (err: unknown) {
+        expect((err as { code?: string }).code).toBe('NOT_FOUND');
       }
     });
   });

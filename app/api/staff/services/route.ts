@@ -107,9 +107,8 @@ const AddCatalogueItemBody = z.object({
 // ---------------------------------------------------------------------------
 // GET /api/staff/services
 // ---------------------------------------------------------------------------
-export async function GET(
-  _req: NextRequest
-): Promise<NextResponse> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_req?: Request): Promise<NextResponse> {
   const session = getDevSession();
 
   if (!session.userId || !isStaffRole(session.role)) {

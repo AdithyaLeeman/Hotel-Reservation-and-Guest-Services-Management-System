@@ -29,7 +29,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import type { ActiveReservationRow } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
@@ -320,36 +320,41 @@ export default function StaffReservationsPage() {
   const [retryKey, setRetryKey] = useState(0);
 
   /* ── Fetch ── */
-  const fetchReservations = useCallback(async () => {
-    setFetchState({ stage: 'loading' });
-
-    try {
-      // No branch_id param: the API auto-scopes Receptionists server-side.
-      // Manager / Admin see all branches because the API reads the session role.
-      const res  = await fetch('/api/staff/reservations');
-      const json = await res.json() as { data?: ActiveReservationRow[]; error?: { message: string } };
-
-      if (!res.ok) {
-        setFetchState({
-          stage:   'error',
-          message: json?.error?.message ?? `Request failed (HTTP ${res.status}).`,
-        });
-        return;
-      }
-
-      setFetchState({ stage: 'success', rows: json.data ?? [] });
-    } catch {
-      setFetchState({
-        stage:   'error',
-        message: 'Network error \u2014 unable to reach the server. Please try again.',
-      });
-    }
-  }, []);
-
   useEffect(() => {
-    void fetchReservations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchReservations, retryKey]);
+    let cancelled = false;
+
+    async function load() {
+      setFetchState({ stage: 'loading' });
+      try {
+        // No branch_id param: the API auto-scopes Receptionists server-side.
+        // Manager / Admin see all branches because the API reads the session role.
+        const res  = await fetch('/api/staff/reservations');
+        const json = await res.json() as { data?: ActiveReservationRow[]; error?: { message: string } };
+
+        if (cancelled) return;
+
+        if (!res.ok) {
+          setFetchState({
+            stage:   'error',
+            message: json?.error?.message ?? `Request failed (HTTP ${res.status}).`,
+          });
+          return;
+        }
+
+        setFetchState({ stage: 'success', rows: json.data ?? [] });
+      } catch {
+        if (!cancelled) {
+          setFetchState({
+            stage:   'error',
+            message: 'Network error — unable to reach the server. Please try again.',
+          });
+        }
+      }
+    }
+
+    void load();
+    return () => { cancelled = true; };
+  }, [retryKey]);
 
   /* ── Retry ── */
   function handleRetry() {

@@ -9,7 +9,7 @@
 import type { InvoiceTotals } from '@/types/domain';
 
 export const billingRepository = {
-  callFinalizeInvoice: async (_reservationId: string): Promise<{ invoice_id: string }> => {
+  callFinalizeInvoice: async (_reservationId: string): Promise<{ invoice_id: string }> => { // eslint-disable-line @typescript-eslint/no-unused-vars
     // TODO: CALL sp_finalize_invoice($1, p_invoice_id OUT)
     throw new Error('billingRepository.callFinalizeInvoice not implemented — P04-M05-T03');
   },
@@ -18,7 +18,7 @@ export const billingRepository = {
    * Read all billing totals from vw_invoice_totals.
    * outstanding_balance is authoritative — NEVER recompute in TypeScript.
    */
-  getInvoiceTotals: async (_reservationId: string): Promise<InvoiceTotals | null> => {
+  getInvoiceTotals: async (_reservationId: string): Promise<InvoiceTotals | null> => { // eslint-disable-line @typescript-eslint/no-unused-vars
     // TODO: SELECT * FROM vw_invoice_totals WHERE reservation_id = $1
     throw new Error('billingRepository.getInvoiceTotals not implemented — P04-M05-T04');
   },

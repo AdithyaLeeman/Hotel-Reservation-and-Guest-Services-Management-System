@@ -147,8 +147,8 @@ export const roomService = {
         ...input,
         room_number: input.room_number.trim(),
       });
-    } catch (err: any) {
-      if (err.message && err.message.includes('UNIQUE violation')) {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message.includes('UNIQUE violation')) {
         throw new RoomConflictError(
           `Room number '${input.room_number}' already exists in branch ${input.branch_id}`
         );

@@ -296,7 +296,7 @@ export const reservationRepository = {
       return MOCK_STORE
         .filter((r) => r.guest_id === guestId)
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .map(({ _rooms: _ignored, ...r }) => ({ ...r }));
+        .map(({ _rooms, ...r }) => ({ ...r })); // eslint-disable-line @typescript-eslint/no-unused-vars
     }
 
     // --- REAL DB path ---

@@ -13,10 +13,10 @@
  */
 
 export const billingService = {
-  finalizeInvoice: async (_reservationId: string): Promise<void> => {
+  finalizeInvoice: async (_reservationId: string): Promise<void> => { // eslint-disable-line @typescript-eslint/no-unused-vars
     throw new Error('billingService.finalizeInvoice not yet implemented — P04-M05-T03');
   },
-  getInvoiceTotals: async (_reservationId: string): Promise<void> => {
+  getInvoiceTotals: async (_reservationId: string): Promise<void> => { // eslint-disable-line @typescript-eslint/no-unused-vars
     throw new Error('billingService.getInvoiceTotals not yet implemented — P04-M05-T04');
   },
 };

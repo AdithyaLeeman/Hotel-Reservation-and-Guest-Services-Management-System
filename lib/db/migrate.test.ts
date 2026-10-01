@@ -35,7 +35,7 @@ vi.mock('fs/promises', () => ({
 }));
 
 // Import the module AFTER mocks are registered
-import { parseManifest, checksum, runMigrations } from './migrate';
+import { parseManifest, checksum } from './migrate';
 
 // ---------------------------------------------------------------------------
 // Fixtures

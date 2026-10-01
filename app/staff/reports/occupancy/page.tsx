@@ -28,7 +28,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 
 /* ─── Domain Types & Constants ────────────────────────────────────────────── */
@@ -161,59 +161,66 @@ export default function OccupancyReportPage() {
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
   const [state, setState] = useState<PageState>({ stage: 'loading' });
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Bump to re-trigger the fetch effect (Refresh / Retry buttons)
+  const [refreshKey, setRefreshKey] = useState(0);
 
   /* ─── Fetch report from API ────────────────────────────────────────────── */
-  const fetchReport = useCallback((currentFilters: FilterState) => {
-    setState({ stage: 'loading' });
-    setValidationError(null);
+  useEffect(() => {
+    let cancelled = false;
 
-    // Validate client-side date ordering if both are specified
-    if (
-      currentFilters.fromDate &&
-      currentFilters.toDate &&
-      currentFilters.fromDate > currentFilters.toDate
-    ) {
-      setValidationError('Start date (From Date) cannot be after End date (To Date).');
-      setState({ stage: 'error', message: 'Invalid date range specified.' });
-      return;
-    }
+    async function run() {
+      // Client-side date validation before hitting the network
+      if (
+        appliedFilters.fromDate &&
+        appliedFilters.toDate &&
+        appliedFilters.fromDate > appliedFilters.toDate
+      ) {
+        setValidationError('Start date (From Date) cannot be after End date (To Date).');
+        setState({ stage: 'error', message: 'Invalid date range specified.' });
+        return;
+      }
 
-    const params = new URLSearchParams();
-    if (currentFilters.branchId) params.set('branchId', currentFilters.branchId);
-    if (currentFilters.roomStatus) params.set('roomStatus', currentFilters.roomStatus);
-    if (currentFilters.fromDate) params.set('fromDate', currentFilters.fromDate);
-    if (currentFilters.toDate) params.set('toDate', currentFilters.toDate);
+      setState({ stage: 'loading' });
+      setValidationError(null);
 
-    const query = params.toString();
-    const url = `/api/staff/reports/occupancy${query ? `?${query}` : ''}`;
+      const params = new URLSearchParams();
+      if (appliedFilters.branchId) params.set('branchId', appliedFilters.branchId);
+      if (appliedFilters.roomStatus) params.set('roomStatus', appliedFilters.roomStatus);
+      if (appliedFilters.fromDate) params.set('fromDate', appliedFilters.fromDate);
+      if (appliedFilters.toDate) params.set('toDate', appliedFilters.toDate);
 
-    fetch(url)
-      .then(async (res) => {
+      const query = params.toString();
+      const url = `/api/staff/reports/occupancy${query ? `?${query}` : ''}`;
+
+      try {
+        const res = await fetch(url);
+        if (cancelled) return;
+
         if (res.ok) {
           const json = await res.json();
-          setState({ stage: 'success', data: json.data || [] });
+          setState({ stage: 'success', data: (json as { data?: OccupancyReportRow[] }).data || [] });
         } else {
           const json = await res.json().catch(() => ({}));
           setState({
             stage: 'error',
             message:
-              json?.error?.message ||
+              (json as { error?: { message?: string } })?.error?.message ??
               `Failed to load occupancy report (HTTP ${res.status}).`,
           });
         }
-      })
-      .catch(() => {
-        setState({
-          stage: 'error',
-          message: 'Network error — unable to connect to the reporting service.',
-        });
-      });
-  }, []);
+      } catch {
+        if (!cancelled) {
+          setState({
+            stage: 'error',
+            message: 'Network error — unable to connect to the reporting service.',
+          });
+        }
+      }
+    }
 
-  // Initial load
-  useEffect(() => {
-    fetchReport(appliedFilters);
-  }, [fetchReport, appliedFilters]);
+    void run();
+    return () => { cancelled = true; };
+  }, [appliedFilters, refreshKey]);
 
   /* ─── Filter handlers ──────────────────────────────────────────────────── */
   const handleFilterSubmit = (e: React.FormEvent) => {
@@ -336,7 +343,7 @@ export default function OccupancyReportPage() {
             <button
               id="refresh-report-btn"
               type="button"
-              onClick={() => fetchReport(appliedFilters)}
+              onClick={() => setRefreshKey((k) => k + 1)}
               className="btn btn-outline btn-sm gap-2"
               disabled={state.stage === 'loading'}
               aria-label="Refresh report data"
@@ -577,7 +584,7 @@ export default function OccupancyReportPage() {
               </div>
               <button
                 type="button"
-                onClick={() => fetchReport(appliedFilters)}
+                onClick={() => setRefreshKey((k) => k + 1)}
                 className="btn btn-outline btn-sm bg-white"
                 id="error-retry-btn"
               >
