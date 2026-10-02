@@ -1,21 +1,3 @@
--- =============================================================================
--- View:     vw_invoice_totals.sql
--- Owner:    Member 5
--- Phase:    P4 — Services & Billing
--- Task:     P04-M05-T04
--- Depends:  billing_summary (P04-M05-T02), payment (P05-M05-T01),
---           fn_calc_room_charges (P04-M04-T06), fn_calc_service_charges (P04-M04-T07)
--- Lecture:  L05 (views, derived data), L03 (aggregation, arithmetic)
--- =============================================================================
---
--- AUTHORITATIVE billing totals view.
--- All monetary values are computed here — NEVER in TypeScript (AGENTS.md §5).
--- sp_checkout() reads outstanding_balance from this view inside its transaction.
--- sp_post_payment() reads outstanding_balance from this view before inserting.
---
--- Decision D005: tax applies to room charges only, not service charges.
--- =============================================================================
-
 CREATE OR REPLACE VIEW vw_invoice_totals AS
 SELECT
     bs.invoice_id,

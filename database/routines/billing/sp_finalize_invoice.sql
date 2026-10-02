@@ -1,16 +1,7 @@
--- =============================================================================
--- Routine:   sp_finalize_invoice.sql
--- Owner:     Member 5
--- Phase:     P4 — Services & Billing
--- Task:      P04-M05-T03
--- Depends:   billing_summary table (P04-M05-T02), tax_policies (P04-M05-T01)
---            fn_calc_room_charges (P04-M04-T06), fn_calc_service_charges (P04-M04-T07)
--- Lecture:   L08 (PL/pgSQL stored procedures), L05 (transaction), L12 (idempotency)
--- =============================================================================
-
 CREATE OR REPLACE PROCEDURE sp_finalize_invoice(
     p_reservation_id    UUID,
-    OUT p_invoice_id    UUID)
+    OUT p_invoice_id    UUID
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -47,7 +38,6 @@ BEGIN
             USING ERRCODE = '45041';
     END IF;
 
-    -- ── 3. Fetch the active tax policy (snapshot at invoice time) ─────────────
     SELECT tax_id, tax_percentage
     INTO v_active_tax_id, v_active_tax_pct
     FROM tax_policies
@@ -60,7 +50,6 @@ BEGIN
             USING ERRCODE = '45042';
     END IF;
 
-    -- ── 4. Create the billing_summary row (tax rate snapshotted at this point) ─
     INSERT INTO billing_summary (
         reservation_id,
         tax_id,
