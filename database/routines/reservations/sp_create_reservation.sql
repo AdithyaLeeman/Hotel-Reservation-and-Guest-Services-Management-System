@@ -37,8 +37,11 @@
 --   45002 — Branch mismatch: a room does not belong to p_branch_id
 --   45003 — Room in Maintenance: a room cannot be reserved
 --
--- TRANSACTION: This procedure owns its transaction.
---   Caller must NOT wrap in an outer BEGIN/COMMIT.
+-- TRANSACTION: This procedure does NOT issue COMMIT/ROLLBACK.
+--   Single-call pattern: pool.query() (autocommit applies to the CALL statement).
+--   Multi-op pattern: wrap in BEGIN/COMMIT via pool.connect().
+--   Do NOT call COMMIT inside this procedure — SELECT FOR UPDATE holds the
+--   row lock until the caller's transaction commits or rolls back.
 --
 -- LECTURE ALIGNMENT:
 --   L05 — Stored procedures, SQLSTATE
@@ -66,6 +69,10 @@ DECLARE
     v_room_status       room_status;
     v_rate_per_night    NUMERIC(12,2);
     v_overlap_count     INT;
+    -- Accumulates (room_id, rate_per_night) pairs from Step 1 validation.
+    -- Used in Step 3 to avoid a second SELECT that could read a different rate
+    -- if room_type.daily_rate is concurrently updated (READ COMMITTED isolation).
+    v_room_rates        JSONB := '[]'::JSONB;
 BEGIN
     -- Generate the new reservation ID upfront so we can return it on success
     p_reservation_id := gen_random_uuid();
@@ -123,6 +130,12 @@ BEGIN
                 'Room % is already reserved for the requested dates', v_room_id
                 USING ERRCODE = '45001';
         END IF;
+
+        -- Accumulate the validated rate for use in Step 3 (avoids a second SELECT)
+        v_room_rates := v_room_rates || jsonb_build_object(
+            'room_id', v_room_id,
+            'rate',    v_rate_per_night
+        );
     END LOOP;
 
     -- ------------------------------------------------------------------
@@ -154,18 +167,18 @@ BEGIN
 
     -- ------------------------------------------------------------------
     -- Step 3: Insert reservation_rooms rows (with rate snapshot)
+    -- Rate values come from v_room_rates accumulated in Step 1.
+    -- No second SELECT needed: the rate was already read in the same
+    -- transaction and stored, preventing a READ COMMITTED phantom.
     -- ------------------------------------------------------------------
-    FOREACH v_room_id IN ARRAY p_room_ids
+    FOR i IN 0 .. jsonb_array_length(v_room_rates) - 1
     LOOP
-        -- Re-fetch rate_per_night (already fetched above, but loop var is local)
-        SELECT rt.daily_rate
-          INTO v_rate_per_night
-          FROM room r
-          JOIN room_type rt ON rt.type_id = r.type_id
-         WHERE r.room_id = v_room_id;
-
         INSERT INTO reservation_rooms (reservation_id, room_id, rate_per_night)
-        VALUES (p_reservation_id, v_room_id, v_rate_per_night);
+        VALUES (
+            p_reservation_id,
+            (v_room_rates->i->>'room_id')::BIGINT,
+            (v_room_rates->i->>'rate')::NUMERIC(12,2)
+        );
     END LOOP;
 
     -- p_reservation_id is already set — procedure returns via INOUT
