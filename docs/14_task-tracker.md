@@ -305,9 +305,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P04-M05-T05 | Billing repository | 🟡 MOCK-FIRST | `repositories/billing.repository.ts` | REVIEW |
-| P04-M05-T06 | Billing service layer | 🟡 MOCK-FIRST | `services/billing.service.ts` | REVIEW |
-| P04-M05-T07 | GET `/api/guest/reservations/[id]/invoice` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/invoice/route.ts` | REVIEW |
+| P04-M05-T05 | Billing repository | 🟡 MOCK-FIRST | `repositories/billing.repository.ts` | DONE |
+| P04-M05-T06 | Billing service layer | 🟡 MOCK-FIRST | `services/billing.service.ts` | DONE |
+| P04-M05-T07 | GET `/api/guest/reservations/[id]/invoice` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/invoice/route.ts` | DONE |
 
 **Phase 4 Completion Criteria:**
 - `vw_invoice_totals` returns LKR 26920 grand total for test scenario
@@ -327,7 +327,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P05-M05-T01 | `payment` table DDL | 🔴 SERIAL | `database/migrations/P05-M05-T01-01_create_payment.sql` | SP4.5 done | IN_PROGRESS |
+| P05-M05-T01 | `payment` table DDL | 🔴 SERIAL | `database/migrations/P05-M05-T01-01_create_payment.sql` | SP4.5 done | DONE |
 
 ---
 
@@ -336,7 +336,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
 | P05-M05-T02 | `sp_post_payment()` procedure + idempotency check | 🔴 SERIAL | `database/routines/payments/sp_post_payment.sql` | SP5.1 done | DONE |
-| P05-M05-T03 | `sp_checkout()` procedure (balance guard + room release) | 🔴 SERIAL | `database/routines/checkout/sp_checkout.sql` | SP5.1 done | REVIEW |
+| P05-M05-T03 | `sp_checkout()` procedure (balance guard + room release) | 🔴 SERIAL | `database/routines/checkout/sp_checkout.sql` | SP5.1 done | DONE |
 
 ---
 
@@ -345,10 +345,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
 | P05-M05-T04 | M5 | `vw_room_occupancy` view | 🔴 SERIAL | `database/views/vw_room_occupancy.sql` | SP3-SP4 done | TODO |
-| P05-M05-T05 | M5 | `vw_guest_billing_summary` view | 🔴 SERIAL | `database/views/vw_guest_billing_summary.sql` | SP4-SP5 done | REVIEW |
-| P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | REVIEW |
+| P05-M05-T05 | M5 | `vw_guest_billing_summary` view | 🔴 SERIAL | `database/views/vw_guest_billing_summary.sql` | SP4-SP5 done | DONE |
+| P05-M05-T06 | M5 | `vw_monthly_revenue` view | 🔴 SERIAL | `database/views/vw_monthly_revenue.sql` | SP4-SP5 done | DONE |
 | P05-M03-T01 | M3 | `vw_top_services` view | 🔴 SERIAL | `database/views/vw_top_services.sql` | SP4.1 done | REVIEW |
-| P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql`, `database/migrations/P05-M05-T07-01_create_reservation_audit_log.sql`, `database/triggers/trg_audit_reservation_status.sql` | All tables done | REVIEW |
+| P05-M05-T07 | M5 | `vw_audit_log` view | 🔴 SERIAL | `database/views/vw_audit_log.sql`, `database/migrations/P05-M05-T07-01_create_reservation_audit_log.sql`, `database/triggers/trg_audit_reservation_status.sql` | All tables done | DONE |
 
 ---
 
@@ -356,10 +356,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` | REVIEW |
-| P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` | REVIEW |
-| P05-M05-T10 | POST `/api/guest/payments` route handler | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` | REVIEW |
-| P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` | REVIEW |
+| P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` | DONE |
+| P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` | DONE |
+| P05-M05-T10 | POST `/api/guest/payments` route handler | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` | DONE |
+| P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` | DONE |
 
 ---
 
@@ -368,8 +368,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
 | P05-M02-T02 | M2 | GET `/api/staff/reports/occupancy` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/occupancy/route.ts` | DONE |
-| P05-M05-T12 | M5 | GET `/api/staff/reports/billing` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/billing/route.ts` | REVIEW |
-| P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | REVIEW |
+| P05-M05-T12 | M5 | GET `/api/staff/reports/billing` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/billing/route.ts` | DONE |
+| P05-M05-T13 | M5 | GET `/api/staff/reports/revenue` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/revenue/route.ts` | DONE |
 | P05-M03-T02 | M3 | GET `/api/staff/reports/top-services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reports/top-services/route.ts` | REVIEW |
 
 ---
@@ -378,8 +378,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P05-M05-T14 | Guest bill + pay form page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/pay/page.tsx` | REVIEW |
-| P05-M05-T15 | Payment success/confirmation component | 🟢 PARALLEL | `components/PaymentConfirmation.tsx` | REVIEW |
+| P05-M05-T14 | Guest bill + pay form page | 🟡 MOCK-FIRST | `app/guest/reservations/[id]/pay/page.tsx` | DONE |
+| P05-M05-T15 | Payment success/confirmation component | 🟢 PARALLEL | `components/PaymentConfirmation.tsx` | DONE |
 
 ---
 
@@ -387,11 +387,11 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
-| P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | REVIEW |
+| P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | DONE |
 | P05-M02-T01 | M2 | Room occupancy report page | 🟡 MOCK-FIRST | `app/staff/reports/occupancy/page.tsx`, `app/staff/reports/occupancy/page.test.tsx` | REVIEW |
 | P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | REVIEW |
-| P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | REVIEW |
-| P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | REVIEW |
+| P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | DONE |
+| P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | DONE |
 
 **Phase 5 Completion Criteria:**
 - Partial payment → balance decreases; full payment → balance = 0

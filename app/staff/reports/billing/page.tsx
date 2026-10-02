@@ -273,6 +273,7 @@ export default function GuestBillingSummaryPage() {
       .catch(() => setState({ stage: 'error', message: 'Network error. Please try again.' }));
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchData(applied); }, [fetchData, applied]);
 
   function handleApply() { setApplied({ ...filters }); }

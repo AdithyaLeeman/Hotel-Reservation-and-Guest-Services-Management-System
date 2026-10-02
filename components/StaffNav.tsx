@@ -1,12 +1,13 @@
 import { getSession } from '@/lib/auth/session';
-import type { StaffRole } from '@/types/enums';
+import { isStaffRole } from '@/types/enums';
 import StaffNavClient from './StaffNavClient';
 
 export default async function StaffNav() {
   const session = await getSession();
 
-  const role = session?.role as StaffRole | undefined;
-  if (!role) return null;
+  if (!session?.role || !isStaffRole(session.role)) return null;
+
+  const role = session.role;
 
   const staffName: string | null = null;
 

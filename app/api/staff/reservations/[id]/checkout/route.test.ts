@@ -90,15 +90,15 @@ describe('POST /api/staff/reservations/[id]/checkout — P05-M05-T11', () => {
       expect(json.error.code).toBe('NOT_AUTHENTICATED');
     });
 
-    it('returns 401 when caller is a Guest (not a valid staff role)', async () => {
+    it('returns 403 when caller is a Guest (not a valid staff role)', async () => {
       mockGuestSession();
 
       const res = await POST(makeReq(), makeParams());
       const json = await res.json();
 
-      // 'Guest' is not in STAFF_ROLES → treated as unauthenticated
-      expect(res.status).toBe(401);
-      expect(json.error.code).toBe('NOT_AUTHENTICATED');
+      // 'Guest' is authenticated but does not have a staff role → 403 INSUFFICIENT_ROLE
+      expect(res.status).toBe(403);
+      expect(json.error.code).toBe('INSUFFICIENT_ROLE');
     });
   });
 

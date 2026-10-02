@@ -54,8 +54,12 @@ export async function POST(
 ): Promise<NextResponse> {
   const session = await resolveSession();
 
-  if (!session.userId || !isStaffRole(session.role)) {
+  if (!session.userId || !session.role) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
+  }
+
+  if (!isStaffRole(session.role)) {
+    return err(403, ERROR_CODES.INSUFFICIENT_ROLE, `Access requires staff role. Your role: ${session.role}`);
   }
 
   if (!session.employeeId) {
