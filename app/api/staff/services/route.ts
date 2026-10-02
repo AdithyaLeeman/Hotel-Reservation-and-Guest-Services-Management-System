@@ -32,6 +32,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getSession } from '@/lib/auth/session';
 import {
   serviceUsageService,
   ServiceUsageServiceError,
@@ -39,10 +40,7 @@ import {
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
-// DEV SESSION STUB
-// TODO (P01-M01-T11): Replace with real iron-session call.
-// ---------------------------------------------------------------------------
+// TODO Phase 6: remove dev fallback — require real iron-session cookie
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-005',
@@ -50,6 +48,15 @@ function getDevSession(): Partial<SessionData> {
     employeeId: 5,
     branchId:   1,
   };
+}
+
+async function resolveSession(): Promise<Partial<SessionData>> {
+  try {
+    const session = await getSession();
+    if (session.userId && session.role) return session;
+  } catch { /* cookies not present in dev */ }
+  if (process.env.NODE_ENV !== 'production') return getDevSession();
+  return {};
 }
 
 // ---------------------------------------------------------------------------
@@ -109,10 +116,14 @@ const AddCatalogueItemBody = z.object({
 // ---------------------------------------------------------------------------
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_req?: Request): Promise<NextResponse> {
-  const session = getDevSession();
+  const session = await resolveSession();
 
-  if (!session.userId || !isStaffRole(session.role)) {
+  if (!session.userId || !session.role) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
+  }
+
+  if (!isStaffRole(session.role)) {
+    return err(403, ERROR_CODES.INSUFFICIENT_ROLE, `Access requires staff role. Your role: ${session.role}`);
   }
 
   try {
@@ -130,10 +141,14 @@ export async function GET(_req?: Request): Promise<NextResponse> {
 export async function POST(
   req: NextRequest
 ): Promise<NextResponse> {
-  const session = getDevSession();
+  const session = await resolveSession();
 
-  if (!session.userId || !isStaffRole(session.role)) {
+  if (!session.userId || !session.role) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
+  }
+
+  if (!isStaffRole(session.role)) {
+    return err(403, ERROR_CODES.INSUFFICIENT_ROLE, `Access requires staff role. Your role: ${session.role}`);
   }
 
   if (!isManagementRole(session.role)) {

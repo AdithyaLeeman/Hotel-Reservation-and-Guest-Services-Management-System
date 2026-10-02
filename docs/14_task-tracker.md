@@ -242,9 +242,9 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M04-T01 | `service_catalogue` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T01-01_create_service_catalogue.sql` | SP3.1 done | REVIEW |
-| P04-M04-T02 | Seed 6 service catalogue items | 🔴 SERIAL | `database/seeds/P04-M04-T02_seed_services.sql` | T01 | REVIEW |
-| P04-M04-T03 | `service_usage` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T03-01_create_service_usage.sql` | T01, SP3.1 done | REVIEW |
+| P04-M04-T01 | `service_catalogue` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T01-01_create_service_catalogue.sql` | SP3.1 done | DONE |
+| P04-M04-T02 | Seed 6 service catalogue items | 🔴 SERIAL | `database/seeds/P04-M04-T02_seed_services.sql` | T01 | DONE |
+| P04-M04-T03 | `service_usage` table DDL | 🔴 SERIAL | `database/migrations/P04-M04-T03-01_create_service_usage.sql` | T01, SP3.1 done | DONE |
 
 ---
 
@@ -252,11 +252,11 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M04-T04 | `sp_check_in()` atomic procedure | 🔴 SERIAL | `database/routines/checkin/sp_check_in.sql` | SP4.1 done | REVIEW |
-| P04-M04-T05 | `sp_log_service_usage()` procedure (price snapshot) | 🔴 SERIAL | `database/routines/billing-inputs/sp_log_service_usage.sql` | SP4.1 done | REVIEW |
-| P04-M04-T06 | `fn_calc_room_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_room_charges.sql` | SP3.1 done | REVIEW |
-| P04-M04-T07 | `fn_calc_service_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_service_charges.sql` | SP4.1 done | REVIEW |
-| P04-M04-T08 | `vw_service_usage_breakdown` view | 🔴 SERIAL | `database/views/vw_service_usage_breakdown.sql` | SP4.1 done | REVIEW |
+| P04-M04-T04 | `sp_check_in()` atomic procedure | 🔴 SERIAL | `database/routines/checkin/sp_check_in.sql` | SP4.1 done | DONE |
+| P04-M04-T05 | `sp_log_service_usage()` procedure (price snapshot) | 🔴 SERIAL | `database/routines/billing-inputs/sp_log_service_usage.sql` | SP4.1 done | DONE |
+| P04-M04-T06 | `fn_calc_room_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_room_charges.sql` | SP3.1 done | DONE |
+| P04-M04-T07 | `fn_calc_service_charges()` function | 🔴 SERIAL | `database/routines/billing-inputs/fn_calc_service_charges.sql` | SP4.1 done | DONE |
+| P04-M04-T08 | `vw_service_usage_breakdown` view | 🔴 SERIAL | `database/views/vw_service_usage_breakdown.sql` | SP4.1 done | DONE |
 
 ---
 
@@ -264,13 +264,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P04-M04-T09 | Service usage repository | 🟡 MOCK-FIRST | `repositories/service-usage.repository.ts` | REVIEW |
-| P04-M04-T10 | Check-in service layer | 🟡 MOCK-FIRST | `services/checkin.service.ts` | REVIEW |
-| P04-M04-T11 | Service usage service layer | 🟡 MOCK-FIRST | `services/service-usage.service.ts` | REVIEW |
-| P04-M04-T12 | POST `/api/staff/reservations/[id]/checkin` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkin/route.ts` | REVIEW |
-| P04-M04-T13 | POST `/api/staff/reservations/[id]/services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/services/route.ts` | REVIEW |
-| P04-M04-T14 | GET `/api/staff/services` route handler (catalogue list) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | REVIEW |
-| P04-M04-T15 | POST `/api/staff/services` route handler (add item) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | REVIEW |
+| P04-M04-T09 | Service usage repository | 🟡 MOCK-FIRST | `repositories/service-usage.repository.ts` | DONE |
+| P04-M04-T10 | Check-in service layer | 🟡 MOCK-FIRST | `services/checkin.service.ts` | DONE |
+| P04-M04-T11 | Service usage service layer | 🟡 MOCK-FIRST | `services/service-usage.service.ts` | DONE |
+| P04-M04-T12 | POST `/api/staff/reservations/[id]/checkin` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkin/route.ts` | DONE |
+| P04-M04-T13 | POST `/api/staff/reservations/[id]/services` route handler | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/services/route.ts` | DONE |
+| P04-M04-T14 | GET `/api/staff/services` route handler (catalogue list) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | DONE |
+| P04-M04-T15 | POST `/api/staff/services` route handler (add item) | 🟡 MOCK-FIRST | `app/api/staff/services/route.ts` | DONE |
 
 ---
 
@@ -278,8 +278,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P04-M04-T16 | Staff check-in page | 🟡 MOCK-FIRST | `app/staff/checkin/page.tsx` | REVIEW |
-| P04-M04-T17 | Service usage logging page (per reservation) | 🟡 MOCK-FIRST | `app/staff/reservations/[id]/services/page.tsx` | REVIEW |
+| P04-M04-T16 | Staff check-in page | 🟡 MOCK-FIRST | `app/staff/checkin/page.tsx` | DONE |
+| P04-M04-T17 | Service usage logging page (per reservation) | 🟡 MOCK-FIRST | `app/staff/reservations/[id]/services/page.tsx` | DONE |
 
 ---
 
@@ -389,7 +389,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 |---|---|---|---|---|---|
 | P05-M05-T16 | M5 | Reports dashboard page | 🟡 MOCK-FIRST | `app/staff/reports/page.tsx` | DONE |
 | P05-M02-T01 | M2 | Room occupancy report page | 🟡 MOCK-FIRST | `app/staff/reports/occupancy/page.tsx`, `app/staff/reports/occupancy/page.test.tsx` | REVIEW |
-| P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | REVIEW |
+| P05-M04-T01 | M4 | Service usage report page | 🟡 MOCK-FIRST | `app/staff/reports/service-usage/page.tsx` | DONE |
 | P05-M05-T17 | M5 | Monthly revenue report page | 🟡 MOCK-FIRST | `app/staff/reports/revenue/page.tsx` | DONE |
 | P05-M05-T18 | M5 | Guest billing summary report page | 🟡 MOCK-FIRST | `app/staff/reports/billing/page.tsx` | DONE |
 

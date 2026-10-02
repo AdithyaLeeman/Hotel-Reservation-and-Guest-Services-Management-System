@@ -23,21 +23,28 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/auth/session';
 import { checkinService, CheckinServiceError } from '@/services/checkin.service';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
-// DEV SESSION STUB
-// TODO (P01-M01-T11): Replace with real iron-session call.
-// ---------------------------------------------------------------------------
+// TODO Phase 6: remove dev fallback — require real iron-session cookie
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-004',
     role:       'Receptionist',
     employeeId: 4,
-    branchId:   1, // Colombo branch
+    branchId:   1,
   };
+}
+
+async function resolveSession(): Promise<Partial<SessionData>> {
+  try {
+    const session = await getSession();
+    if (session.userId && session.role) return session;
+  } catch { /* cookies not present in dev */ }
+  if (process.env.NODE_ENV !== 'production') return getDevSession();
+  return {};
 }
 
 // ---------------------------------------------------------------------------
@@ -68,11 +75,14 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  // TODO (P01-M01-T11): const session = await getSession(_req);
-  const session = getDevSession();
+  const session = await resolveSession();
 
-  if (!session.userId || !isStaffRole(session.role)) {
+  if (!session.userId || !session.role) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
+  }
+
+  if (!isStaffRole(session.role)) {
+    return err(403, ERROR_CODES.INSUFFICIENT_ROLE, `Access requires staff role. Your role: ${session.role}`);
   }
 
   const { id: reservationId } = await params;
