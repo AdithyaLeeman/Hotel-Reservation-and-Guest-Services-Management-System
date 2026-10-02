@@ -33,6 +33,10 @@ export type PaymentStatus = 'Unpaid' | 'PartiallyPaid' | 'Paid';
  */
 export type StaffRole = Exclude<UserRole, 'Guest'>;
 
+export function isStaffRole(role: string | undefined): role is StaffRole {
+  return role === 'Receptionist' || role === 'Manager' || role === 'Admin';
+}
+
 /**
  * Manager-and-above roles — for report and admin access checks.
  */

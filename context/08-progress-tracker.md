@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 97 tasks complete / reviewed across Phase 1–5. 546 tests passing (46 test suites). 2026-09-30._
+_Last updated: 116 tasks DONE (97 prior + 19 M5 tasks reviewed and fixed). 632 tests passing (52 suites). 2026-10-02. M5 review complete: B-01 blocker fixed (TS math removed from invoice route), N-01 fixed (401/403 split in checkout route). All 19 M5 tasks → DONE._
 
 ## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
 

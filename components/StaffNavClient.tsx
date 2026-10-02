@@ -153,7 +153,10 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
     ].join(' ');
 
   const visibleLinks = STAFF_LINKS.filter(({ minRole }) => hasAccess(role, minRole));
-  const badge = ROLE_BADGE[role];
+  const badge = (role && ROLE_BADGE[role]) ?? {
+    bg: 'hsl(210 80% 45% / 0.12)',
+    text: 'var(--color-status-booked)',
+  };
 
   return (
     <header

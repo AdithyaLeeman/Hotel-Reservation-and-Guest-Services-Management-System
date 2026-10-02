@@ -28,8 +28,7 @@ export const guestRepository = {
   ): Promise<Guest> => {
     const result = await client.query<Guest>(
       `INSERT INTO guest (user_id, full_name, email, phone, identification)
-       VALUES ($1, $2, $3, $4, $5) * Owned by: Member 1 (M1)
-
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING guest_id, user_id, full_name, email, phone, identification`,
       [
         input.user_id,

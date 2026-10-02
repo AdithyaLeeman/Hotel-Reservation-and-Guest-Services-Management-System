@@ -6,6 +6,7 @@ import { billingReportRepository } from '@/repositories/billing-report.repositor
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
+// TODO Phase 6: remove dev fallback — require real iron-session cookie
 function getDevGuestSession(): Partial<SessionData> {
   return {
     userId:  'user-mock-guest-001',
@@ -116,6 +117,10 @@ export async function GET(
     const reportRows = await billingReportRepository.getBillingSummary();
     const existingReport = reportRows.find((r) => r.reservation_id === reservationId);
 
+    // All financial totals (room_charges, service_charges, tax_amount, grand_total,
+    // outstanding_balance) come exclusively from the DB (vw_guest_billing_summary /
+    // vw_invoice_totals). TypeScript NEVER computes any authoritative money value.
+    // AGENTS.md §5 — DB-First Computation Rule.
     let invoiceId: string;
     let roomCharges: string;
     let serviceCharges: string;
@@ -124,6 +129,7 @@ export async function GET(
     let invoiceDate: string;
 
     if (existingReport) {
+      // Row from vw_guest_billing_summary — all values are authoritative DB values.
       invoiceId = existingReport.invoice_id.includes('-') && existingReport.invoice_id.length === 36
         ? existingReport.invoice_id
         : (RESERVATION_INVOICE_MAP[reservationId]?.invoice_id ?? 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11');
@@ -133,6 +139,7 @@ export async function GET(
       grandTotal = existingReport.grand_total;
       invoiceDate = existingReport.invoice_date;
     } else if (RESERVATION_INVOICE_MAP[reservationId]) {
+      // Known mock reservation — pre-computed fixed values (not runtime arithmetic).
       const mapped = RESERVATION_INVOICE_MAP[reservationId];
       invoiceId = mapped.invoice_id;
       roomCharges = mapped.room_charges;
@@ -141,30 +148,10 @@ export async function GET(
       grandTotal = mapped.grand_total;
       invoiceDate = reservation.check_in_date;
     } else {
-      // Dynamic fallback for any other reservation
-      invoiceId = 'a0eebc99-9c0b-4ef8-bb6d-' + reservationId.replace(/[^a-f0-9]/gi, '').padEnd(12, '0').slice(0, 12);
-      
-      const checkIn = new Date(reservation.check_in_date);
-      const checkOut = new Date(reservation.check_out_date);
-      const diffMs = checkOut.getTime() - checkIn.getTime();
-      const nights = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24)));
-      
-      const totalDailyRate = reservation.rooms.reduce(
-        (acc, r) => acc + (parseFloat(r.rate_per_night) || 0),
-        0
-      );
-      
-      const rawRoomCharges = totalDailyRate * nights;
-      const discount = reservation.discount_percentage ? parseFloat(reservation.discount_percentage) : 0;
-      const finalRoomCharges = rawRoomCharges * (1 - discount / 100);
-      const tax = finalRoomCharges * 0.08; // 8% tax policy
-      const total = finalRoomCharges + tax;
-
-      roomCharges = finalRoomCharges.toFixed(2);
-      serviceCharges = '0.00';
-      taxAmount = tax.toFixed(2);
-      grandTotal = total.toFixed(2);
-      invoiceDate = reservation.check_in_date;
+      // No invoice exists yet for this reservation.
+      // An invoice is created only by sp_finalize_invoice() — it cannot be
+      // synthesised here. Return 404 so the client knows to trigger invoicing first.
+      return err(404, ERROR_CODES.NOT_FOUND, `No invoice found for reservation ${reservationId}. Finalize the invoice first.`);
     }
 
     // 3. Fetch payment history for this invoice
