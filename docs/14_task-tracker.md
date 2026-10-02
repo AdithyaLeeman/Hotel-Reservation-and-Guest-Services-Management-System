@@ -296,8 +296,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P04-M05-T03 | `sp_finalize_invoice()` stored procedure | 🔴 SERIAL | `database/routines/billing/sp_finalize_invoice.sql` | SP4.5 + P04-M04-T06/T07 done | TODO |
-| P04-M05-T04 | `vw_invoice_totals` view (grand total + balance) | 🔴 SERIAL | `database/views/vw_invoice_totals.sql` | SP4.5 done | TODO |
+| P04-M05-T03 | `sp_finalize_invoice()` stored procedure | 🔴 SERIAL | `database/routines/billing/sp_finalize_invoice.sql` | SP4.5 + P04-M04-T06/T07 done | DONE |
+| P04-M05-T04 | `vw_invoice_totals` view (grand total + balance) | 🔴 SERIAL | `database/views/vw_invoice_totals.sql` | SP4.5 done | DONE |
 
 ---
 
