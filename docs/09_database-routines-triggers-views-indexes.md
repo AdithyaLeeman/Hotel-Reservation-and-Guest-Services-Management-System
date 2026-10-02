@@ -152,7 +152,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ### `sp_finalize_invoice`
 **Purpose:** Create or retrieve the billing_summary record for a reservation, snapshotting the active tax rate.
 **File:** `database/routines/billing/sp_finalize_invoice.sql`
-**Status:** TODO (P04-M05-T03)
+**Status:** DONE (P04-M05-T03)
 
 **Inputs:** `p_reservation_id UUID`
 **Output:** `p_invoice_id UUID OUT`
@@ -213,7 +213,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ### `vw_invoice_totals`
 **Purpose:** Computes room charges, tax, service charges, grand total, total paid, and outstanding balance for every invoice. The authoritative source for all billing totals.
 **File:** `database/views/vw_invoice_totals.sql`
-**Status:** TODO (P04-M05-T04)
+**Status:** DONE (P04-M05-T04)
 
 **Columns:**
 | Column | Source |
@@ -234,7 +234,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 ### `vw_room_occupancy`
 **Purpose:** Room occupancy by date period for the occupancy report.
 **File:** `database/views/vw_room_occupancy.sql`
-**Status:** TODO (P05-M05-T07)
+**Status:** DONE (P05-M05-T04)
 **Lecture alignment:** L05 (view), L03 (GROUP BY, COUNT)
 
 ---

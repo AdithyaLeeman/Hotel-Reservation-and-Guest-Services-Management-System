@@ -17,15 +17,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { CreateReservationSchema } from '@/lib/validation/reservation.schema';
 import { reservationService, ServiceError } from '@/services/reservation.service';
+import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB
-// Replace this entire block with real iron-session call once P01-M01-T07 lands:
-//   import { getSession } from '@/lib/auth/session';
-//   const session = await getSession(req);
-//   if (!session.userId) return notAuthenticated();
+// DEV SESSION STUB — guarded so it never applies in production.
+// Replace with real iron-session once P01-M01-T07 lands:
+//   const session = await getSession();
 // ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
@@ -33,6 +32,21 @@ function getDevSession(): Partial<SessionData> {
     role:    'Guest',
     guestId: 'guest-mock-001',
   };
+}
+
+async function resolveSession(): Promise<Partial<SessionData>> {
+  try {
+    const session = await getSession();
+    if (session.userId && session.role) {
+      return session;
+    }
+  } catch {
+    // Cookie not present in dev / mock-first mode
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    return getDevSession();
+  }
+  return {};
 }
 
 // ---------------------------------------------------------------------------
@@ -59,8 +73,8 @@ function notAuthenticated(): NextResponse {
 // ---------------------------------------------------------------------------
 
 export async function GET(): Promise<NextResponse> {
-  // TODO (P01-M01-T07): const session = await getSession(req);
-  const session = getDevSession();
+  // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
+  const session = await resolveSession();
 
   if (!session.userId || session.role !== 'Guest') {
     return notAuthenticated();
@@ -83,8 +97,8 @@ export async function GET(): Promise<NextResponse> {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  // TODO (P01-M01-T07): const session = await getSession(req);
-  const session = getDevSession();
+  // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
+  const session = await resolveSession();
 
   if (!session.userId || session.role !== 'Guest') {
     return notAuthenticated();

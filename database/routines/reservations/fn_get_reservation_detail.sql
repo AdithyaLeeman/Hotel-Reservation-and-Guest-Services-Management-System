@@ -26,7 +26,16 @@
 --   to avoid information leakage.
 -- =============================================================================
 
--- Composite return type for full reservation detail
+-- Composite return type for room detail (used inside reservation_detail_row.rooms)
+--
+-- NOTE ON RE-DEPLOY: The DO/EXCEPTION pattern below silently skips CREATE TYPE
+-- if the type already exists. If you change the column list or column types,
+-- you must first DROP the type manually:
+--   DROP TYPE IF EXISTS reservation_room_row CASCADE;
+--   DROP TYPE IF EXISTS reservation_detail_row CASCADE;
+-- Then re-run this file. Alternatively, create a new numbered migration file
+-- (e.g. P03-M03-T04-02_alter_reservation_types.sql) that drops and recreates.
+-- Do NOT just edit this file in place and re-run — the DO block will no-op.
 DO $$ BEGIN
     CREATE TYPE reservation_room_row AS (
         room_id         BIGINT,

@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 134 tasks DONE (116 prior + 18 M4 tasks reviewed and fixed). 632 tests passing (52 suites). 2026-10-02. M4 review complete: B-01 DECIMAL→NUMERIC + TIMESTAMP→TIMESTAMP WITH TIME ZONE in DDLs; B-02 hardcoded getDevSession() replaced with resolveSession()+getSession() in checkin/services/catalogue routes. All 18 M4 tasks → DONE._
+_Last updated: 138 tasks DONE (134 prior + 4 tasks implemented: sp_finalize_invoice, vw_invoice_totals, vw_room_occupancy, P03-M03-T22 status corrected). 632 tests passing (52 suites). 2026-10-02. All Phase 1–5 DB views and routines now implemented. Only Phase 6 real-DB wiring remains._
 
 ## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
 
@@ -13,8 +13,8 @@ _Last updated: 134 tasks DONE (116 prior + 18 M4 tasks reviewed and fixed). 632 
 | P1 — Foundation | SP1.1–SP1.4 | 29 | **DONE** (All 29 tasks built and reviewed; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth DONE; SP1.4 UI DONE — code-reviewed 2026-09-30) | M1 |
 | P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **CODE COMPLETE** (All 18 tasks built; SP2.1–SP2.4 in REVIEW; SP2.5 tests written) | M2 |
 | P3 — Reservations | SP3.1–SP3.6 | 24 | **NEARLY COMPLETE** (23 of 24 tasks built: SP3.1 DDLs, SP3.2 routines, SP3.3–SP3.5 API+UI, SP3.6 tests in REVIEW; T22 TODO) | M3 |
-| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **IN_PROGRESS** (19 of 27 tasks built: SP4.1 DDLs, SP4.2 service DB routines+view, SP4.3 service APIs, SP4.4 service UIs, SP4.7 billing repo/service in REVIEW) | M4 + M5 |
-| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **IN_PROGRESS** (12 of 22 tasks built: SP5.3 report views, SP5.4 payment APIs, SP5.5 report APIs, SP5.7 service report UI in REVIEW) | M5 |
+| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **DONE** (All 27 tasks built and reviewed: SP4.1 DDLs, SP4.2 service DB routines+view, SP4.3 service APIs, SP4.4 service UIs, SP4.5 billing schema, SP4.6 invoice SP+view, SP4.7 billing repo/service) | M4 + M5 |
+| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **DONE** (All 22 tasks built: SP5.1 payment schema, SP5.2 payment+checkout SPs, SP5.3 report views inc. vw_room_occupancy, SP5.4 payment APIs, SP5.5 report APIs, SP5.6 pay UI, SP5.7 reports UI) | M5 |
 | P6 — Integration & Testing | SP6.1–SP6.5 | 19 | TODO | All |
 
 > **Status Summary:** 96 of 139 tasks implemented in code (69.1% overall completion). All 546 vitest unit/integration tests across 46 test suites PASSING.
@@ -65,8 +65,9 @@ _Last updated: 134 tasks DONE (116 prior + 18 M4 tasks reviewed and fixed). 632 
 | SP4.3 — Service API | T09–T15 (M4) | **REVIEW** (M4 service-usage repo, checkin service, service-usage service, checkin route, services GET/POST route) |
 | SP4.4 — Service UI | T16–T17 (M4) | **REVIEW** (M4 staff checkin page, service usage logging page) |
 | SP4.2 — Service DB | T04–T08 (M4) | **REVIEW** (M4 sp_check_in, sp_log_service_usage, fn_calc_room_charges, fn_calc_service_charges, vw_service_usage_breakdown) |
-| SP4.7 — Billing API | T05–T07 (M5) | **REVIEW** (M5 billing repository, billing service, guest invoice route) |
-| SP5.3 — Report Views (partial) | P05-M05-T05..T07, P05-M03-T01 | **REVIEW** (M5 vw_guest_billing_summary, vw_monthly_revenue, vw_audit_log + reservation_audit_log DDL + trg_audit_reservation_status; M3 vw_top_services) |
+| SP4.6 — Invoice DB | T03–T04 (M5) | **DONE** (M5 sp_finalize_invoice + vw_invoice_totals implemented) |
+| SP4.7 — Billing API | T05–T07 (M5) | **DONE** (M5 billing repository, billing service, guest invoice route; all 19 M5 tasks reviewed and fixed) |
+| SP5.3 — Report Views (complete) | P05-M05-T04..T07, P05-M03-T01 | **DONE** (M5 vw_room_occupancy, vw_guest_billing_summary, vw_monthly_revenue, vw_audit_log + DDL + trigger; M3 vw_top_services REVIEW) |
 | SP5.4 — Payment API | T08–T11 (M5), P05-M03-T02 | **REVIEW** (M5 payment repo+service+guest payments route+checkout route; M3 top-services API route) |
 | SP5.5 — Reports API (partial) | P05-M05-T12..T13, P05-M03-T02 | **REVIEW** (M5 billing & revenue report routes; M3 top-services report route) |
 | SP5.6 — Payment UI | T14–T15 (M5) | **REVIEW** (M5 guest bill & pay form page, payment confirmation component) |

@@ -20,12 +20,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 import { CreateReservationSchema } from '@/lib/validation/reservation.schema';
 import { reservationService, ServiceError } from '@/services/reservation.service';
+import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB
-// Replace with real iron-session call once P01-M01-T07 lands.
+// DEV SESSION STUB — guarded so it never applies in production.
+// Replace with real iron-session once P01-M01-T07 lands.
 // Toggle the returned role/branchId to test different access scenarios.
 // ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
@@ -35,6 +36,21 @@ function getDevSession(): Partial<SessionData> {
     employeeId: 3,
     branchId:   1,                // Receptionist is scoped to branch 1 (Colombo)
   };
+}
+
+async function resolveSession(): Promise<Partial<SessionData>> {
+  try {
+    const session = await getSession();
+    if (session.userId && session.role) {
+      return session;
+    }
+  } catch {
+    // Cookie not present in dev / mock-first mode
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    return getDevSession();
+  }
+  return {};
 }
 
 // ---------------------------------------------------------------------------
@@ -77,8 +93,8 @@ function isStaffRole(role: string | undefined): role is StaffRole {
 // ---------------------------------------------------------------------------
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  // TODO (P01-M01-T07): const session = await getSession(req);
-  const session = getDevSession();
+  // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
+  const session = await resolveSession();
 
   if (!session.userId || !isStaffRole(session.role)) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
@@ -120,8 +136,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  // TODO (P01-M01-T07): const session = await getSession(req);
-  const session = getDevSession();
+  // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
+  const session = await resolveSession();
 
   if (!session.userId || !isStaffRole(session.role)) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
