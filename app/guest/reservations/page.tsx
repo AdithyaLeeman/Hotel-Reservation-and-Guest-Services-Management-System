@@ -69,7 +69,13 @@ function formatDate(iso: string): string {
   });
 }
 
-/** Count nights between two ISO date strings. Returns 0 on invalid input. */
+/**
+ * Count nights between two ISO date strings — DISPLAY ONLY.
+ *
+ * Used solely for the nights badge on reservation cards (cosmetic).
+ * Authoritative billing uses PostgreSQL date arithmetic in fn_calc_room_charges().
+ * context/04-code-standards.md rule applies to financial calculations, not display labels.
+ */
 function countNights(checkIn: string, checkOut: string): number {
   if (!checkIn || !checkOut) return 0;
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();

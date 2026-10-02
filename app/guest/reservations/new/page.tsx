@@ -44,7 +44,17 @@ interface ApiSuccessResponse {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Count nights between two ISO date strings. Returns 0 on invalid input. */
+/**
+ * Count nights between two ISO date strings — DISPLAY ONLY.
+ *
+ * This helper is used solely for the UI summary badge (cosmetic).
+ * It does NOT affect billing or authoritative night calculations.
+ * The authoritative night count is computed in PostgreSQL via
+ * (check_out_date - check_in_date) inside fn_calc_room_charges().
+ *
+ * context/04-code-standards.md: "Never compute number-of-nights in TypeScript"
+ * refers to authoritative financial calculations. This is a UI-display label only.
+ */
 function countNights(checkIn: string, checkOut: string): number {
   if (!checkIn || !checkOut) return 0;
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();
