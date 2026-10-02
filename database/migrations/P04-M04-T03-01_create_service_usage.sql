@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS service_usage (
     room_id BIGINT NOT NULL,
     reservation_id UUID NOT NULL,
     service_id BIGINT NOT NULL,
-    usage_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usage_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     quantity INT NOT NULL CHECK (quantity > 0),
-    charged_price DECIMAL(12, 2) NOT NULL CHECK (charged_price >= 0),
+    charged_price NUMERIC(12, 2) NOT NULL CHECK (charged_price >= 0),
     logged_by_employee_id BIGINT NOT NULL,
     request_channel VARCHAR(20) NOT NULL,
 

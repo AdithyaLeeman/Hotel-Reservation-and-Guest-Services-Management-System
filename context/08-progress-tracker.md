@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 116 tasks DONE (97 prior + 19 M5 tasks reviewed and fixed). 632 tests passing (52 suites). 2026-10-02. M5 review complete: B-01 blocker fixed (TS math removed from invoice route), N-01 fixed (401/403 split in checkout route). All 19 M5 tasks → DONE._
+_Last updated: 134 tasks DONE (116 prior + 18 M4 tasks reviewed and fixed). 632 tests passing (52 suites). 2026-10-02. M4 review complete: B-01 DECIMAL→NUMERIC + TIMESTAMP→TIMESTAMP WITH TIME ZONE in DDLs; B-02 hardcoded getDevSession() replaced with resolveSession()+getSession() in checkin/services/catalogue routes. All 18 M4 tasks → DONE._
 
 ## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
 
