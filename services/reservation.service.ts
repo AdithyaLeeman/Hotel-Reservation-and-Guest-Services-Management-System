@@ -19,10 +19,9 @@
  *     'INVALID_STATUS_TRANSITION' — 409 Conflict
  *
  * Owned by: Member 3 (M3) — Hiripitiya S.K., 240238C
- * Tasks:    P03-M03-T10 (createGuestReservation / createStaffReservation)
- *           P03-M03-T06 (getGuestReservations / listActiveReservations)
- *           P03-M03-T07 (getReservationDetail)
- *           P03-M03-T04 (cancelReservation)
+ * Tasks:    P03-M03-T10 (createGuestReservation / createStaffReservation /
+ *                         getGuestReservations / listActiveReservations /
+ *                         getReservationDetail / cancelReservation)
  */
 
 import { pool } from '@/lib/db/pool';
@@ -115,9 +114,9 @@ export const reservationService = {
       booking_source:        'Online',                 // guest-portal bookings are always Online
       created_by_user_id:    session.userId,
       employee_id:           null,                     // no employee for guest-initiated bookings
-      discount_percentage:   input.discount_percentage != null
-                               ? input.discount_percentage.toFixed(2)
-                               : null,
+      // Pass discount as number|null — PostgreSQL casts it to NUMERIC(5,2) via the procedure.
+      // Authoritative financial computation stays in SQL (context/04-code-standards.md).
+      discount_percentage:   input.discount_percentage ?? null,
     };
 
     // sp_create_reservation owns its own transaction — do NOT wrap in BEGIN/COMMIT
@@ -164,9 +163,9 @@ export const reservationService = {
       booking_source:        input.booking_source,     // staff can use Reception / Phone
       created_by_user_id:    session.userId,
       employee_id:           session.employeeId ?? null,
-      discount_percentage:   input.discount_percentage != null
-                               ? input.discount_percentage.toFixed(2)
-                               : null,
+      // Pass discount as number|null — PostgreSQL casts it to NUMERIC(5,2) via the procedure.
+      // Authoritative financial computation stays in SQL (context/04-code-standards.md).
+      discount_percentage:   input.discount_percentage ?? null,
     };
 
     const client = await pool.connect();

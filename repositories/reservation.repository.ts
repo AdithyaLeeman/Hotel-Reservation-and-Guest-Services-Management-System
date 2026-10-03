@@ -49,7 +49,7 @@ export interface CreateReservationParams {
   created_by_user_id: string;
   /** NULL for online bookings; employee_id for Reception/Phone */
   employee_id: number | null;
-  discount_percentage: string | null; // NUMERIC(5,2) string or null
+  discount_percentage: number | null; // Passed as number; PostgreSQL casts to NUMERIC(5,2)
 }
 
 /** Room detail row joined alongside a reservation */
@@ -225,7 +225,10 @@ export const reservationRepository = {
         check_in_date: params.check_in_date,
         check_out_date: params.check_out_date,
         reservation_status: 'Booked',
-        discount_percentage: params.discount_percentage,
+        // Mock: convert number to string as PostgreSQL NUMERIC(5,2) would return
+        discount_percentage: params.discount_percentage != null
+          ? params.discount_percentage.toFixed(2)
+          : null,
         processed_by_employee_id: params.employee_id,
         created_by_user_id: params.created_by_user_id,
         booking_source: params.booking_source,
