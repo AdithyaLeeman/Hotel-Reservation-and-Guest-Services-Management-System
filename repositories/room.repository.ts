@@ -1,16 +1,19 @@
 /**
  * Room Repository — data access layer for rooms and room types.
- * Owned by: Member 2 (M2) | Task: P02-M02-T05 (Mock-First)
+ * Owned by: Member 2 (M2) | Task: P06-M02-T01
  *
- * Parallel development mode:
- * Operates with an in-memory mock store representing seed data
- * (15 rooms across 3 branches + 3 room types).
- * Ready to be swapped for parameterized pg Pool queries in Phase 6 / SP6.1
- * once SP1.2 and SP2.1 migrations are executed on the real database.
+ * Phase 6 SP6.1 — Mock store replaced with real parameterized pg Pool queries.
+ * All SQL is parameterized (no string concatenation — AGENTS.md §8).
+ * Money columns returned as strings from pg (NUMERIC(12,2) — AGENTS.md §8).
  */
 
+import { pool } from '@/lib/db/pool';
 import type { Room, RoomType, Amenity } from '@/types/domain';
 import type { RoomStatus } from '@/types/enums';
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 export interface RoomWithDetails extends Room {
   room_type?: RoomType;
@@ -24,102 +27,108 @@ export interface CreateRoomInput {
   status?: RoomStatus;
 }
 
-// Initial mock room types matching seed data
-const MOCK_ROOM_TYPES: RoomType[] = [
-  {
-    type_id: 1,
-    type_name: 'Single',
-    capacity: 1,
-    daily_rate: '10000.00',
-  },
-  {
-    type_id: 2,
-    type_name: 'Double',
-    capacity: 2,
-    daily_rate: '18000.00',
-  },
-  {
-    type_id: 3,
-    type_name: 'Suite',
-    capacity: 4,
-    daily_rate: '35000.00',
-  },
-];
-
-// Initial mock amenities
-const MOCK_AMENITIES: Amenity[] = [
-  { amenity_id: 1, amenity_name: 'Free High-Speed Wi-Fi' },
-  { amenity_id: 2, amenity_name: 'Air Conditioning' },
-  { amenity_id: 3, amenity_name: 'Minibar & Refrigerator' },
-  { amenity_id: 4, amenity_name: 'Ocean View Balcony' },
-  { amenity_id: 5, amenity_name: 'Smart Television' },
-];
-
-// In-memory mock store for rooms (15 rooms across 3 branches: 1=Colombo, 2=Kandy, 3=Galle)
-let mockRooms: Room[] = [
-  // Branch 1: Colombo
-  { room_id: 1, room_number: '101', branch_id: 1, type_id: 1, status: 'Available' },
-  { room_id: 2, room_number: '102', branch_id: 1, type_id: 2, status: 'Available' },
-  { room_id: 3, room_number: '103', branch_id: 1, type_id: 2, status: 'Maintenance' }, // Test BR-16 maintenance filter
-  { room_id: 4, room_number: '201', branch_id: 1, type_id: 3, status: 'Occupied' },
-  { room_id: 5, room_number: '202', branch_id: 1, type_id: 3, status: 'Available' },
-
-  // Branch 2: Kandy
-  { room_id: 6, room_number: '101', branch_id: 2, type_id: 1, status: 'Available' },
-  { room_id: 7, room_number: '102', branch_id: 2, type_id: 2, status: 'Available' },
-  { room_id: 8, room_number: '103', branch_id: 2, type_id: 2, status: 'Available' },
-  { room_id: 9, room_number: '201', branch_id: 2, type_id: 3, status: 'Available' },
-  { room_id: 10, room_number: '202', branch_id: 2, type_id: 3, status: 'Available' },
-
-  // Branch 3: Galle
-  { room_id: 11, room_number: '101', branch_id: 3, type_id: 1, status: 'Available' },
-  { room_id: 12, room_number: '102', branch_id: 3, type_id: 2, status: 'Available' },
-  { room_id: 13, room_number: '103', branch_id: 3, type_id: 2, status: 'Maintenance' },
-  { room_id: 14, room_number: '201', branch_id: 3, type_id: 3, status: 'Available' },
-  { room_id: 15, room_number: '202', branch_id: 3, type_id: 3, status: 'Occupied' },
-];
-
-let nextRoomId = 16;
+// ---------------------------------------------------------------------------
+// Repository
+// ---------------------------------------------------------------------------
 
 export const roomRepository = {
   /**
-   * List all rooms across all branches (Manager/Admin use).
+   * List all rooms across all branches (Manager / Admin use).
    */
   listAll: async (): Promise<Room[]> => {
-    return mockRooms.map((r) => ({ ...r }));
+    const result = await pool.query<Room>(
+      `SELECT room_id, room_number, branch_id, type_id, status
+       FROM room
+       ORDER BY branch_id, room_number`
+    );
+    return result.rows;
   },
 
   /**
    * List all rooms belonging to a specific branch.
    */
   listByBranch: async (branchId: number): Promise<Room[]> => {
-    return mockRooms
-      .filter((r) => r.branch_id === branchId)
-      .map((r) => ({ ...r }));
+    const result = await pool.query<Room>(
+      `SELECT room_id, room_number, branch_id, type_id, status
+       FROM room
+       WHERE branch_id = $1
+       ORDER BY room_number`,
+      [branchId]
+    );
+    return result.rows;
   },
 
   /**
-   * List rooms for a branch joined with room type details.
+   * List rooms for a branch joined with room_type + amenities.
+   * Amenities aggregated as a JSON array so a single query covers the join.
    */
   listWithDetailsByBranch: async (branchId: number): Promise<RoomWithDetails[]> => {
-    return mockRooms
-      .filter((r) => r.branch_id === branchId)
-      .map((r) => {
-        const type = MOCK_ROOM_TYPES.find((t) => t.type_id === r.type_id);
-        return {
-          ...r,
-          room_type: type ? { ...type } : undefined,
-          amenities: [...MOCK_AMENITIES],
-        };
-      });
+    const result = await pool.query<{
+      room_id: number;
+      room_number: string;
+      branch_id: number;
+      type_id: number;
+      status: RoomStatus;
+      type_name: string;
+      capacity: number;
+      daily_rate: string;
+      amenities: Amenity[];
+    }>(
+      `SELECT
+         r.room_id,
+         r.room_number,
+         r.branch_id,
+         r.type_id,
+         r.status,
+         rt.type_name,
+         rt.capacity,
+         rt.daily_rate,
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'amenity_id',   a.amenity_id,
+               'amenity_name', a.amenity_name
+             ) ORDER BY a.amenity_name
+           ) FILTER (WHERE a.amenity_id IS NOT NULL),
+           '[]'::json
+         ) AS amenities
+       FROM room r
+       JOIN room_type rt ON rt.type_id = r.type_id
+       LEFT JOIN room_type_amenity rta ON rta.type_id = rt.type_id
+       LEFT JOIN amenity a             ON a.amenity_id  = rta.amenity_id
+       WHERE r.branch_id = $1
+       GROUP BY r.room_id, rt.type_id, rt.type_name, rt.capacity, rt.daily_rate
+       ORDER BY r.room_number`,
+      [branchId]
+    );
+
+    return result.rows.map((row) => ({
+      room_id:     row.room_id,
+      room_number: row.room_number,
+      branch_id:   row.branch_id,
+      type_id:     row.type_id,
+      status:      row.status,
+      room_type: {
+        type_id:    row.type_id,
+        type_name:  row.type_name,
+        capacity:   row.capacity,
+        daily_rate: row.daily_rate,
+      },
+      amenities: row.amenities ?? [],
+    }));
   },
 
   /**
    * Find a room by primary key (room_id).
    */
   findById: async (roomId: number): Promise<Room | null> => {
-    const found = mockRooms.find((r) => r.room_id === roomId);
-    return found ? { ...found } : null;
+    const result = await pool.query<Room>(
+      `SELECT room_id, room_number, branch_id, type_id, status
+       FROM room
+       WHERE room_id = $1`,
+      [roomId]
+    );
+    return result.rows[0] ?? null;
   },
 
   /**
@@ -130,98 +139,81 @@ export const roomRepository = {
     branchId: number,
     roomNumber: string
   ): Promise<Room | null> => {
-    const found = mockRooms.find(
-      (r) => r.branch_id === branchId && r.room_number === roomNumber
+    const result = await pool.query<Room>(
+      `SELECT room_id, room_number, branch_id, type_id, status
+       FROM room
+       WHERE branch_id = $1 AND room_number = $2`,
+      [branchId, roomNumber]
     );
-    return found ? { ...found } : null;
+    return result.rows[0] ?? null;
   },
 
   /**
    * Insert a new room record.
-   * Throws error if (branch_id, room_number) already exists.
+   * PostgreSQL UNIQUE constraint on (branch_id, room_number) raises SQLSTATE 23505
+   * on duplicate — caught and re-thrown by the service layer as RoomConflictError.
    */
   insert: async (input: CreateRoomInput): Promise<Room> => {
-    const exists = mockRooms.some(
-      (r) => r.branch_id === input.branch_id && r.room_number === input.room_number
+    const result = await pool.query<Room>(
+      `INSERT INTO room (room_number, branch_id, type_id, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING room_id, room_number, branch_id, type_id, status`,
+      [
+        input.room_number,
+        input.branch_id,
+        input.type_id,
+        input.status ?? 'Available',
+      ]
     );
-    if (exists) {
-      throw new Error(
-        `Room ${input.room_number} already exists in branch ${input.branch_id} (UNIQUE violation)`
-      );
-    }
-
-    const typeExists = MOCK_ROOM_TYPES.some((t) => t.type_id === input.type_id);
-    if (!typeExists) {
-      throw new Error(`Room type with ID ${input.type_id} does not exist`);
-    }
-
-    const newRoom: Room = {
-      room_id: nextRoomId++,
-      room_number: input.room_number,
-      branch_id: input.branch_id,
-      type_id: input.type_id,
-      status: input.status ?? 'Available',
-    };
-
-    mockRooms.push(newRoom);
-    return { ...newRoom };
+    return result.rows[0];
   },
 
   /**
-   * Update the status of a room (e.g. set to Maintenance or Available).
+   * Update the operational status of a room.
+   * Returns the updated row; throws if room_id is not found.
    */
   updateStatus: async (roomId: number, status: RoomStatus): Promise<Room> => {
-    const index = mockRooms.findIndex((r) => r.room_id === roomId);
-    if (index === -1) {
+    const result = await pool.query<Room>(
+      `UPDATE room
+       SET status = $1
+       WHERE room_id = $2
+       RETURNING room_id, room_number, branch_id, type_id, status`,
+      [status, roomId]
+    );
+    if (result.rows.length === 0) {
       throw new Error(`Room with ID ${roomId} not found`);
     }
-
-    mockRooms[index] = {
-      ...mockRooms[index],
-      status,
-    };
-
-    return { ...mockRooms[index] };
+    return result.rows[0];
   },
 
   /**
    * List all room types in the catalogue.
    */
   listRoomTypes: async (): Promise<RoomType[]> => {
-    return MOCK_ROOM_TYPES.map((t) => ({ ...t }));
+    const result = await pool.query<RoomType>(
+      `SELECT type_id, type_name, capacity, daily_rate
+       FROM room_type
+       ORDER BY type_id`
+    );
+    return result.rows;
   },
 
   /**
-   * Find a room type by ID.
+   * Find a single room type by primary key.
    */
   findRoomTypeById: async (typeId: number): Promise<RoomType | null> => {
-    const found = MOCK_ROOM_TYPES.find((t) => t.type_id === typeId);
-    return found ? { ...found } : null;
+    const result = await pool.query<RoomType>(
+      `SELECT type_id, type_name, capacity, daily_rate
+       FROM room_type
+       WHERE type_id = $1`,
+      [typeId]
+    );
+    return result.rows[0] ?? null;
   },
 
   /**
-   * Reset mock store to initial seed state (useful for test suites).
+   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
    */
-  _resetMockStore: (): void => {
-    mockRooms = [
-      { room_id: 1, room_number: '101', branch_id: 1, type_id: 1, status: 'Available' },
-      { room_id: 2, room_number: '102', branch_id: 1, type_id: 2, status: 'Available' },
-      { room_id: 3, room_number: '103', branch_id: 1, type_id: 2, status: 'Maintenance' },
-      { room_id: 4, room_number: '201', branch_id: 1, type_id: 3, status: 'Occupied' },
-      { room_id: 5, room_number: '202', branch_id: 1, type_id: 3, status: 'Available' },
-
-      { room_id: 6, room_number: '101', branch_id: 2, type_id: 1, status: 'Available' },
-      { room_id: 7, room_number: '102', branch_id: 2, type_id: 2, status: 'Available' },
-      { room_id: 8, room_number: '103', branch_id: 2, type_id: 2, status: 'Available' },
-      { room_id: 9, room_number: '201', branch_id: 2, type_id: 3, status: 'Available' },
-      { room_id: 10, room_number: '202', branch_id: 2, type_id: 3, status: 'Available' },
-
-      { room_id: 11, room_number: '101', branch_id: 3, type_id: 1, status: 'Available' },
-      { room_id: 12, room_number: '102', branch_id: 3, type_id: 2, status: 'Available' },
-      { room_id: 13, room_number: '103', branch_id: 3, type_id: 2, status: 'Maintenance' },
-      { room_id: 14, room_number: '201', branch_id: 3, type_id: 3, status: 'Available' },
-      { room_id: 15, room_number: '202', branch_id: 3, type_id: 3, status: 'Occupied' },
-    ];
-    nextRoomId = 16;
-  },
+  _resetMockStore: (): void => {},
 };
+

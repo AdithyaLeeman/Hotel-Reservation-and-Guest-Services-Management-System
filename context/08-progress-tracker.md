@@ -84,7 +84,7 @@ _Last updated: 138 tasks DONE (134 prior + 4 tasks implemented: sp_finalize_invo
 | Member | Immediate Next Task | Can Start? |
 |---|---|---|
 | M1 | P06-M01-T01 — Wire auth repos to real DB; verify session round-trip | ⏳ After integration branch merge |
-| M2 | P06-M02-T01 — Wire room + availability repositories to real DB | ⏳ After integration branch merge (All Phase 1–5 M2 tasks in REVIEW/DONE) |
+| M2 | P06-M02-T02 — Availability search returns correct results for test scenarios | ⏳ Ready (P06-M02-T01 in REVIEW) |
 | M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
 | M4 | P06-M04-T01 — Wire service-usage + checkin to real DB (after Phase 3+4 DB executed) | ⏳ After integration branch merge |
 | M5 | P05-M05-T16 — Reports dashboard page (`app/staff/reports/page.tsx`) | ✅ Now (mock-first) |
