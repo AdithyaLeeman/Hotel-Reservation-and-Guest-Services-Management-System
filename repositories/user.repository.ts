@@ -86,7 +86,9 @@ export const userRepository = {
     username: string
   ): Promise<(UserAccountWithHash & { employee_id: number; branch_id: number | null }) | null> => {
     const result = await pool.query<
-      UserAccountWithHash & { employee_id: number; branch_id: number | null }
+      // pg returns bigint as string at runtime even though we type it as number.
+      // We coerce explicitly below so callers always receive number.
+      UserAccountWithHash & { employee_id: string | number; branch_id: string | number | null }
     >(
       `SELECT
          ua.user_id,
@@ -101,6 +103,13 @@ export const userRepository = {
        WHERE ua.username = $1`,
       [username]
     );
-    return result.rows[0] ?? null;
+    if (!result.rows[0]) return null;
+    const row = result.rows[0];
+    return {
+      ...row,
+      // Coerce bigint strings to JS numbers (pg returns bigint as string)
+      employee_id: parseInt(String(row.employee_id), 10),
+      branch_id: row.branch_id != null ? parseInt(String(row.branch_id), 10) : null,
+    };
   },
 };
