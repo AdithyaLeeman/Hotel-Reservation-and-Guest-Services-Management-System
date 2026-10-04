@@ -10,6 +10,17 @@ import {
 } from '../services/availability.service';
 import { availabilityRepository } from '../repositories/availability.repository';
 
+// ---------------------------------------------------------------------------
+// Mock the repository — real repo now delegates to PostgreSQL fn_get_available_rooms.
+// Service tests stay fast and DB-independent.
+// ---------------------------------------------------------------------------
+vi.mock('../repositories/availability.repository', () => ({
+  availabilityRepository: {
+    getAvailableRooms: vi.fn(async () => []),
+    _resetMockStore: vi.fn(),
+  },
+}));
+
 const FIXED_TODAY = '2026-09-21';
 const FIXED_TOMORROW = '2026-09-22';
 const FIXED_IN_3 = '2026-09-24';
@@ -21,7 +32,7 @@ describe('Availability Service', () => {
   let dateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    availabilityRepository._resetMockStore();
+    availabilityRepository._resetMockStore?.();
     dateSpy = vi.spyOn(Date.prototype, 'toISOString').mockReturnValue(mockIsoNow);
   });
 
