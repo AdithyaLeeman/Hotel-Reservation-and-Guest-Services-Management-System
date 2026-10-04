@@ -411,7 +411,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
-| P06-M01-T01 | M1 | Wire auth repositories to real DB; verify session flow end-to-end | TODO |
+| P06-M01-T01 | M1 | Wire auth repositories to real DB; verify session flow end-to-end | DONE |
 | P06-M02-T01 | M2 | Wire room + availability repositories to real DB | TODO |
 | P06-M03-T01 | M3 | Wire reservation repository to real DB | TODO |
 | P06-M04-T01 | M4 | Wire service-usage + checkin to real DB | TODO |
