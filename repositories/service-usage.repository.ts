@@ -1,17 +1,16 @@
 /**
  * Service Usage Repository — data access layer for service_catalogue and service_usage.
- * Owned by: Member 4 (M4) | Task: P04-M04-T09 (Mock-First)
+ * Owned by: Member 4 (M4) | Task: P04-M04-T09
  *
- * Parallel development mode:
- * Operates with an in-memory mock store representing seed data
- * (6 service catalogue items + sample service usage records).
+ * P06-M04-T01 — Mock store replaced with real parameterized pg Pool queries.
+ * All SQL is parameterized (no string concatenation — AGENTS.md §8).
+ * Money/NUMERIC columns returned as strings from pg (AGENTS.md §8).
  *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- * - listCatalogue()           → SELECT * FROM service_catalogue WHERE status = 'Active' ORDER BY service_name
- * - findCatalogueById()       → SELECT * FROM service_catalogue WHERE service_id = $1
- * - insertCatalogueItem()     → INSERT INTO service_catalogue ... RETURNING *
- * - callLogServiceUsage()     → CALL sp_log_service_usage($1,$2,$3,$4,$5,$6)
- * - listUsageByReservation()  → SELECT * FROM vw_service_usage_breakdown WHERE reservation_id = $1
+ * DB routines used:
+ *   service_catalogue table        — P04-M04-T01 (DDL)
+ *   service_usage table            — P04-M04-T03 (DDL)
+ *   sp_log_service_usage()         — P04-M04-T05 (atomic, price-snapshot procedure)
+ *   vw_service_usage_breakdown     — P04-M04-T08 (view; joined usage rows)
  *
  * DB-first rule: charged_price is NEVER computed in TypeScript.
  * sp_log_service_usage() snapshots service_catalogue.current_price into
@@ -19,6 +18,7 @@
  * See docs/08_business-rules-and-enforcement.md — Calculation Placement Matrix.
  */
 
+import { pool } from '@/lib/db/pool';
 import type { ServiceCatalogue, ServiceUsage } from '@/types/domain';
 import type { ServiceCatalogueStatus } from '@/types/enums';
 
@@ -44,57 +44,9 @@ export interface CreateCatalogueItemInput {
 }
 
 export interface ServiceUsageBreakdownRow extends ServiceUsage {
-  service_name: string; // joined from service_catalogue
-  line_total: string;   // charged_price * quantity — computed by vw_service_usage_breakdown in real DB
+  service_name: string; // joined from service_catalogue via vw_service_usage_breakdown
+  line_total: string;   // charged_price * quantity — computed inside the view, never in TS
 }
-
-// ---------------------------------------------------------------------------
-// Mock seed data — mirrors database/seeds/P04-M04-T02_seed_services.sql
-// 6 services as defined in .agent/members/member-4.md
-// ---------------------------------------------------------------------------
-
-const MOCK_CATALOGUE: ServiceCatalogue[] = [
-  { service_id: 1, service_name: 'Room Service',     current_price: '1500.00', status: 'Active' },
-  { service_id: 2, service_name: 'Spa Treatment',    current_price: '5000.00', status: 'Active' },
-  { service_id: 3, service_name: 'Laundry',          current_price:  '800.00', status: 'Active' },
-  { service_id: 4, service_name: 'Minibar Usage',    current_price:  '350.00', status: 'Active' },
-  { service_id: 5, service_name: 'Airport Transfer', current_price: '3500.00', status: 'Active' },
-  /**
-   * service_id=6 is SYSTEM-RESERVED for Late Checkout.
-   * Do NOT change its service_id — referenced by sp_check_in() implicitly.
-   * See .agent/members/member-4.md — "6 Services to Seed".
-   */
-  { service_id: 6, service_name: 'Late Checkout',    current_price: '2000.00', status: 'Active' },
-];
-
-// Mock usage records — sample data for reservation 'RES-MOCK-001'
-let mockUsageRecords: ServiceUsage[] = [
-  {
-    usage_id: 1,
-    room_id: 4,
-    reservation_id: 'RES-MOCK-001',
-    service_id: 1,
-    usage_date: '2026-09-15',
-    quantity: 2,
-    charged_price: '1500.00', // price snapshot — immutable
-    logged_by_employee_id: 10,
-    request_channel: 'Phone',
-  },
-  {
-    usage_id: 2,
-    room_id: 4,
-    reservation_id: 'RES-MOCK-001',
-    service_id: 3,
-    usage_date: '2026-09-16',
-    quantity: 1,
-    charged_price: '800.00',
-    logged_by_employee_id: 10,
-    request_channel: null,
-  },
-];
-
-let nextUsageId = 3;
-let nextCatalogueId = 7;
 
 // ---------------------------------------------------------------------------
 // Repository
@@ -104,172 +56,196 @@ export const serviceUsageRepository = {
   /**
    * List all Active catalogue items, ordered alphabetically by name.
    *
-   * Mock swap: SELECT * FROM service_catalogue WHERE status = 'Active' ORDER BY service_name
+   * SELECT * FROM service_catalogue WHERE status = 'Active' ORDER BY service_name
    */
   listCatalogue: async (): Promise<ServiceCatalogue[]> => {
-    return MOCK_CATALOGUE
-      .filter((s) => s.status === 'Active')
-      .map((s) => ({ ...s }))
-      .sort((a, b) => a.service_name.localeCompare(b.service_name));
+    const result = await pool.query<ServiceCatalogue>(
+      `SELECT
+          service_id,
+          service_name,
+          current_price::text  AS current_price,
+          status
+       FROM service_catalogue
+       WHERE status = 'Active'
+       ORDER BY service_name`
+    );
+    return result.rows;
   },
 
   /**
    * Find a single catalogue item by its primary key.
    *
-   * Mock swap: SELECT * FROM service_catalogue WHERE service_id = $1
+   * SELECT * FROM service_catalogue WHERE service_id = $1
    */
   findCatalogueById: async (serviceId: number): Promise<ServiceCatalogue | null> => {
-    const found = MOCK_CATALOGUE.find((s) => s.service_id === serviceId);
-    return found ? { ...found } : null;
+    const result = await pool.query<ServiceCatalogue>(
+      `SELECT
+          service_id,
+          service_name,
+          current_price::text  AS current_price,
+          status
+       FROM service_catalogue
+       WHERE service_id = $1`,
+      [serviceId]
+    );
+    return result.rows[0] ?? null;
   },
 
   /**
    * Insert a new service catalogue item.
-   * Throws if a service with the same name already exists (mirrors UNIQUE constraint).
    *
-   * Mock swap: INSERT INTO service_catalogue (service_name, current_price, status)
-   *            VALUES ($1, $2, $3) RETURNING *
+   * INSERT INTO service_catalogue (service_name, current_price, status)
+   * VALUES ($1, $2, $3) RETURNING *
+   *
+   * PostgreSQL UNIQUE constraint on service_name raises SQLSTATE 23505
+   * (unique_violation). The service layer maps this to DUPLICATE_SERVICE_NAME.
    */
   insertCatalogueItem: async (input: CreateCatalogueItemInput): Promise<ServiceCatalogue> => {
-    const duplicate = MOCK_CATALOGUE.find(
-      (s) => s.service_name.toLowerCase() === input.service_name.toLowerCase()
+    const result = await pool.query<ServiceCatalogue>(
+      `INSERT INTO service_catalogue (service_name, current_price, status)
+       VALUES ($1, $2::numeric(12,2), $3::service_catalogue_status)
+       RETURNING
+           service_id,
+           service_name,
+           current_price::text  AS current_price,
+           status`,
+      [input.service_name, input.current_price, input.status ?? 'Active']
     );
-    if (duplicate) {
-      throw new Error(
-        `Service "${input.service_name}" already exists in the catalogue (UNIQUE violation)`
-      );
-    }
-
-    const newItem: ServiceCatalogue = {
-      service_id: nextCatalogueId++,
-      service_name: input.service_name,
-      current_price: input.current_price,
-      status: input.status ?? 'Active',
-    };
-
-    MOCK_CATALOGUE.push(newItem);
-    return { ...newItem };
+    return result.rows[0];
   },
 
   /**
-   * Log a service usage record against a reservation.
+   * Log a service usage record against a reservation by calling sp_log_service_usage().
    *
    * IMPORTANT — DB-first price snapshot rule:
-   * The real implementation calls sp_log_service_usage() which copies
-   * service_catalogue.current_price into service_usage.charged_price at the
-   * moment of logging. That price is NEVER recomputed later.
-   * The mock replicates this by reading the current catalogue price at call time
-   * and storing it as an immutable snapshot.
+   * sp_log_service_usage() copies service_catalogue.current_price into
+   * service_usage.charged_price at the moment of logging. That price is
+   * NEVER recomputed later. TypeScript must NOT pass or compute charged_price.
    *
-   * Mock swap: CALL sp_log_service_usage($1, $2, $3, $4, $5, $6)
+   * CALL sp_log_service_usage($1, $2, $3, $4, $5, $6)
    *
-   * Error states (replicated by real SP):
-   * - SQLSTATE '45011': reservation not in CheckedIn status
-   * - SQLSTATE '23503': service_id or room_id does not exist (FK violation)
+   * The procedure raises:
+   *   SQLSTATE '22023' — quantity < 1
+   *   SQLSTATE '23503' — reservation not found, or room not part of reservation,
+   *                      or service_id not found (FK / record-missing codes)
+   *   SQLSTATE '45011' — reservation not in CheckedIn status
+   *   SQLSTATE '45012' — service is Inactive
+   *
+   * After the CALL we do a SELECT to return the inserted row, since the
+   * procedure does not return data via INOUT.
    */
   callLogServiceUsage: async (params: LogServiceUsageInput): Promise<ServiceUsage> => {
-    const catalogueItem = MOCK_CATALOGUE.find((s) => s.service_id === params.service_id);
-    if (!catalogueItem) {
-      throw new Error(`Service with ID ${params.service_id} not found in catalogue`);
-    }
-    if (catalogueItem.status === 'Inactive') {
-      throw new Error(`Service "${catalogueItem.service_name}" is Inactive and cannot be logged`);
-    }
-    if (params.quantity < 1) {
-      throw new Error('Quantity must be at least 1');
-    }
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
 
-    // Snapshot current_price at log time — mirrors sp_log_service_usage() behaviour.
-    // DO NOT compute charged_price * quantity here — that belongs to vw_service_usage_breakdown.
-    const newUsage: ServiceUsage = {
-      usage_id: nextUsageId++,
-      room_id: params.room_id ?? 1,
-      reservation_id: params.reservation_id,
-      service_id: params.service_id,
-      usage_date: params.usage_date ?? new Date().toISOString().split('T')[0],
-      quantity: params.quantity,
-      charged_price: catalogueItem.current_price, // price snapshot — immutable after this point
-      logged_by_employee_id: params.logged_by_employee_id,
-      request_channel: params.request_channel ?? params.channel ?? null,
-    };
+      // Resolve room_id: the procedure requires a room that belongs to the
+      // reservation. If the caller did not supply one, pick the first room
+      // from reservation_rooms for this reservation.
+      let roomId = params.room_id;
+      if (roomId === undefined) {
+        const roomRes = await client.query<{ room_id: number }>(
+          `SELECT room_id FROM reservation_rooms WHERE reservation_id = $1 LIMIT 1`,
+          [params.reservation_id]
+        );
+        if (roomRes.rows.length === 0) {
+          throw Object.assign(
+            new Error(`No rooms found for reservation ${params.reservation_id}`),
+            { code: '23503' }
+          );
+        }
+        roomId = roomRes.rows[0].room_id;
+      }
 
-    mockUsageRecords.push(newUsage);
-    return { ...newUsage };
+      const channel   = params.request_channel ?? params.channel ?? null;
+
+      await client.query(
+        `CALL sp_log_service_usage(
+            $1::uuid,    -- p_reservation_id
+            $2::bigint,  -- p_room_id
+            $3::bigint,  -- p_service_id
+            $4::int,     -- p_quantity
+            $5::bigint,  -- p_logged_by_employee_id
+            $6::varchar  -- p_request_channel
+         )`,
+        [
+          params.reservation_id,
+          roomId,
+          params.service_id,
+          params.quantity,
+          params.logged_by_employee_id,
+          channel,
+        ]
+      );
+
+      // Fetch the row we just inserted (most-recent usage for this reservation+service)
+      const fetchRes = await client.query<ServiceUsage>(
+        `SELECT
+             usage_id,
+             room_id,
+             reservation_id::text,
+             service_id,
+             usage_date::text                       AS usage_date,
+             quantity,
+             charged_price::text                    AS charged_price,
+             logged_by_employee_id,
+             request_channel
+         FROM service_usage
+         WHERE reservation_id = $1
+           AND service_id      = $2
+           AND logged_by_employee_id = $3
+         ORDER BY usage_id DESC
+         LIMIT 1`,
+        [params.reservation_id, params.service_id, params.logged_by_employee_id]
+      );
+
+      await client.query('COMMIT');
+      return fetchRes.rows[0];
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
   },
 
   /**
-   * List all service usage records for a reservation, joined with catalogue details.
-   * Ordered by usage_date ascending then usage_id ascending.
+   * List all service usage records for a reservation, enriched with catalogue details.
+   * Reads from vw_service_usage_breakdown, ordered by usage_date then usage_id.
    *
-   * Mock swap: SELECT * FROM vw_service_usage_breakdown WHERE reservation_id = $1
+   * SELECT * FROM vw_service_usage_breakdown WHERE reservation_id = $1
    *            ORDER BY usage_date, usage_id
    *
-   * Note: line_total is computed inside vw_service_usage_breakdown in the real DB.
-   * The mock computes it here only to satisfy the UI contract.
-   * The authoritative total is fn_calc_service_charges(reservation_id).
+   * Note: line_total is computed inside vw_service_usage_breakdown in the DB.
+   * The authoritative total is fn_calc_service_charges(reservation_id) — never
+   * recomputed in TypeScript.
    */
   listUsageByReservation: async (reservationId: string): Promise<ServiceUsageBreakdownRow[]> => {
-    return mockUsageRecords
-      .filter((u) => u.reservation_id === reservationId)
-      .sort((a, b) => {
-        if (a.usage_date !== b.usage_date) {
-          return a.usage_date < b.usage_date ? -1 : 1;
-        }
-        return a.usage_id - b.usage_id;
-      })
-      .map((u) => {
-        const catalogueItem = MOCK_CATALOGUE.find((s) => s.service_id === u.service_id);
-        return {
-          ...u,
-          service_name: catalogueItem?.service_name ?? 'Unknown',
-          // line_total mirrors vw_service_usage_breakdown: charged_price * quantity
-          line_total: (parseFloat(u.charged_price) * u.quantity).toFixed(2),
-        };
-      });
+    const result = await pool.query<ServiceUsageBreakdownRow>(
+      `SELECT
+           usage_id,
+           room_id,
+           reservation_id::text,
+           service_id,
+           service_name,
+           usage_date::text                         AS usage_date,
+           quantity,
+           charged_price::text                      AS charged_price,
+           line_total::text                         AS line_total,
+           request_channel,
+           logged_by_employee_id
+       FROM vw_service_usage_breakdown
+       WHERE reservation_id = $1::uuid
+       ORDER BY usage_date, usage_id`,
+      [reservationId]
+    );
+    return result.rows;
   },
 
   /**
-   * Reset mock stores to initial seed state.
-   * Used by test suites (beforeEach).
+   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
+   * The mock store has been removed; this stub ensures existing test setups
+   * that call _resetMockStore() continue to compile and run without error.
    */
-  _resetMockStore: (): void => {
-    mockUsageRecords = [
-      {
-        usage_id: 1,
-        room_id: 4,
-        reservation_id: 'RES-MOCK-001',
-        service_id: 1,
-        usage_date: '2026-09-15',
-        quantity: 2,
-        charged_price: '1500.00',
-        logged_by_employee_id: 10,
-        request_channel: 'Phone',
-      },
-      {
-        usage_id: 2,
-        room_id: 4,
-        reservation_id: 'RES-MOCK-001',
-        service_id: 3,
-        usage_date: '2026-09-16',
-        quantity: 1,
-        charged_price: '800.00',
-        logged_by_employee_id: 10,
-        request_channel: null,
-      },
-    ];
-    nextUsageId = 3;
-    nextCatalogueId = 7;
-
-    // Trim any test-inserted catalogue items
-    if (MOCK_CATALOGUE.length > 6) {
-      MOCK_CATALOGUE.splice(6);
-    }
-    // Restore all seed rows to original values
-    MOCK_CATALOGUE[0] = { service_id: 1, service_name: 'Room Service',     current_price: '1500.00', status: 'Active' };
-    MOCK_CATALOGUE[1] = { service_id: 2, service_name: 'Spa Treatment',    current_price: '5000.00', status: 'Active' };
-    MOCK_CATALOGUE[2] = { service_id: 3, service_name: 'Laundry',          current_price:  '800.00', status: 'Active' };
-    MOCK_CATALOGUE[3] = { service_id: 4, service_name: 'Minibar Usage',    current_price:  '350.00', status: 'Active' };
-    MOCK_CATALOGUE[4] = { service_id: 5, service_name: 'Airport Transfer', current_price: '3500.00', status: 'Active' };
-    MOCK_CATALOGUE[5] = { service_id: 6, service_name: 'Late Checkout',    current_price: '2000.00', status: 'Active' };
-  },
+  _resetMockStore: (): void => {},
 };

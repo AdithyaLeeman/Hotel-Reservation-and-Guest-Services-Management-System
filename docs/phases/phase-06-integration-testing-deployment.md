@@ -13,12 +13,12 @@ Each member replaces all mock return values in their repository files with real 
 
 | Task | Member | Title | Status |
 |---|---|---|---|
-| P06-M01-T01 | M1 | Wire auth repositories to real DB; verify session round-trip | TODO |
-| P06-M02-T01 | M2 | Wire room + availability repositories to real DB | TODO |
-| P06-M03-T01 | M3 | Wire reservation repository to real DB | TODO |
-| P06-M04-T01 | M4 | Wire service-usage + checkin to real DB | TODO |
-| P06-M05-T01 | M5 | Wire billing + payment to real DB | TODO |
-| P06-M01-T02 | M1 | Clean DB rebuild from empty + full seed verify (`npm run migrate && npm run seed`) | TODO |
+| P06-M01-T01 | M1 | Wire auth repositories to real DB; verify session round-trip | DONE |
+| P06-M02-T01 | M2 | Wire room + availability repositories to real DB | DONE |
+| P06-M03-T01 | M3 | Wire reservation repository to real DB | DONE |
+| P06-M04-T01 | M4 | Wire service-usage + checkin to real DB | IN_PROGRESS |
+| P06-M05-T01 | M5 | Wire billing + payment to real DB | IN_PROGRESS |
+| P06-M01-T02 | M1 | Clean DB rebuild from empty + full seed verify (`npm run migrate && npm run seed`) | READY |
 
 ---
 
