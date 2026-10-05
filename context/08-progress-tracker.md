@@ -1,23 +1,23 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: 138 tasks DONE (134 prior + 4 tasks implemented: sp_finalize_invoice, vw_invoice_totals, vw_room_occupancy, P03-M03-T22 status corrected). 632 tests passing (52 suites). 2026-10-02. All Phase 1–5 DB views and routines now implemented. Only Phase 6 real-DB wiring remains._
+_Last updated: Phase 6 active. M1, M2, M3, and M4 real DB wiring completed (P06-M01-T01..T01 through P06-M04-T01 merged/REVIEW). Active task: M5 (P06-M05-T01). 2026-10-05._
 
-## Current Phase: P3 (Reservations DB), P4 (Services & Billing), P5 (Payments & Reports) — Active Parallel Development
+## Current Phase: Phase 6 — Integration, Testing, and Deployment Prep (Active)
 
 ## Overall Progress
 
 | Phase | Subphases | Tasks | Status | Integration Owner |
 |---|---|---|---|---|
 | P0 — Initialization | — | — | **DONE** | — |
-| P1 — Foundation | SP1.1–SP1.4 | 29 | **DONE** (All 29 tasks built and reviewed; SP1.1, SP1.2 DDLs DONE; SP1.3 Auth DONE; SP1.4 UI DONE — code-reviewed 2026-09-30) | M1 |
-| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **CODE COMPLETE** (All 18 tasks built; SP2.1–SP2.4 in REVIEW; SP2.5 tests written) | M2 |
-| P3 — Reservations | SP3.1–SP3.6 | 24 | **NEARLY COMPLETE** (23 of 24 tasks built: SP3.1 DDLs, SP3.2 routines, SP3.3–SP3.5 API+UI, SP3.6 tests in REVIEW; T22 TODO) | M3 |
-| P4 — Services & Billing | SP4.1–SP4.7 | 27 | 🟢 **DONE** (All 27 tasks built and reviewed: SP4.1 DDLs, SP4.2 service DB routines+view, SP4.3 service APIs, SP4.4 service UIs, SP4.5 billing schema, SP4.6 invoice SP+view, SP4.7 billing repo/service) | M4 + M5 |
-| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | 🟢 **DONE** (All 22 tasks built: SP5.1 payment schema, SP5.2 payment+checkout SPs, SP5.3 report views inc. vw_room_occupancy, SP5.4 payment APIs, SP5.5 report APIs, SP5.6 pay UI, SP5.7 reports UI) | M5 |
-| P6 — Integration & Testing | SP6.1–SP6.5 | 19 | TODO | All |
+| P1 — Foundation | SP1.1–SP1.4 | 29 | **DONE** | M1 |
+| P2 — Rooms & Availability | SP2.1–SP2.5 | 18 | **DONE** | M2 |
+| P3 — Reservations | SP3.1–SP3.6 | 24 | **DONE** | M3 |
+| P4 — Services & Billing | SP4.1–SP4.7 | 27 | **DONE** | M4 + M5 |
+| P5 — Payments & Reports | SP5.1–SP5.7 | 22 | **DONE** | M5 |
+| P6 — Integration & Testing | SP6.1–SP6.5 | 21 | **IN PROGRESS** (SP6.1: 4/6 wire-up tasks DONE/REVIEW) | All (M1 coord) |
 
-> **Status Summary:** 96 of 139 tasks implemented in code (69.1% overall completion). All 546 vitest unit/integration tests across 46 test suites PASSING.
+> **Status Summary:** All Phases 1–5 complete. Phase 6 active: Auth, Room/Availability, Reservation, and Service-Usage/Checkin repositories wired to real PostgreSQL. M5 real DB wiring in progress.
 
 
 ## Phase 0 — Completed Tasks
@@ -81,13 +81,13 @@ _Last updated: 138 tasks DONE (134 prior + 4 tasks implemented: sp_finalize_invo
   ```
 
 ## Next Up for Each Member
-| Member | Immediate Next Task | Can Start? |
+| Member | Immediate Next Task | Status / Can Start? |
 |---|---|---|
-| M1 | P06-M01-T01 — Wire auth repos to real DB; verify session round-trip | ⏳ After integration branch merge |
-| M2 | P06-M02-T02 — Availability search returns correct results for test scenarios | ⏳ Ready (P06-M02-T01 in REVIEW) |
-| M3 | P03-M03-T01 — `reservation` table DDL (**CRITICAL BLOCKER for all of Phase 3+4+5 DB**) | ✅ Now |
-| M4 | P06-M04-T01 — Wire service-usage + checkin to real DB (after Phase 3+4 DB executed) | ⏳ After integration branch merge |
-| M5 | P05-M05-T16 — Reports dashboard page (`app/staff/reports/page.tsx`) | ✅ Now (mock-first) |
+| M1 (Leeman) | P06-M01-T02 — Clean DB rebuild from empty + full seed verify | ✅ READY |
+| M2 (Karunarathna) | P06-M02-T02 — Availability search returns correct results for test scenarios | ⏳ Next after DB rebuild (P06-M02-T01 DONE) |
+| M3 (Hiripitiya) | P06-M03-T02 — Full guest booking flow E2E (search → book → confirm → view) | ⏳ Next after DB rebuild (P06-M03-T01 DONE) |
+| M4 (Bandaranayaka) | P06-M04-T02 — Check-in + service usage flow E2E | ⏳ Next after DB wire-up (P06-M04-T01 REVIEW) |
+| M5 (Kabilraj) | P06-M05-T01 — Wire billing + payment to real DB | 🟡 IN PROGRESS |
 
 ## Recent Decisions
 - Adopt ERD multi-room reservation model (reservation + reservation_rooms)

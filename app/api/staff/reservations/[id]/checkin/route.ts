@@ -110,6 +110,8 @@ export async function POST(
           return err(403, ERROR_CODES.BRANCH_SCOPE_VIOLATION, error.message);
         case 'NOT_BOOKED_STATUS':
           return err(409, ERROR_CODES.INVALID_STATUS_TRANSITION, error.message);
+        case 'ROOM_IN_MAINTENANCE':
+          return err(409, ERROR_CODES.INVALID_STATUS_TRANSITION, error.message);
         default:
           return err(500, ERROR_CODES.INTERNAL_ERROR, error.message);
       }

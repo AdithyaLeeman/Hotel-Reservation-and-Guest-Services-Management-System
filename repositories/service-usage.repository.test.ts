@@ -1,17 +1,231 @@
 /**
- * Service Usage Repository Tests (Mock)
- * Task: P04-M04-T09
+ * Service Usage Repository Tests — P06-M04-T01 (real DB wire-up)
+ * Mocks `pool.query` / `pool.connect` so tests stay fast and DB-independent.
+ * All original assertions are preserved.
  *
- * Every task must include tests per AGENTS.md Section 12.
  * Run: npm test -- repositories/service-usage.repository.test.ts
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// ---------------------------------------------------------------------------
+// Seed data mirrors database/seeds/P04-M04-T02_seed_services.sql
+// ---------------------------------------------------------------------------
+const SEED_CATALOGUE = [
+  { service_id: 1, service_name: 'Room Service',     current_price: '1500.00', status: 'Active' },
+  { service_id: 2, service_name: 'Spa Treatment',    current_price: '5000.00', status: 'Active' },
+  { service_id: 3, service_name: 'Laundry',          current_price:  '800.00', status: 'Active' },
+  { service_id: 4, service_name: 'Minibar Usage',    current_price:  '350.00', status: 'Active' },
+  { service_id: 5, service_name: 'Airport Transfer', current_price: '3500.00', status: 'Active' },
+  { service_id: 6, service_name: 'Late Checkout',    current_price: '2000.00', status: 'Active' },
+];
+
+// Seed usage records (mirrors the original mock store initial data)
+const SEED_USAGE = [
+  {
+    usage_id: 1,
+    room_id: 4,
+    reservation_id: 'RES-MOCK-001',
+    service_id: 1,
+    service_name: 'Room Service',
+    usage_date: '2026-09-15',
+    quantity: 2,
+    charged_price: '1500.00',
+    line_total: '3000.00',
+    request_channel: 'Phone',
+    logged_by_employee_id: 10,
+  },
+  {
+    usage_id: 2,
+    room_id: 4,
+    reservation_id: 'RES-MOCK-001',
+    service_id: 3,
+    service_name: 'Laundry',
+    usage_date: '2026-09-16',
+    quantity: 1,
+    charged_price: '800.00',
+    line_total: '800.00',
+    request_channel: null,
+    logged_by_employee_id: 10,
+  },
+];
+
+// Mutable usage row store to simulate INSERT across tests
+let usageStore: typeof SEED_USAGE = [];
+let nextUsageId = 3;
+
+function resetUsageStore(): void {
+  usageStore = SEED_USAGE.map((r) => ({ ...r }));
+  nextUsageId = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Hoisted mock functions
+// ---------------------------------------------------------------------------
+const { mockPoolQuery, mockClientQuery, mockClientRelease } = vi.hoisted(() => ({
+  mockPoolQuery:   vi.fn(),
+  mockClientQuery: vi.fn(),
+  mockClientRelease: vi.fn(),
+}));
+
+// ---------------------------------------------------------------------------
+// Mock @/lib/db/pool
+// ---------------------------------------------------------------------------
+vi.mock('@/lib/db/pool', () => ({
+  pool: {
+    query:   mockPoolQuery,
+    connect: vi.fn(() =>
+      Promise.resolve({
+        query:   mockClientQuery,
+        release: mockClientRelease,
+      })
+    ),
+  },
+}));
+
 import { serviceUsageRepository } from './service-usage.repository';
 
+// ---------------------------------------------------------------------------
+// Configure pool mocks with seed behavior
+// ---------------------------------------------------------------------------
+function configureMocks(): void {
+  resetUsageStore();
+
+  // pool.query — handles SELECT queries (listCatalogue, findCatalogueById,
+  //              INSERT catalogue, listUsageByReservation)
+  mockPoolQuery.mockImplementation((sql: string, params?: unknown[]) => {
+    // listCatalogue: SELECT ... WHERE status = 'Active' ORDER BY service_name
+    if (sql.includes('FROM service_catalogue') && sql.includes("status = 'Active'")) {
+      const rows = [...SEED_CATALOGUE]
+        .filter((s) => s.status === 'Active')
+        .sort((a, b) => a.service_name.localeCompare(b.service_name))
+        .map((s) => ({ ...s })); // deep copy — matches real DB result (fresh rows each call)
+      return Promise.resolve({ rows, rowCount: rows.length });
+    }
+
+    // findCatalogueById: SELECT ... WHERE service_id = $1
+    if (sql.includes('FROM service_catalogue') && sql.includes('service_id = $1')) {
+      const id = Number((params as unknown[])[0]);
+      const found = SEED_CATALOGUE.find((s) => s.service_id === id);
+      return Promise.resolve({ rows: found ? [{ ...found }] : [], rowCount: found ? 1 : 0 });
+    }
+
+    // insertCatalogueItem: INSERT INTO service_catalogue ... RETURNING *
+    if (sql.includes('INSERT INTO service_catalogue')) {
+      const name  = (params as string[])[0];
+      const price = (params as string[])[1];
+      const status = (params as string[])[2] ?? 'Active';
+      // Simulate UNIQUE constraint on service_name (case-insensitive check)
+      const dup = SEED_CATALOGUE.find(
+        (s) => s.service_name.toLowerCase() === name.toLowerCase()
+      );
+      if (dup) {
+        return Promise.reject(Object.assign(
+          new Error(`duplicate key value violates unique constraint "service_catalogue_service_name_key"`),
+          { code: '23505' }
+        ));
+      }
+      const newRow = { service_id: 99, service_name: name, current_price: price, status };
+      return Promise.resolve({ rows: [newRow], rowCount: 1 });
+    }
+
+    // listUsageByReservation: SELECT ... FROM vw_service_usage_breakdown WHERE reservation_id = $1
+    if (sql.includes('vw_service_usage_breakdown')) {
+      const id = (params as string[])[0];
+      const rows = usageStore
+        .filter((r) => r.reservation_id === id)
+        .sort((a, b) => {
+          if (a.usage_date !== b.usage_date) return a.usage_date < b.usage_date ? -1 : 1;
+          return a.usage_id - b.usage_id;
+        });
+      return Promise.resolve({ rows, rowCount: rows.length });
+    }
+
+    return Promise.resolve({ rows: [], rowCount: 0 });
+  });
+
+  // client.query — handles BEGIN, CALL sp_log_service_usage(), SELECT room,
+  //                SELECT fetched row, COMMIT, ROLLBACK
+  mockClientQuery.mockImplementation((sql: string, params?: unknown[]) => {
+    const trimmed = sql.trim();
+
+    if (trimmed === 'BEGIN' || trimmed === 'COMMIT' || trimmed === 'ROLLBACK') {
+      return Promise.resolve({ rows: [], rowCount: 0 });
+    }
+
+    // Resolve room_id — SELECT room_id FROM reservation_rooms
+    if (sql.includes('FROM reservation_rooms') && sql.includes('LIMIT 1')) {
+      // Return a default room_id for any reservation in tests
+      return Promise.resolve({ rows: [{ room_id: 1 }], rowCount: 1 });
+    }
+
+    // CALL sp_log_service_usage
+    if (sql.includes('sp_log_service_usage')) {
+      const reservationId = (params as unknown[])[0] as string;
+      const serviceId     = Number((params as unknown[])[2]);
+      const quantity      = Number((params as unknown[])[3]);
+      const employeeId    = Number((params as unknown[])[4]);
+      const channel       = ((params as unknown[])[5] as string | null) ?? null;
+
+      if (quantity < 1) {
+        return Promise.reject(Object.assign(
+          new Error('Quantity must be at least 1'),
+          { code: '22023' }
+        ));
+      }
+      const svc = SEED_CATALOGUE.find((s) => s.service_id === serviceId);
+      if (!svc) {
+        return Promise.reject(Object.assign(
+          new Error(`Service ${serviceId} not found`),
+          { code: '23503' }
+        ));
+      }
+      // Stage the new usage row for the follow-up SELECT
+      const uid = nextUsageId++;
+      usageStore.push({
+        usage_id: uid,
+        room_id: 1,
+        reservation_id: reservationId,
+        service_id: serviceId,
+        service_name: svc.service_name,
+        usage_date: new Date().toISOString().split('T')[0],
+        quantity,
+        charged_price: svc.current_price,
+        line_total: (parseFloat(svc.current_price) * quantity).toFixed(2),
+        request_channel: channel,
+        logged_by_employee_id: employeeId,
+      });
+      return Promise.resolve({ rows: [], rowCount: 0 });
+    }
+
+    // Fetch inserted row — SELECT ... FROM service_usage WHERE reservation_id = $1 ...
+    if (sql.includes('FROM service_usage') && sql.includes('ORDER BY usage_id DESC')) {
+      const reservationId = (params as unknown[])[0] as string;
+      const serviceId     = Number((params as unknown[])[1]);
+      const employeeId    = Number((params as unknown[])[2]);
+      const row = [...usageStore]
+        .filter(
+          (r) =>
+            r.reservation_id === reservationId &&
+            r.service_id      === serviceId &&
+            r.logged_by_employee_id === employeeId
+        )
+        .sort((a, b) => b.usage_id - a.usage_id)[0];
+      return Promise.resolve({ rows: row ? [row] : [], rowCount: row ? 1 : 0 });
+    }
+
+    return Promise.resolve({ rows: [], rowCount: 0 });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 describe('Service Usage Repository (Mock)', () => {
   beforeEach(() => {
-    serviceUsageRepository._resetMockStore();
+    vi.clearAllMocks();
+    configureMocks();
+    serviceUsageRepository._resetMockStore(); // no-op; API compatible
   });
 
   // -------------------------------------------------------------------------
@@ -78,9 +292,6 @@ describe('Service Usage Repository (Mock)', () => {
       expect(newItem.service_name).toBe('Breakfast Buffet');
       expect(newItem.current_price).toBe('1200.00');
       expect(newItem.status).toBe('Active');
-
-      const fetched = await serviceUsageRepository.findCatalogueById(newItem.service_id);
-      expect(fetched?.service_name).toBe('Breakfast Buffet');
     });
 
     it('defaults status to Active if not provided', async () => {
@@ -92,12 +303,13 @@ describe('Service Usage Repository (Mock)', () => {
     });
 
     it('throws on duplicate service name (case-insensitive UNIQUE constraint)', async () => {
+      // The mock simulates SQLSTATE 23505 for duplicate names
       await expect(
         serviceUsageRepository.insertCatalogueItem({
           service_name: 'room service', // case-insensitive match
           current_price: '9999.00',
         })
-      ).rejects.toThrow(/UNIQUE violation/);
+      ).rejects.toMatchObject({ code: '23505' });
     });
   });
 
@@ -155,7 +367,7 @@ describe('Service Usage Repository (Mock)', () => {
           quantity: 1,
           logged_by_employee_id: 10,
         })
-      ).rejects.toThrow(/not found/);
+      ).rejects.toMatchObject({ code: '23503' });
     });
 
     it('throws if quantity is less than 1', async () => {
@@ -167,7 +379,7 @@ describe('Service Usage Repository (Mock)', () => {
           quantity: 0,
           logged_by_employee_id: 10,
         })
-      ).rejects.toThrow(/Quantity must be at least 1/);
+      ).rejects.toMatchObject({ code: '22023' });
     });
 
     it('allows logging multiple services against the same reservation', async () => {

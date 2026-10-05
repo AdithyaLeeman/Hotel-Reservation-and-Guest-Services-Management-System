@@ -1,59 +1,36 @@
 /**
- * Check-in Service — Mock-First Implementation
+ * Check-in Service — Real DB Implementation
  *
  * Orchestrates the check-in workflow:
  *   1. Verify the session employee has branch access to the reservation.
- *   2. Call the repository which (in mock) transitions reservation → CheckedIn
- *      and marks all reservation rooms → Occupied.
+ *   2. Call the repository which delegates to sp_check_in() — the stored
+ *      procedure performs the status transition + room status update atomically
+ *      inside a single PostgreSQL transaction (L08 — transactions, L09 — concurrency).
  *
- * DB-first rule:
- *   In production (P06-M04-T01), the real implementation calls sp_check_in()
- *   which performs the status transition + room status update atomically inside
- *   a single PostgreSQL transaction. This service MUST NOT reproduce that logic
- *   in TypeScript — it must only call the stored procedure.
+ * DB-first rule (AGENTS.md §5):
+ *   sp_check_in() owns the entire state transition. This service MUST NOT
+ *   reproduce any status check or room update in TypeScript — it only calls
+ *   the stored procedure and maps SQLSTATE errors to structured service errors.
  *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- *   checkinRepository.callCheckIn(reservationId, employeeId)
- *   → CALL sp_check_in($1, $2)
- *   where $1 = p_reservation_id, $2 = p_employee_id
+ * P06-M04-T01 — Mock store replaced with real pg Pool via checkinRepository.
  *
- * Error states (mirrored from sp_check_in SQLSTATE codes):
- *   SQLSTATE '45010' (NOT_BOOKED_STATUS) — reservation is not in 'Booked' status
- *   SQLSTATE '45003' (ROOM_IN_MAINTENANCE) — a reserved room is in Maintenance
+ * DB routines used:
+ *   sp_check_in(p_reservation_id, p_employee_id) — P04-M04-T04
+ *
+ * Error states from sp_check_in SQLSTATE codes:
  *   SQLSTATE '23503' — reservation not found (FK / record missing)
+ *   SQLSTATE '45010' — reservation is not in 'Booked' status
+ *   SQLSTATE '45003' — a reserved room is in Maintenance
  *
- * Owned by: Member 4 (M4) | Task: P04-M04-T10 (Mock-First)
+ * Owned by: Member 4 (M4) | Task: P04-M04-T10
  * Lecture alignment: L08 (transactions), L09 (concurrency)
  */
 
+import { pool } from '@/lib/db/pool';
 import type { ReservationStatus } from '@/types/enums';
 
 // ---------------------------------------------------------------------------
-// Mock in-memory state that mirrors the reservation store.
-// In the real implementation this state lives entirely in PostgreSQL.
-// ---------------------------------------------------------------------------
-
-/**
- * Minimal mock reservation record used by this service.
- * The real implementation queries the DB inside sp_check_in().
- */
-interface MockReservation {
-  reservation_id: string;
-  branch_id: number;
-  reservation_status: ReservationStatus;
-}
-
-// Seed a few representative mock reservations.
-// These parallel the mock data in reservation.repository.ts (M3's mock store).
-const MOCK_RESERVATIONS: MockReservation[] = [
-  { reservation_id: 'RES-MOCK-001', branch_id: 1, reservation_status: 'Booked' },
-  { reservation_id: 'RES-MOCK-002', branch_id: 1, reservation_status: 'Booked' },
-  { reservation_id: 'RES-MOCK-003', branch_id: 2, reservation_status: 'CheckedIn' },
-  { reservation_id: 'RES-MOCK-004', branch_id: 3, reservation_status: 'Booked' },
-];
-
-// ---------------------------------------------------------------------------
-// ServiceError — structured error with a machine-readable code.
+// CheckinServiceError — structured error with machine-readable code.
 // Route handlers map these to appropriate HTTP status codes.
 // ---------------------------------------------------------------------------
 
@@ -62,12 +39,22 @@ export class CheckinServiceError extends Error {
     public readonly code:
       | 'NOT_FOUND'
       | 'NOT_BOOKED_STATUS'
+      | 'ROOM_IN_MAINTENANCE'
       | 'BRANCH_SCOPE_VIOLATION',
     message: string
   ) {
     super(message);
     this.name = 'CheckinServiceError';
   }
+}
+
+// ---------------------------------------------------------------------------
+// Row shape for the branch-scope pre-check query
+// ---------------------------------------------------------------------------
+
+interface ReservationBranchRow {
+  branch_id: number;
+  reservation_status: ReservationStatus;
 }
 
 // ---------------------------------------------------------------------------
@@ -78,67 +65,98 @@ export const checkinService = {
   /**
    * Perform a check-in for the given reservation.
    *
-   * Mock-first: transitions the in-memory reservation to 'CheckedIn'.
-   * Real implementation: CALL sp_check_in($1, $2)
+   * Branch scope is verified before calling sp_check_in() so that
+   * Receptionists cannot check in reservations outside their branch
+   * (the stored procedure does not enforce branch scope — that is an
+   * application-layer responsibility per AGENTS.md §10).
    *
-   * @param reservationId - The reservation to check in.
-   * @param employeeId    - The staff member performing the check-in (from session).
-   * @param branchId      - The branch scope of the employee (null = all-branch access).
+   * The stored procedure (sp_check_in) atomically:
+   *   - Guards: reservation must be in 'Booked' status (SQLSTATE 45010)
+   *   - Guards: no reserved room is in Maintenance  (SQLSTATE 45003)
+   *   - UPDATE reservation SET reservation_status = 'CheckedIn'
+   *   - UPDATE room SET status = 'Occupied' for all rooms in the reservation
+   *
+   * @param reservationId - UUID of the reservation to check in.
+   * @param employeeId    - Staff member performing the check-in (from session).
+   * @param branchId      - Branch scope of the employee; null = all branches (Manager/Admin).
    */
   checkIn: async (
     reservationId: string,
     employeeId: number,
     branchId: number | null
   ): Promise<void> => {
-    const reservation = MOCK_RESERVATIONS.find(
-      (r) => r.reservation_id === reservationId
+    // Step 1: branch scope pre-check (application-layer guard).
+    // We read branch_id from the reservation before calling sp_check_in().
+    // This is a separate SELECT, not part of the procedure, so we do it
+    // under a standard connection without locking.
+    const scopeRes = await pool.query<ReservationBranchRow>(
+      `SELECT branch_id, reservation_status
+       FROM reservation
+       WHERE reservation_id = $1::uuid`,
+      [reservationId]
     );
 
-    if (!reservation) {
+    if (scopeRes.rows.length === 0) {
       throw new CheckinServiceError(
         'NOT_FOUND',
         `Reservation ${reservationId} not found.`
       );
     }
 
-    // Branch scope enforcement: Receptionist can only check in reservations
-    // for their own branch. Manager/Admin (branchId = null) can check in any.
-    if (branchId !== null && reservation.branch_id !== branchId) {
+    const { branch_id: reservationBranchId } = scopeRes.rows[0];
+
+    // Receptionist can only check in reservations for their own branch.
+    // Manager and Admin (branchId = null) have no restriction.
+    if (branchId !== null && reservationBranchId !== branchId) {
       throw new CheckinServiceError(
         'BRANCH_SCOPE_VIOLATION',
         `Reservation ${reservationId} does not belong to branch ${branchId}.`
       );
     }
 
-    // Status guard — mirrors sp_check_in SQLSTATE '45010'
-    if (reservation.reservation_status !== 'Booked') {
-      throw new CheckinServiceError(
-        'NOT_BOOKED_STATUS',
-        `Reservation ${reservationId} cannot be checked in — current status is '${reservation.reservation_status}'. Expected 'Booked'.`
+    // Step 2: call sp_check_in() inside an explicit transaction.
+    // The procedure raises SQLSTATE codes on guard failures; we catch and
+    // map them to CheckinServiceError codes.
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query(
+        `CALL sp_check_in($1::uuid, $2::integer)`,
+        [reservationId, employeeId]
       );
+      await client.query('COMMIT');
+    } catch (err: unknown) {
+      await client.query('ROLLBACK');
+
+      const pgErr = err as { code?: string; message?: string };
+      const msg   = pgErr.message ?? '';
+
+      if (pgErr.code === '23503') {
+        throw new CheckinServiceError('NOT_FOUND', `Reservation ${reservationId} not found.`);
+      }
+      if (pgErr.code === '45010') {
+        throw new CheckinServiceError(
+          'NOT_BOOKED_STATUS',
+          `Reservation ${reservationId} cannot be checked in — ${msg}`
+        );
+      }
+      if (pgErr.code === '45003') {
+        throw new CheckinServiceError(
+          'ROOM_IN_MAINTENANCE',
+          `Cannot check in — one or more reserved rooms are in Maintenance.`
+        );
+      }
+
+      throw err;
+    } finally {
+      client.release();
     }
-
-    // Transition: Booked → CheckedIn (mirrors sp_check_in() transaction)
-    reservation.reservation_status = 'CheckedIn';
-
-    // In the real implementation sp_check_in() also updates:
-    //   UPDATE room SET status = 'Occupied' WHERE room_id IN (reservation room ids)
-    // The mock omits room status update as room state lives in M2's store.
-
-    void employeeId; // employeeId is passed to sp_check_in in real implementation
   },
 
   /**
-   * Reset mock store to seed state.
-   * Used by test suites (beforeEach).
+   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
+   * The mock store has been removed; this stub ensures existing test setups
+   * that call _resetMockStore() continue to compile and run without error.
    */
-  _resetMockStore: (): void => {
-    MOCK_RESERVATIONS.length = 0;
-    MOCK_RESERVATIONS.push(
-      { reservation_id: 'RES-MOCK-001', branch_id: 1, reservation_status: 'Booked' },
-      { reservation_id: 'RES-MOCK-002', branch_id: 1, reservation_status: 'Booked' },
-      { reservation_id: 'RES-MOCK-003', branch_id: 2, reservation_status: 'CheckedIn' },
-      { reservation_id: 'RES-MOCK-004', branch_id: 3, reservation_status: 'Booked' }
-    );
-  },
+  _resetMockStore: (): void => {},
 };

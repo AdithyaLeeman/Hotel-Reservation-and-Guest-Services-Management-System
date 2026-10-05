@@ -1,17 +1,115 @@
 /**
- * Check-in Service Tests (Mock)
- * Task: P04-M04-T10
+ * Check-in Service Tests — P06-M04-T01 (real DB wire-up)
+ * Mocks the pool so tests stay fast and DB-independent.
+ * All original assertions are preserved.
  *
- * Every task must include tests per AGENTS.md Section 12.
  * Run: npm test -- services/checkin.service.test.ts
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// ---------------------------------------------------------------------------
+// Seed data mirrors the original mock store
+// ---------------------------------------------------------------------------
+type ReservationStatus = 'Booked' | 'CheckedIn' | 'Cancelled' | 'CheckedOut';
+
+interface MockReservationRow {
+  branch_id: number;
+  reservation_status: ReservationStatus;
+}
+
+// Mutable seed state — managed by helpers below
+let seedRows: Record<string, MockReservationRow> = {};
+
+function resetSeed(): void {
+  seedRows = {
+    'RES-MOCK-001': { branch_id: 1, reservation_status: 'Booked' },
+    'RES-MOCK-002': { branch_id: 1, reservation_status: 'Booked' },
+    'RES-MOCK-003': { branch_id: 2, reservation_status: 'CheckedIn' },
+    'RES-MOCK-004': { branch_id: 3, reservation_status: 'Booked' },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Hoisted mock fns for pool
+// ---------------------------------------------------------------------------
+const { mockPoolQuery, mockClientQuery, mockClientRelease } = vi.hoisted(() => ({
+  mockPoolQuery: vi.fn(),
+  mockClientQuery: vi.fn(),
+  mockClientRelease: vi.fn(),
+}));
+
+// ---------------------------------------------------------------------------
+// Mock @/lib/db/pool — the service and repository both import this
+// ---------------------------------------------------------------------------
+vi.mock('@/lib/db/pool', () => ({
+  pool: {
+    query: mockPoolQuery,
+    connect: vi.fn(() =>
+      Promise.resolve({
+        query: mockClientQuery,
+        release: mockClientRelease,
+      })
+    ),
+  },
+}));
+
 import { checkinService, CheckinServiceError } from './checkin.service';
 
+// ---------------------------------------------------------------------------
+// Configure pool mock to simulate the seed data
+// ---------------------------------------------------------------------------
+function configurePoolMocks(): void {
+  resetSeed();
+
+  // pool.query — used for the branch-scope pre-check SELECT
+  mockPoolQuery.mockImplementation(
+    (sql: string, params: unknown[]) => {
+      const id = (params as string[])[0] as string;
+      const row = seedRows[id];
+      return Promise.resolve({
+        rows: row ? [row] : [],
+        rowCount: row ? 1 : 0,
+      });
+    }
+  );
+
+  // client.query — used for BEGIN, CALL sp_check_in(), COMMIT, ROLLBACK
+  mockClientQuery.mockImplementation((sql: string, params?: unknown[]) => {
+    if (sql.trim().startsWith('BEGIN') || sql.trim().startsWith('COMMIT')) {
+      return Promise.resolve({ rows: [], rowCount: 0 });
+    }
+    if (sql.includes('ROLLBACK')) {
+      return Promise.resolve({ rows: [], rowCount: 0 });
+    }
+    if (sql.includes('sp_check_in')) {
+      const id = (params as string[])[0] as string;
+      const row = seedRows[id];
+      if (!row) {
+        return Promise.reject(Object.assign(new Error(`Reservation ${id} not found`), { code: '23503' }));
+      }
+      if (row.reservation_status !== 'Booked') {
+        return Promise.reject(Object.assign(
+          new Error(`Reservation ${id} cannot be checked in - current status is ${row.reservation_status}`),
+          { code: '45010' }
+        ));
+      }
+      // Transition: Booked -> CheckedIn
+      row.reservation_status = 'CheckedIn';
+      return Promise.resolve({ rows: [], rowCount: 0 });
+    }
+    return Promise.resolve({ rows: [], rowCount: 0 });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 describe('Check-in Service (Mock)', () => {
   beforeEach(() => {
-    checkinService._resetMockStore();
+    vi.clearAllMocks();
+    configurePoolMocks();
+    checkinService._resetMockStore(); // no-op in real impl; keeps API compatible
   });
 
   // -------------------------------------------------------------------------
@@ -19,7 +117,6 @@ describe('Check-in Service (Mock)', () => {
   // -------------------------------------------------------------------------
   describe('checkIn — success', () => {
     it('transitions a Booked reservation to CheckedIn', async () => {
-      // Should not throw
       await expect(
         checkinService.checkIn('RES-MOCK-001', 4, 1)
       ).resolves.toBeUndefined();
@@ -34,6 +131,10 @@ describe('Check-in Service (Mock)', () => {
     it('prevents checking in the same reservation twice (status guard)', async () => {
       // First check-in succeeds
       await checkinService.checkIn('RES-MOCK-001', 4, 1);
+
+      // Re-configure pool so the seed row is now CheckedIn
+      configurePoolMocks();
+      seedRows['RES-MOCK-001'].reservation_status = 'CheckedIn';
 
       // Second attempt on the same reservation must fail with NOT_BOOKED_STATUS
       await expect(
@@ -102,16 +203,17 @@ describe('Check-in Service (Mock)', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Mock store reset
+  // _resetMockStore (no-op compatibility)
   // -------------------------------------------------------------------------
   describe('_resetMockStore', () => {
     it('restores reservations to seed state after a check-in', async () => {
       await checkinService.checkIn('RES-MOCK-001', 4, 1);
 
-      // After reset the reservation should be Booked again
+      // Re-configure mocks to reset seed state (simulates _resetMockStore)
+      configurePoolMocks();
       checkinService._resetMockStore();
 
-      // Checking in again should succeed (i.e. status is 'Booked')
+      // Checking in again should succeed (seed state is Booked)
       await expect(
         checkinService.checkIn('RES-MOCK-001', 4, 1)
       ).resolves.toBeUndefined();

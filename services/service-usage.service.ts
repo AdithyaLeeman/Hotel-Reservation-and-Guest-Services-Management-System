@@ -1,5 +1,5 @@
 /**
- * Service Usage Service — Mock-First Implementation
+ * Service Usage Service — Real DB Implementation
  *
  * Orchestrates:
  *   - Logging a service usage record against a checked-in reservation.
@@ -14,17 +14,15 @@
  *     TypeScript may display line_total from vw_service_usage_breakdown
  *     for UI purposes only.
  *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- *   logUsage()     → serviceUsageRepository.callLogServiceUsage()
- *                    which calls: CALL sp_log_service_usage($1,$2,$3,$4,$5,$6)
- *   listCatalogue()→ serviceUsageRepository.listCatalogue()
- *                    which calls: SELECT * FROM service_catalogue WHERE status='Active'
- *   addCatalogueItem() → serviceUsageRepository.insertCatalogueItem()
- *                    which calls: INSERT INTO service_catalogue ... RETURNING *
- *   listByReservation() → serviceUsageRepository.listUsageByReservation()
- *                    which calls: SELECT * FROM vw_service_usage_breakdown WHERE reservation_id=$1
+ * P06-M04-T01 — Delegates to real repository; maps PostgreSQL SQLSTATE codes
+ * to structured ServiceUsageServiceError codes:
+ *   SQLSTATE 23503 → NOT_FOUND   (FK / record missing)
+ *   SQLSTATE 45011 → NOT_CHECKED_IN
+ *   SQLSTATE 45012 → SERVICE_INACTIVE
+ *   SQLSTATE 22023 → INVALID_QUANTITY
+ *   SQLSTATE 23505 → DUPLICATE_SERVICE_NAME
  *
- * Owned by: Member 4 (M4) | Task: P04-M04-T11 (Mock-First)
+ * Owned by: Member 4 (M4) | Task: P04-M04-T11
  * Lecture alignment: L06 (stored procedures), L08 (price snapshot rule)
  */
 
@@ -82,9 +80,10 @@ export const serviceUsageService = {
   addCatalogueItem: async (input: CreateCatalogueItemInput): Promise<ServiceCatalogue> => {
     try {
       return await serviceUsageRepository.insertCatalogueItem(input);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes('UNIQUE violation')) {
+    } catch (err: unknown) {
+      const pgErr = err as { code?: string };
+      // SQLSTATE 23505 — PostgreSQL unique_violation (service_name UNIQUE constraint)
+      if (pgErr.code === '23505') {
         throw new ServiceUsageServiceError(
           'DUPLICATE_SERVICE_NAME',
           `Service name "${input.service_name}" already exists in the catalogue.`
@@ -122,26 +121,40 @@ export const serviceUsageService = {
         ...params,
         logged_by_employee_id: employeeId,
       });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes('not found in catalogue')) {
+    } catch (err: unknown) {
+      const pgErr = err as { code?: string; message?: string };
+      const msg   = pgErr.message ?? (err instanceof Error ? err.message : String(err));
+
+      // SQLSTATE 23503 — FK / record-missing: reservation not found, room not
+      // in reservation, or service_id not found.
+      if (pgErr.code === '23503') {
         throw new ServiceUsageServiceError(
           'NOT_FOUND',
-          `Service ID ${params.service_id} not found.`
+          `Reservation, room, or service not found. ${msg}`
         );
       }
-      if (msg.includes('Inactive')) {
+      // SQLSTATE 45011 — reservation is not in CheckedIn status
+      if (pgErr.code === '45011') {
+        throw new ServiceUsageServiceError(
+          'NOT_CHECKED_IN',
+          `The reservation must be in CheckedIn status to log service usage.`
+        );
+      }
+      // SQLSTATE 45012 — service is Inactive
+      if (pgErr.code === '45012') {
         throw new ServiceUsageServiceError(
           'SERVICE_INACTIVE',
           `The requested service is currently inactive and cannot be logged.`
         );
       }
-      if (msg.includes('Quantity must be at least 1')) {
+      // SQLSTATE 22023 — quantity < 1
+      if (pgErr.code === '22023') {
         throw new ServiceUsageServiceError(
           'INVALID_QUANTITY',
           'Quantity must be at least 1.'
         );
       }
+
       throw err;
     }
   },

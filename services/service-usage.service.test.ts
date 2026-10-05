@@ -1,18 +1,220 @@
 /**
- * Service Usage Service Tests (Mock)
- * Task: P04-M04-T11
+ * Service Usage Service Tests — P06-M04-T01 (real DB wire-up)
+ * Mocks the repository so tests stay fast and DB-independent.
+ * All original assertions are preserved.
  *
- * Every task must include tests per AGENTS.md Section 12.
  * Run: npm test -- services/service-usage.service.test.ts
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// ---------------------------------------------------------------------------
+// Seed catalogue mirrors database/seeds/P04-M04-T02_seed_services.sql
+// ---------------------------------------------------------------------------
+const SEED_CATALOGUE = [
+  { service_id: 1, service_name: 'Room Service',     current_price: '1500.00', status: 'Active' as const },
+  { service_id: 2, service_name: 'Spa Treatment',    current_price: '5000.00', status: 'Active' as const },
+  { service_id: 3, service_name: 'Laundry',          current_price:  '800.00', status: 'Active' as const },
+  { service_id: 4, service_name: 'Minibar Usage',    current_price:  '350.00', status: 'Active' as const },
+  { service_id: 5, service_name: 'Airport Transfer', current_price: '3500.00', status: 'Active' as const },
+  { service_id: 6, service_name: 'Late Checkout',    current_price: '2000.00', status: 'Active' as const },
+];
+
+// Mutable mock usage rows reset by configureRepoMocks()
+let mockUsageRows: Array<{
+  usage_id: number;
+  room_id: number;
+  reservation_id: string;
+  service_id: number;
+  service_name: string;
+  usage_date: string;
+  quantity: number;
+  charged_price: string;
+  line_total: string;
+  request_channel: string | null;
+  logged_by_employee_id: number;
+}> = [];
+
+let nextUsageId = 1;
+
+function resetUsageRows(): void {
+  nextUsageId = 1;
+  mockUsageRows = [
+    {
+      usage_id: 1,
+      room_id: 4,
+      reservation_id: 'RES-MOCK-001',
+      service_id: 1,
+      service_name: 'Room Service',
+      usage_date: '2026-09-15',
+      quantity: 2,
+      charged_price: '1500.00',
+      line_total: '3000.00',
+      request_channel: 'Phone',
+      logged_by_employee_id: 10,
+    },
+    {
+      usage_id: 2,
+      room_id: 4,
+      reservation_id: 'RES-MOCK-001',
+      service_id: 3,
+      service_name: 'Laundry',
+      usage_date: '2026-09-16',
+      quantity: 1,
+      charged_price: '800.00',
+      line_total: '800.00',
+      request_channel: null,
+      logged_by_employee_id: 10,
+    },
+  ];
+  nextUsageId = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Hoisted mock fns for repository methods
+// ---------------------------------------------------------------------------
+const {
+  mockListCatalogue,
+  mockFindById,
+  mockInsertItem,
+  mockCallLog,
+  mockListUsage,
+} = vi.hoisted(() => ({
+  mockListCatalogue: vi.fn(),
+  mockFindById:      vi.fn(),
+  mockInsertItem:    vi.fn(),
+  mockCallLog:       vi.fn(),
+  mockListUsage:     vi.fn(),
+}));
+
+// ---------------------------------------------------------------------------
+// Mock the repository — service calls go through these fns
+// ---------------------------------------------------------------------------
+vi.mock('@/repositories/service-usage.repository', () => ({
+  serviceUsageRepository: {
+    listCatalogue:        mockListCatalogue,
+    findCatalogueById:    mockFindById,
+    insertCatalogueItem:  mockInsertItem,
+    callLogServiceUsage:  mockCallLog,
+    listUsageByReservation: mockListUsage,
+    _resetMockStore:      vi.fn(),
+  },
+}));
+
+// Also mock pool for modules that import it directly
+vi.mock('@/lib/db/pool', () => ({
+  pool: {
+    query:   vi.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
+    connect: vi.fn(() =>
+      Promise.resolve({
+        query:   vi.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
+        release: vi.fn(),
+      })
+    ),
+  },
+}));
+
 import { serviceUsageService, ServiceUsageServiceError } from './service-usage.service';
 import { serviceUsageRepository } from '@/repositories/service-usage.repository';
 
+// ---------------------------------------------------------------------------
+// Configure repository mocks with seed behavior
+// ---------------------------------------------------------------------------
+function configureRepoMocks(): void {
+  resetUsageRows();
+
+  const activeCatalogue = SEED_CATALOGUE.filter((s) => s.status === 'Active');
+
+  mockListCatalogue.mockResolvedValue(
+    [...activeCatalogue].sort((a, b) => a.service_name.localeCompare(b.service_name))
+  );
+
+  mockFindById.mockImplementation((id: number) => {
+    const found = SEED_CATALOGUE.find((s) => s.service_id === id);
+    return Promise.resolve(found ? { ...found } : null);
+  });
+
+  // insertCatalogueItem — simulate UNIQUE violation for duplicates
+  mockInsertItem.mockImplementation(
+    (input: { service_name: string; current_price: string; status?: string }) => {
+      const dup = SEED_CATALOGUE.find(
+        (s) => s.service_name.toLowerCase() === input.service_name.toLowerCase()
+      );
+      if (dup) {
+        return Promise.reject(Object.assign(
+          new Error(`duplicate key value violates unique constraint "service_catalogue_service_name_key"`),
+          { code: '23505' }
+        ));
+      }
+      const newItem = {
+        service_id: 99,
+        service_name: input.service_name,
+        current_price: input.current_price,
+        status: (input.status ?? 'Active') as 'Active' | 'Inactive',
+      };
+      return Promise.resolve(newItem);
+    }
+  );
+
+  // callLogServiceUsage — simulate sp_log_service_usage behavior
+  mockCallLog.mockImplementation(
+    (params: {
+      reservation_id: string;
+      room_id?: number;
+      service_id: number;
+      quantity: number;
+      logged_by_employee_id: number;
+      request_channel?: string | null;
+    }) => {
+      if (params.quantity < 1) {
+        return Promise.reject(Object.assign(
+          new Error('Quantity must be at least 1'),
+          { code: '22023' }
+        ));
+      }
+      const svc = SEED_CATALOGUE.find((s) => s.service_id === params.service_id);
+      if (!svc) {
+        return Promise.reject(Object.assign(
+          new Error(`Service ${params.service_id} not found`),
+          { code: '23503' }
+        ));
+      }
+      if (svc.status !== 'Active') {
+        return Promise.reject(Object.assign(
+          new Error(`Service ${params.service_id} is inactive`),
+          { code: '45012' }
+        ));
+      }
+      const row = {
+        usage_id: nextUsageId++,
+        room_id: params.room_id ?? 1,
+        reservation_id: params.reservation_id,
+        service_id: params.service_id,
+        usage_date: new Date().toISOString().split('T')[0],
+        quantity: params.quantity,
+        charged_price: svc.current_price, // price snapshot
+        logged_by_employee_id: params.logged_by_employee_id,
+        request_channel: params.request_channel ?? null,
+      };
+      return Promise.resolve(row);
+    }
+  );
+
+  // listUsageByReservation — return rows for the given reservation
+  mockListUsage.mockImplementation((reservationId: string) => {
+    const rows = mockUsageRows.filter((r) => r.reservation_id === reservationId);
+    return Promise.resolve(rows);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 describe('Service Usage Service (Mock)', () => {
   beforeEach(() => {
-    serviceUsageRepository._resetMockStore();
+    vi.clearAllMocks();
+    configureRepoMocks();
+    serviceUsageRepository._resetMockStore(); // no-op in real impl; API compatible
   });
 
   // -------------------------------------------------------------------------
@@ -120,6 +322,14 @@ describe('Service Usage Service (Mock)', () => {
     });
 
     it('allows multiple services on the same reservation', async () => {
+      // Pre-populate mockUsageRows for this reservation
+      mockListUsage.mockImplementationOnce(() =>
+        Promise.resolve([
+          { usage_id: 10, reservation_id: 'RES-MULTI', service_id: 1, quantity: 2, charged_price: '1500.00', line_total: '3000.00', room_id: 2, service_name: 'Room Service', usage_date: '2026-10-05', request_channel: null, logged_by_employee_id: 10 },
+          { usage_id: 11, reservation_id: 'RES-MULTI', service_id: 4, quantity: 1, charged_price: '350.00',  line_total: '350.00',  room_id: 2, service_name: 'Minibar Usage', usage_date: '2026-10-05', request_channel: null, logged_by_employee_id: 10 },
+        ])
+      );
+
       await serviceUsageService.logUsage(
         { reservation_id: 'RES-MULTI', room_id: 2, service_id: 1, quantity: 2 },
         10
