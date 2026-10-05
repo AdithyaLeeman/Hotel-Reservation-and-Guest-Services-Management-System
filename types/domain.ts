@@ -151,12 +151,13 @@ export interface BillingSummary {
 export interface InvoiceTotals {
   invoice_id: string;
   reservation_id: string;
-  room_charges: string;      // fn_calc_room_charges() result
-  tax_amount: string;        // room_charges × tax_percentage_applied / 100
-  service_charges: string;   // fn_calc_service_charges() result
-  grand_total: string;       // room + tax + service
-  total_paid: string;        // SUM(payment.amount_paid)
+  room_charges: string;        // fn_calc_room_charges() result
+  tax_amount: string;          // room_charges × tax_percentage_applied / 100
+  service_charges: string;     // fn_calc_service_charges() result
+  grand_total: string;         // room + tax + service
+  total_paid: string;          // SUM(payment.amount_paid)
   outstanding_balance: string; // grand_total - total_paid — NEVER computed in TS
+  payment_status?: string;     // billing_summary.payment_status (Unpaid | Partial | Paid)
 }
 
 // --- Payments ---

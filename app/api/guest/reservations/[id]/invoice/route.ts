@@ -1,19 +1,33 @@
+/**
+ * GET /api/guest/reservations/[id]/invoice
+ *
+ * Returns authoritative billing totals and payment history for one reservation.
+ *
+ * DB-first rule (AGENTS.md §5):
+ *   All monetary values (room_charges, tax_amount, service_charges, grand_total,
+ *   total_paid, outstanding_balance) come exclusively from vw_invoice_totals via
+ *   billingService.getInvoiceTotals(). TypeScript NEVER computes any financial value.
+ *
+ * P06-M05-T01 — Wire billing to real DB
+ *
+ * Flow:
+ *   1. Authenticate guest session (iron-session)
+ *   2. Verify reservation belongs to this guest (ownership enforcement)
+ *   3. Call sp_finalize_invoice() via billingService.finalizeInvoice() — idempotent
+ *   4. Read vw_invoice_totals via billingService.getInvoiceTotals()
+ *   5. Read payment history via paymentService.listPaymentsByInvoice()
+ *   6. Return combined response
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { reservationService } from '@/services/reservation.service';
+import { billingService } from '@/services/billing.service';
 import { paymentService } from '@/services/payment.service';
-import { billingReportRepository } from '@/repositories/billing-report.repository';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// TODO Phase 6: remove dev fallback — require real iron-session cookie
-function getDevGuestSession(): Partial<SessionData> {
-  return {
-    userId:  'user-mock-guest-001',
-    role:    'Guest',
-    guestId: 'guest-mock-001',
-  };
-}
+// ── Session helpers ──────────────────────────────────────────────────────────
 
 async function resolveSession(): Promise<Partial<SessionData>> {
   try {
@@ -22,15 +36,12 @@ async function resolveSession(): Promise<Partial<SessionData>> {
       return session;
     }
   } catch {
-    // In dev / mock-first mode when cookies are not present
+    // Cookie absent or malformed — fall through
   }
-
-  if (process.env.NODE_ENV !== 'production') {
-    return getDevGuestSession();
-  }
-
   return {};
 }
+
+// ── Response helpers ─────────────────────────────────────────────────────────
 
 function ok<T>(data: T): NextResponse {
   return NextResponse.json(
@@ -43,40 +54,28 @@ function err(status: number, code: string, message: string): NextResponse {
   return NextResponse.json({ error: { code, message } }, { status });
 }
 
+// ── SQLSTATE helpers ─────────────────────────────────────────────────────────
+
+function isSqlState(error: unknown, sqlstate: string): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code: unknown }).code === sqlstate
+  );
+}
+
+const SQLSTATE_RESERVATION_NOT_FOUND  = '45040';
+const SQLSTATE_RESERVATION_CANCELLED  = '45041';
+const SQLSTATE_NO_ACTIVE_TAX_POLICY   = '45042';
+
+// ── Route context type ───────────────────────────────────────────────────────
+
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// Well-known deterministic UUIDs for mock reservations
-const RESERVATION_INVOICE_MAP: Record<string, {
-  invoice_id: string;
-  room_charges: string;
-  service_charges: string;
-  tax_amount: string;
-  grand_total: string;
-}> = {
-  'res-mock-001': {
-    invoice_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-    room_charges: '40000.00',
-    service_charges: '0.00',
-    tax_amount: '3200.00',
-    grand_total: '43200.00',
-  },
-  'res-mock-002': {
-    invoice_id: 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
-    room_charges: '129600.00',
-    service_charges: '3500.00',
-    tax_amount: '10368.00',
-    grand_total: '143468.00',
-  },
-  'res-uuid-0001': {
-    invoice_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-    room_charges: '24000.00',
-    service_charges: '1000.00',
-    tax_amount: '1920.00',
-    grand_total: '26920.00',
-  },
-};
+// ── Route handler ────────────────────────────────────────────────────────────
 
 export async function GET(
   _req: NextRequest,
@@ -103,7 +102,7 @@ export async function GET(
   const { id: reservationId } = await context.params;
 
   try {
-    // 1. Verify reservation exists and belongs to this guest
+    // 1. Verify reservation exists and is owned by this guest
     const reservation = await reservationService.getReservationDetail(
       reservationId,
       session.guestId
@@ -113,98 +112,68 @@ export async function GET(
       return err(404, ERROR_CODES.NOT_FOUND, `Reservation ${reservationId} not found.`);
     }
 
-    // 2. Check billing report repository or known mock mapping
-    const reportRows = await billingReportRepository.getBillingSummary();
-    const existingReport = reportRows.find((r) => r.reservation_id === reservationId);
+    // 2. Finalize the invoice if it does not exist yet (idempotent).
+    //    sp_finalize_invoice() returns the existing invoice_id on repeat calls.
+    await billingService.finalizeInvoice(reservationId);
 
-    // All financial totals (room_charges, service_charges, tax_amount, grand_total,
-    // outstanding_balance) come exclusively from the DB (vw_guest_billing_summary /
-    // vw_invoice_totals). TypeScript NEVER computes any authoritative money value.
-    // AGENTS.md §5 — DB-First Computation Rule.
-    let invoiceId: string;
-    let roomCharges: string;
-    let serviceCharges: string;
-    let taxAmount: string;
-    let grandTotal: string;
-    let invoiceDate: string;
+    // 3. Read authoritative totals from vw_invoice_totals (DB-first, AGENTS.md §5).
+    //    outstanding_balance is NEVER computed in TypeScript.
+    const totals = await billingService.getInvoiceTotals(reservationId);
 
-    if (existingReport) {
-      // Row from vw_guest_billing_summary — all values are authoritative DB values.
-      invoiceId = existingReport.invoice_id.includes('-') && existingReport.invoice_id.length === 36
-        ? existingReport.invoice_id
-        : (RESERVATION_INVOICE_MAP[reservationId]?.invoice_id ?? 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11');
-      roomCharges = existingReport.room_charges;
-      serviceCharges = existingReport.service_charges;
-      taxAmount = existingReport.tax_amount;
-      grandTotal = existingReport.grand_total;
-      invoiceDate = existingReport.invoice_date;
-    } else if (RESERVATION_INVOICE_MAP[reservationId]) {
-      // Known mock reservation — pre-computed fixed values (not runtime arithmetic).
-      const mapped = RESERVATION_INVOICE_MAP[reservationId];
-      invoiceId = mapped.invoice_id;
-      roomCharges = mapped.room_charges;
-      serviceCharges = mapped.service_charges;
-      taxAmount = mapped.tax_amount;
-      grandTotal = mapped.grand_total;
-      invoiceDate = reservation.check_in_date;
-    } else {
-      // No invoice exists yet for this reservation.
-      // An invoice is created only by sp_finalize_invoice() — it cannot be
-      // synthesised here. Return 404 so the client knows to trigger invoicing first.
-      return err(404, ERROR_CODES.NOT_FOUND, `No invoice found for reservation ${reservationId}. Finalize the invoice first.`);
+    if (!totals) {
+      // Should not happen after finalizeInvoice, but guard defensively.
+      return err(
+        404,
+        ERROR_CODES.NOT_FOUND,
+        `Invoice totals not found for reservation ${reservationId} after finalization.`
+      );
     }
 
-    // 3. Fetch payment history for this invoice
-    const payments = await paymentService.listPaymentsByInvoice(invoiceId);
-
-    // 4. Calculate total_paid and outstanding_balance
-    const totalPaidNum = payments.reduce((sum, p) => sum + parseFloat(p.amount_paid), 0);
-    const grandTotalNum = parseFloat(grandTotal);
-    const outstandingNum = Math.max(0, grandTotalNum - totalPaidNum);
-
-    const totalPaidStr = totalPaidNum.toFixed(2);
-    const outstandingStr = outstandingNum.toFixed(2);
-
-    let paymentStatus = 'Pending';
-    if (outstandingNum <= 0) {
-      paymentStatus = 'Paid';
-    } else if (totalPaidNum > 0) {
-      paymentStatus = 'Partial';
-    }
+    // 4. Fetch payment history for this invoice
+    const payments = await paymentService.listPaymentsByInvoice(totals.invoice_id);
 
     return ok({
       invoice: {
-        invoice_id: invoiceId,
-        reservation_id: reservationId,
-        invoice_date: invoiceDate,
-        payment_status: paymentStatus,
-        room_charges: roomCharges,
-        service_charges: serviceCharges,
-        tax_percentage_applied: '8.00',
-        tax_amount: taxAmount,
-        grand_total: grandTotal,
-        total_paid: totalPaidStr,
-        outstanding_balance: outstandingStr,
+        invoice_id:              totals.invoice_id,
+        reservation_id:          totals.reservation_id,
+        payment_status:          totals.payment_status ?? 'Unpaid',
+        room_charges:            totals.room_charges,
+        service_charges:         totals.service_charges,
+        tax_amount:              totals.tax_amount,
+        grand_total:             totals.grand_total,
+        total_paid:              totals.total_paid,
+        outstanding_balance:     totals.outstanding_balance, // authoritative from DB
       },
       payments,
       reservation: {
-        reservation_id: reservation.reservation_id,
-        guest_id: reservation.guest_id,
-        guest_name: reservation.guest_full_name,
-        guest_email: reservation.guest_email,
-        branch_id: reservation.branch_id,
-        branch_name: reservation.branch_location_name,
-        check_in_date: reservation.check_in_date,
-        check_out_date: reservation.check_out_date,
-        reservation_status: reservation.reservation_status,
-        booking_source: reservation.booking_source,
-        discount_percentage: reservation.discount_percentage,
-        rooms: reservation.rooms,
+        reservation_id:       reservation.reservation_id,
+        guest_id:             reservation.guest_id,
+        guest_name:           reservation.guest_full_name,
+        guest_email:          reservation.guest_email,
+        branch_id:            reservation.branch_id,
+        branch_name:          reservation.branch_location_name,
+        check_in_date:        reservation.check_in_date,
+        check_out_date:       reservation.check_out_date,
+        reservation_status:   reservation.reservation_status,
+        booking_source:       reservation.booking_source,
+        discount_percentage:  reservation.discount_percentage,
+        rooms:                reservation.rooms,
       },
     });
 
   } catch (error) {
     console.error(`[GET /api/guest/reservations/${reservationId}/invoice]`, error);
+
+    if (isSqlState(error, SQLSTATE_RESERVATION_NOT_FOUND)) {
+      return err(404, ERROR_CODES.NOT_FOUND, `Reservation ${reservationId} not found.`);
+    }
+    if (isSqlState(error, SQLSTATE_RESERVATION_CANCELLED)) {
+      return err(409, ERROR_CODES.CONFLICT, `Cannot invoice a cancelled reservation.`);
+    }
+    if (isSqlState(error, SQLSTATE_NO_ACTIVE_TAX_POLICY)) {
+      return err(500, ERROR_CODES.INTERNAL_ERROR, 'No active tax policy configured. Contact an administrator.');
+    }
+
     return err(500, ERROR_CODES.INTERNAL_ERROR, 'An unexpected error occurred.');
   }
 }
