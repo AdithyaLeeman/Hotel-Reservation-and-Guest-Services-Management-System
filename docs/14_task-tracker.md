@@ -416,7 +416,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P06-M03-T01 | M3 | Wire reservation repository to real DB | DONE |
 | P06-M04-T01 | M4 | Wire service-usage + checkin to real DB | REVIEW |
 | P06-M05-T01 | M5 | Wire billing + payment to real DB | IN_PROGRESS |
-| P06-M01-T02 | M1 | Clean DB rebuild from empty + full seed verify | READY |
+| P06-M01-T02 | M1 | Clean DB rebuild from empty + full seed verify | DONE |
 
 ---
 

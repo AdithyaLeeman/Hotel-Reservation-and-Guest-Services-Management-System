@@ -1,7 +1,7 @@
 # context/08 — Progress Tracker
 
 _Living snapshot. Updated at every session end._
-_Last updated: Phase 6 active. M1, M2, M3, and M4 real DB wiring completed (P06-M01-T01..T01 through P06-M04-T01 merged/REVIEW). Active task: M5 (P06-M05-T01). 2026-10-05._
+_Last updated: Phase 6 active. SP6.1 complete (6/6 wire-up tasks DONE/REVIEW). P06-M01-T02 (clean DB rebuild + full seed verify) DONE 2026-10-05. M1 next: P06-M01-T03 (E2E auth flow)._
 
 ## Current Phase: Phase 6 — Integration, Testing, and Deployment Prep (Active)
 
@@ -15,7 +15,7 @@ _Last updated: Phase 6 active. M1, M2, M3, and M4 real DB wiring completed (P06-
 | P3 — Reservations | SP3.1–SP3.6 | 24 | **DONE** | M3 |
 | P4 — Services & Billing | SP4.1–SP4.7 | 27 | **DONE** | M4 + M5 |
 | P5 — Payments & Reports | SP5.1–SP5.7 | 22 | **DONE** | M5 |
-| P6 — Integration & Testing | SP6.1–SP6.5 | 21 | **IN PROGRESS** (SP6.1: 4/6 wire-up tasks DONE/REVIEW) | All (M1 coord) |
+| P6 — Integration & Testing | SP6.1–SP6.5 | 21 | **IN PROGRESS** (SP6.1: 6/6 wire-up tasks DONE/REVIEW; SP6.2–SP6.5 TODO) | All (M1 coord) |
 
 > **Status Summary:** All Phases 1–5 complete. Phase 6 active: Auth, Room/Availability, Reservation, and Service-Usage/Checkin repositories wired to real PostgreSQL. M5 real DB wiring in progress.
 
@@ -83,7 +83,7 @@ _Last updated: Phase 6 active. M1, M2, M3, and M4 real DB wiring completed (P06-
 ## Next Up for Each Member
 | Member | Immediate Next Task | Status / Can Start? |
 |---|---|---|
-| M1 (Leeman) | P06-M01-T02 — Clean DB rebuild from empty + full seed verify | ✅ READY |
+| M1 (Leeman) | P06-M01-T03 — Guest register → login → browse flow E2E | ✅ READY (P06-M01-T02 DONE) |
 | M2 (Karunarathna) | P06-M02-T02 — Availability search returns correct results for test scenarios | ⏳ Next after DB rebuild (P06-M02-T01 DONE) |
 | M3 (Hiripitiya) | P06-M03-T02 — Full guest booking flow E2E (search → book → confirm → view) | ⏳ Next after DB rebuild (P06-M03-T01 DONE) |
 | M4 (Bandaranayaka) | P06-M04-T02 — Check-in + service usage flow E2E | ⏳ Next after DB wire-up (P06-M04-T01 REVIEW) |
