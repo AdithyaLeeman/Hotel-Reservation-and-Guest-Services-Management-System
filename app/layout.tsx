@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import Script from 'next/script';
 
 import './globals.css';
 
@@ -84,6 +85,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         {/*
          * Theme initialization — runs before paint to prevent FOUC.
          * Reads localStorage['skynest-theme'] and sets data-theme on <html>.
@@ -91,7 +98,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
          *
          * Allowed values: 'dark' | 'light' (anything else → system default).
          */}
-        <script
+        <Script
+          id="skynest-theme-initializer"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
 (function(){

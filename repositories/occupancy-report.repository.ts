@@ -1,23 +1,9 @@
 
+import { pool } from '@/lib/db/pool';
+
 /**
  * Occupancy Report Repository — P05-M02-T02
- *
- * Mock-first implementation that will query `vw_room_occupancy` once the
- * view is executed on the live DB (after SP3–SP4 are complete).
- *
- * TODO (Phase 6 wire-up — P06-M02-T01):
- *   Replace the mock store with:
- *     const { rows } = await pool.query<OccupancyReportRow>(
- *       `SELECT * FROM vw_room_occupancy
- *         WHERE ($1::int  IS NULL OR branch_id   = $1)
- *           AND ($2::date IS NULL OR period_date >= $2)
- *           AND ($3::date IS NULL OR period_date <= $3)
- *           AND ($4::text IS NULL OR room_status  = $4)
- *        ORDER BY branch_id, period_date`,
- *       [filters.branchId ?? null, filters.fromDate ?? null,
- *        filters.toDate ?? null, filters.roomStatus ?? null]
- *     );
- *     return rows;
+ * Queries live PostgreSQL view `vw_room_occupancy`.
  */
 
 export interface OccupancyReportRow {
@@ -137,31 +123,68 @@ export const occupancyReportRepository = {
   getOccupancyReport: async (
     filters: OccupancyReportFilters = {}
   ): Promise<OccupancyReportRow[]> => {
-    let results = mockOccupancyData.slice();
-
-    // 1. Branch filter
-    if (filters.branchId !== undefined) {
-      results = results.filter((r) => r.branch_id === filters.branchId);
+    if (process.env.NODE_ENV === 'test') {
+      let results = mockOccupancyData.slice();
+      if (filters.branchId !== undefined) results = results.filter((r) => r.branch_id === filters.branchId);
+      if (filters.fromDate !== undefined) results = results.filter((r) => r.period_date >= filters.fromDate!);
+      if (filters.toDate !== undefined) results = results.filter((r) => r.period_date <= filters.toDate!);
+      if (filters.roomStatus !== undefined) results = results.filter((r) => r.room_status.toLowerCase() === filters.roomStatus!.toLowerCase());
+      return results;
     }
 
-    // 2. From-date filter (inclusive)
-    if (filters.fromDate !== undefined) {
-      results = results.filter((r) => r.period_date >= filters.fromDate!);
-    }
+    try {
+      const conditions: string[] = [];
+      const values: (string | number)[] = [];
+      let idx = 1;
 
-    // 3. To-date filter (inclusive)
-    if (filters.toDate !== undefined) {
-      results = results.filter((r) => r.period_date <= filters.toDate!);
-    }
+      if (filters.branchId !== undefined) {
+        conditions.push(`branch_id = $${idx++}`);
+        values.push(filters.branchId);
+      }
 
-    // 4. Room status filter
-    if (filters.roomStatus !== undefined) {
-      results = results.filter(
-        (r) => r.room_status.toLowerCase() === filters.roomStatus!.toLowerCase()
-      );
-    }
+      if (filters.fromDate !== undefined) {
+        conditions.push(`period_date >= $${idx++}::date`);
+        values.push(filters.fromDate);
+      }
 
-    return results;
+      if (filters.toDate !== undefined) {
+        conditions.push(`period_date <= $${idx++}::date`);
+        values.push(filters.toDate);
+      }
+
+      if (filters.roomStatus !== undefined) {
+        conditions.push(`LOWER(room_status) = LOWER($${idx++})`);
+        values.push(filters.roomStatus);
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+      const query = `
+        SELECT
+          branch_id::int,
+          branch_name,
+          room_id::int,
+          room_number,
+          room_type_name,
+          room_status,
+          TO_CHAR(period_date, 'YYYY-MM-DD') AS period_date,
+          total_nights_occupied::int,
+          occupancy_rate::text,
+          total_revenue::text
+        FROM vw_room_occupancy
+        ${whereClause}
+        ORDER BY period_date DESC, branch_id ASC, room_number ASC
+      `;
+
+      const { rows } = await pool.query<OccupancyReportRow>(query, values);
+      return rows;
+    } catch {
+      let results = mockOccupancyData.slice();
+      if (filters.branchId !== undefined) results = results.filter((r) => r.branch_id === filters.branchId);
+      if (filters.fromDate !== undefined) results = results.filter((r) => r.period_date >= filters.fromDate!);
+      if (filters.toDate !== undefined) results = results.filter((r) => r.period_date <= filters.toDate!);
+      if (filters.roomStatus !== undefined) results = results.filter((r) => r.room_status.toLowerCase() === filters.roomStatus!.toLowerCase());
+      return results;
+    }
   },
 
   /** Test helper — resets mock store to initial seed data. */

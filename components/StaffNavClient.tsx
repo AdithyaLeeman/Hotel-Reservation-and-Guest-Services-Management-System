@@ -161,7 +161,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
   return (
     <header
       id="staff-nav"
-      className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md"
+      className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md shadow-xs"
     >
       <nav
         aria-label="Staff navigation"
@@ -171,26 +171,29 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
         <Link
           id="staff-nav-logo"
           href="/staff/dashboard"
-          className="flex items-center gap-2 font-semibold text-[var(--color-primary)] text-lg tracking-tight hover:opacity-80 transition-opacity duration-[var(--duration-fast)] no-underline"
+          className="flex items-center gap-2.5 font-semibold text-[var(--color-text)] text-lg tracking-tight hover:opacity-90 transition-opacity duration-[var(--duration-fast)] no-underline group"
           aria-label="SkyNest Hotels Staff Portal — dashboard"
         >
-          {/* Diamond icon matching GuestNav */}
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect x="4" y="4" width="20" height="20" rx="5" fill="hsl(196 80% 30%)" />
-            <path d="M14 7L19 12L14 21L9 12L14 7Z" fill="hsl(40 80% 55%)" />
-          </svg>
-          <span>SkyNest</span>
+          {/* Gold Crest Icon */}
+          <div className="flex items-center justify-center w-8 h-8 rounded-sm bg-[#c5a880]/15 border border-[#c5a880]/50 text-[#c5a880]">
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+          <span className="font-serif tracking-wide font-medium">SkyNest</span>
           <span
-            className="hidden sm:inline text-xs font-medium px-2 py-0.5 rounded-[var(--radius-md)]"
-            style={{ background: 'var(--color-primary-muted)', color: 'var(--color-primary)' }}
+            className="hidden sm:inline text-[10px] uppercase tracking-[0.16em] font-semibold px-2 py-0.5 rounded-sm border border-[#c5a880]/40 text-[#c5a880] bg-[#c5a880]/10"
           >
             Staff
           </span>

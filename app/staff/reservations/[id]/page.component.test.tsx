@@ -737,13 +737,12 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
 
   /* -- Dev mock notice ----------------------------------------------------- */
 
-  it('renders development mock notice in test environment', async () => {
+  it('does not render development mock notice after live db wireup', async () => {
     mockFetchSuccess(makeDetail());
 
     render(<StaffReservationDetailPage params={makeParams()} />);
 
-    // NODE_ENV is 'test' in vitest, which is not 'production', so notice should appear
-    expect(screen.getByText(/Development mode/i)).toBeTruthy();
+    expect(screen.queryByText(/Development mode/i)).toBeNull();
   });
 
   /* -- Fetch called with correct URL --------------------------------------- */

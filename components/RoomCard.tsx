@@ -101,6 +101,13 @@ function RoomTypeIcon({ typeName }: { typeName: string }) {
   );
 }
 
+const ROOM_IMAGES: Record<string, string> = {
+  Single: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+  Double: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+  Suite: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80',
+  Deluxe: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+};
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -122,107 +129,107 @@ export default function RoomCard({ room, checkIn, checkOut, index = 0 }: RoomCar
     checkOut,
   });
 
+  const imageUrl = ROOM_IMAGES[room.type_name] ?? 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80';
+
   return (
     <article
       id={cardId}
       aria-label={`Room ${room.room_number} — ${room.type_name}`}
       className="
         group relative flex flex-col
-        bg-white dark:bg-neutral-900
-        border border-neutral-200 dark:border-neutral-700
-        rounded-2xl shadow-sm
-        hover:shadow-xl hover:-translate-y-1
+        bg-white dark:bg-[#1a1918]
+        border border-[#e7e2d9] dark:border-[#2f2b26]
+        rounded-sm shadow-sm hover:shadow-xl hover:-translate-y-1
         transition-all duration-300 ease-out
         overflow-hidden
       "
     >
-      {/* Decorative gradient header band */}
-      <div
-        aria-hidden="true"
-        className="
-          h-2 w-full
-          bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500
-          group-hover:from-amber-400 group-hover:via-orange-400 group-hover:to-yellow-400
-          transition-all duration-500
-        "
-      />
+      {/* Top Photography with Price Badge */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900">
+        <img
+          src={imageUrl}
+          alt={`SkyNest Hotel Room ${room.room_number} — ${room.type_name}`}
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-      <div className="flex flex-col flex-1 p-6 gap-4">
-
-        {/* Header: icon + room number/type + status badge */}
-        <header className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span
-              aria-hidden="true"
-              className="
-                flex items-center justify-center w-11 h-11 rounded-xl flex-shrink-0
-                bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400
-              "
-            >
-              <RoomTypeIcon typeName={room.type_name} />
-            </span>
-            <div>
-              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white leading-tight">
-                Room {room.room_number}
-              </h3>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">{room.type_name}</p>
-            </div>
-          </div>
-
-          <span
-            className={`
-              inline-flex items-center gap-1.5 px-2.5 py-1
-              rounded-full border text-xs font-medium flex-shrink-0
-              ${badgeClass}
-            `}
-            aria-label={`Status: ${statusLabel}`}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />
-            {statusLabel}
-          </span>
-        </header>
-
-        {/* Capacity */}
-        <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-            className="w-4 h-4 flex-shrink-0 text-neutral-400" aria-hidden="true">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <span>{capacityLabel(room.capacity)}</span>
+        {/* Gold Price Banner Badge */}
+        <div className="absolute top-3 right-3 bg-[#c5a880] text-[#161514] font-semibold text-xs tracking-wider uppercase px-3 py-1.5 shadow-md flex items-baseline gap-1">
+          <span className="font-bold">{formatRate(room.daily_rate)}</span>
+          <span className="text-[10px] opacity-80">/ NIGHT</span>
         </div>
 
-        <hr className="border-neutral-100 dark:border-neutral-800" />
+        {/* Status Badge */}
+        <span
+          className={`
+            absolute bottom-3 left-3
+            inline-flex items-center gap-1.5 px-2.5 py-1
+            rounded-full backdrop-blur-md text-xs font-medium
+            ${badgeClass}
+          `}
+          aria-label={`Status: ${statusLabel}`}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />
+          {statusLabel}
+        </span>
+      </div>
 
-        {/* Price */}
-        <div className="flex items-baseline justify-between">
-          <div>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-white tabular-nums">
-              {formatRate(room.daily_rate)}
-            </p>
-            <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
-              per night · prices exclude tax
-            </p>
-          </div>
-          <span className="text-xs font-mono text-neutral-300 dark:text-neutral-600">
-            #{room.room_id}
+      <div className="flex flex-col flex-1 p-6 gap-3">
+        {/* Category & Star Rating */}
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
+            LUXURY {room.type_name.toUpperCase()}
           </span>
+          <div className="flex text-[#c5a880] text-xs tracking-tight" aria-label="5 stars rating">
+            ★★★★★
+          </div>
+        </div>
+
+        {/* Room Title */}
+        <div>
+          <h3 className="font-serif text-xl font-medium text-[#1c1917] dark:text-[#f7f5f2] leading-tight group-hover:text-[#c5a880] transition-colors">
+            Room {room.room_number}
+          </h3>
+          <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mt-1 font-sans">
+            SkyNest Premier Collection · {room.type_name}
+          </p>
+        </div>
+
+        {/* Features Row */}
+        <div className="flex items-center justify-between text-xs text-[#78716c] dark:text-[#a8a29e] pt-2 border-t border-[#f0ece5] dark:border-[#2b2723]">
+          <div className="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"
+              className="w-4 h-4 text-[#c5a880]" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>{capacityLabel(room.capacity)}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"
+              className="w-4 h-4 text-[#c5a880]" aria-hidden="true">
+              <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
+            </svg>
+            <span>King Size Bed</span>
+          </div>
         </div>
 
         {/* Reserve CTA */}
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-3">
           <Link
             id={reserveId}
             href={`/guest/reservations/new?${reserveParams.toString()}`}
             aria-label={`Reserve room ${room.room_number} — ${checkIn} to ${checkOut}`}
             className="
-              block w-full text-center px-4 py-3 rounded-xl
-              bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-              dark:bg-blue-500 dark:hover:bg-blue-400
-              text-white text-sm font-semibold
-              transition-colors duration-200
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
+              block w-full text-center py-2.5 px-4
+              bg-[#c5a880] hover:bg-[#b59469] active:bg-[#a68042]
+              text-[#161514] text-xs font-semibold uppercase tracking-[0.15em]
+              transition-all duration-200 shadow-sm hover:shadow
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880] focus-visible:ring-offset-2
             "
           >
             Reserve This Room

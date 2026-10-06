@@ -13,9 +13,15 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    -- Read actor context from session variables (set by SP or route handler)
+    -- Read actor context from session variables (set by SP or route handler).
+    -- current_setting() with missing_ok=true returns NULL (not '') when unset.
+    -- NULL::UUID = NULL silently (no exception), so we COALESCE to the
+    -- reservation owner as the safe fallback.
     BEGIN
-        v_user_id := current_setting('app.current_user_id', true)::UUID;
+        v_user_id := COALESCE(
+            current_setting('app.current_user_id', true)::UUID,
+            NEW.created_by_user_id
+        );
     EXCEPTION WHEN OTHERS THEN
         v_user_id := NEW.created_by_user_id;   -- fallback: reservation owner
     END;

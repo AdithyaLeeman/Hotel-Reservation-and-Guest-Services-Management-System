@@ -320,8 +320,8 @@ function NewReservationContent() {
       <main
         className="
           min-h-screen
-          bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50
-          dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900
+          bg-[#faf8f5] dark:bg-[#121110]
+          text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
         {/* ── Hero header ────────────────────────────────────────────── */}
@@ -329,31 +329,25 @@ function NewReservationContent() {
           aria-labelledby="book-heading"
           className="
             relative overflow-hidden
-            bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700
-            dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900
-            py-12 px-4 md:px-6 lg:px-8
+            bg-[#141312] text-white
+            py-14 px-4 md:px-6 lg:px-8
+            border-b border-[#2e2a24]
           "
         >
-          {/* Decorative blobs */}
-          <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute -top-24 -left-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-          </div>
-
           <div className="relative max-w-4xl mx-auto">
             {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-4">
-              <ol className="flex items-center gap-2 text-sm text-blue-200 list-none p-0 m-0">
+              <ol className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#c5a880]/70 list-none p-0 m-0">
                 <li>
                   <Link
                     href="/search"
                     id="breadcrumb-search"
-                    className="hover:text-white transition-colors duration-200"
+                    className="hover:text-[#c5a880] transition-colors duration-200"
                   >
-                    Search
+                    Search Rooms
                   </Link>
                 </li>
-                <li aria-hidden="true" className="text-blue-400">&rsaquo;</li>
+                <li aria-hidden="true" className="text-[#c5a880]/40">&rsaquo;</li>
                 <li aria-current="page" className="text-white font-medium">
                   Confirm Booking
                 </li>
@@ -362,13 +356,13 @@ function NewReservationContent() {
 
             <h1
               id="book-heading"
-              className="text-3xl md:text-4xl font-extrabold text-white leading-tight"
+              className="font-serif text-3xl md:text-4xl font-normal text-white leading-tight"
             >
-              Confirm Your Booking
+              Confirm Your Reservation
             </h1>
-            <p className="mt-2 text-blue-100 text-base">
+            <p className="mt-2 text-[#c5a880]/80 text-xs uppercase tracking-wider font-light">
               {branchName
-                ? `SkyNest Hotels \u00b7 ${branchName} Branch`
+                ? `SkyNest Hotels \u00b7 ${branchName} Property`
                 : 'SkyNest Hotels'}
             </p>
           </div>
@@ -580,12 +574,12 @@ function NewReservationContent() {
                       aria-busy={submitting}
                       className="
                         flex-1 inline-flex items-center justify-center gap-2
-                        px-6 py-3 rounded-xl
-                        bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+                        px-6 py-3.5 rounded-xs
+                        bg-[#c5a880] hover:bg-[#b59469] active:bg-[#a68042]
                         disabled:opacity-60 disabled:cursor-not-allowed
-                        text-white font-semibold text-sm
-                        transition-colors duration-200
-                        focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
+                        text-[#161514] font-semibold text-xs uppercase tracking-[0.18em]
+                        transition-all duration-200 shadow-md cursor-pointer
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880]
                       "
                     >
                       {submitting ? (
@@ -654,10 +648,6 @@ function NewReservationContent() {
                   </div>
                 </form>
 
-                <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center leading-relaxed">
-                  Mock-first mode active &mdash; booking uses in-memory data.
-                  Real DB wired in Phase 6 (P06-M03-T01).
-                </p>
               </div>
 
               {/* ── Right column: summary + nav ────────────────────────── */}

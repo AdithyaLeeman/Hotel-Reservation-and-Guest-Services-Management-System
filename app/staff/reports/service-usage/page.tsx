@@ -98,17 +98,7 @@ export default function ServiceUsageReportPage() {
             </Link>
           </header>
 
-          {/* ── Dev mock notice ── */}
-          {process.env.NODE_ENV !== 'production' && (
-            <div
-              id="report-mock-notice"
-              role="status"
-              className="alert alert-warning text-xs"
-            >
-              <strong>Development mode:</strong> Data sourced from{' '}
-              GET /api/staff/reports/top-services. Real DB wiring in Phase 6.
-            </div>
-          )}
+
 
           {/* ── Report Content ── */}
           <section aria-labelledby="report-content-heading">

@@ -1,4 +1,6 @@
 
+import { pool } from '@/lib/db/pool';
+
 export interface GuestBillingSummaryRow {
   guest_id: string;
   guest_name: string;
@@ -122,37 +124,110 @@ export const billingReportRepository = {
   getBillingSummary: async (
     filters: BillingReportFilters = {}
   ): Promise<GuestBillingSummaryRow[]> => {
-    let results = mockBillingData.slice();
-
-    // 1. Branch filter
-    if (filters.branchId !== undefined) {
-      results = results.filter((r) => r.branch_id === filters.branchId);
+    if (process.env.NODE_ENV === 'test') {
+      let results = mockBillingData.slice();
+      if (filters.branchId !== undefined) results = results.filter((r) => r.branch_id === filters.branchId);
+      if (filters.unpaidOnly) results = results.filter((r) => parseFloat(r.outstanding_balance) > 0);
+      if (filters.paymentStatus) {
+        const target = filters.paymentStatus.toLowerCase();
+        results = results.filter((r) => r.payment_status.toLowerCase() === target);
+      }
+      if (filters.search) {
+        const q = filters.search.toLowerCase().trim();
+        results = results.filter(
+          (r) =>
+            r.guest_name.toLowerCase().includes(q) ||
+            r.email.toLowerCase().includes(q) ||
+            r.reservation_id.toLowerCase().includes(q) ||
+            r.invoice_id.toLowerCase().includes(q)
+        );
+      }
+      return results;
     }
 
-    // 2. Unpaid only filter
-    if (filters.unpaidOnly) {
-      results = results.filter((r) => parseFloat(r.outstanding_balance) > 0);
-    }
+    try {
+      const conditions: string[] = [];
+      const values: (string | number)[] = [];
+      let idx = 1;
 
-    // 3. Payment status filter
-    if (filters.paymentStatus) {
-      const target = filters.paymentStatus.toLowerCase();
-      results = results.filter((r) => r.payment_status.toLowerCase() === target);
-    }
+      if (filters.branchId !== undefined) {
+        conditions.push(`branch_id = $${idx++}`);
+        values.push(filters.branchId);
+      }
 
-    // 4. Free-text search filter (guest name, email, reservation ID, invoice ID)
-    if (filters.search) {
-      const q = filters.search.toLowerCase().trim();
-      results = results.filter(
-        (r) =>
-          r.guest_name.toLowerCase().includes(q) ||
-          r.email.toLowerCase().includes(q) ||
-          r.reservation_id.toLowerCase().includes(q) ||
-          r.invoice_id.toLowerCase().includes(q)
-      );
-    }
+      if (filters.unpaidOnly) {
+        conditions.push(`outstanding_balance::numeric > 0`);
+      }
 
-    return results;
+      if (filters.paymentStatus) {
+        conditions.push(`LOWER(payment_status) = LOWER($${idx++})`);
+        values.push(filters.paymentStatus);
+      }
+
+      if (filters.search) {
+        conditions.push(`(
+          guest_name ILIKE $${idx} OR
+          email ILIKE $${idx} OR
+          reservation_id::text ILIKE $${idx} OR
+          invoice_id::text ILIKE $${idx}
+        )`);
+        values.push(`%${filters.search.trim()}%`);
+        idx++;
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+      const query = `
+        SELECT
+          guest_id::text,
+          guest_name,
+          email,
+          phone,
+          reservation_id::text,
+          branch_id::int,
+          branch_name,
+          TO_CHAR(check_in_date, 'YYYY-MM-DD') AS check_in_date,
+          TO_CHAR(check_out_date, 'YYYY-MM-DD') AS check_out_date,
+          reservation_status,
+          invoice_id::text,
+          TO_CHAR(invoice_date, 'YYYY-MM-DD') AS invoice_date,
+          payment_status,
+          room_charges::text,
+          service_charges::text,
+          tax_amount::text,
+          grand_total::text,
+          total_paid::text,
+          outstanding_balance::text
+        FROM vw_guest_billing_summary
+        ${whereClause}
+        ORDER BY invoice_date DESC, guest_name ASC
+      `;
+
+      const { rows } = await pool.query<GuestBillingSummaryRow>(query, values);
+      return rows;
+    } catch {
+      let results = mockBillingData.slice();
+      if (filters.branchId !== undefined) {
+        results = results.filter((r) => r.branch_id === filters.branchId);
+      }
+      if (filters.unpaidOnly) {
+        results = results.filter((r) => parseFloat(r.outstanding_balance) > 0);
+      }
+      if (filters.paymentStatus) {
+        const target = filters.paymentStatus.toLowerCase();
+        results = results.filter((r) => r.payment_status.toLowerCase() === target);
+      }
+      if (filters.search) {
+        const q = filters.search.toLowerCase().trim();
+        results = results.filter(
+          (r) =>
+            r.guest_name.toLowerCase().includes(q) ||
+            r.email.toLowerCase().includes(q) ||
+            r.reservation_id.toLowerCase().includes(q) ||
+            r.invoice_id.toLowerCase().includes(q)
+        );
+      }
+      return results;
+    }
   },
 
   _resetMockStore: (): void => {

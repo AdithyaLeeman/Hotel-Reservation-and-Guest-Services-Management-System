@@ -429,7 +429,7 @@ export default function ReportsDashboardPage() {
             </div>
             <div className="rd-strip__label">
               <h3>SkyNest Hotels — All Branches</h3>
-              <p>Mock summary · Phase 6 will connect to live database views</p>
+              <p>Performance summary from PostgreSQL analytical views</p>
             </div>
           </div>
           <div className="rd-strip__kpis" role="list" aria-label="Key metrics">

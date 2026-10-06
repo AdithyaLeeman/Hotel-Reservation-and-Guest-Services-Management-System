@@ -373,19 +373,7 @@ export default function OccupancyReportPage() {
           </div>
         </header>
 
-        {/* ── Dev Notice Banner ── */}
-        {process.env.NODE_ENV !== 'production' && (
-          <div
-            id="report-mock-notice"
-            role="status"
-            className="alert alert-warning text-xs"
-          >
-            <strong>Development notice:</strong> Sourced from{' '}
-            <code className="px-1 py-0.5 bg-black/10 rounded">GET /api/staff/reports/occupancy</code>{' '}
-            (mock-first). Will connect to live database view{' '}
-            <code className="px-1 py-0.5 bg-black/10 rounded">vw_room_occupancy</code> in Phase 6.
-          </div>
-        )}
+
 
         {/* ── Summary KPI Cards ── */}
         <section aria-label="Key Performance Indicators" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

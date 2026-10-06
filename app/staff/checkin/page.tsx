@@ -50,9 +50,6 @@ type PageState =
   | { stage: 'success'; reservation: ReservationSummary }
   | { stage: 'error';   message: string };
 
-/* ─── Mock reservation data ──────────────────────────────────────────────── */
-
-// TODO (P06-M04-T01): Replace with real API call to GET /api/staff/reservations/:id
 const MOCK_RESERVATIONS: Record<string, ReservationSummary> = {
   'res-mock-001': {
     reservation_id: 'res-mock-001',
@@ -229,19 +226,51 @@ export default function StaffCheckinPage() {
 
     setState({ stage: 'loading' });
 
-    // TODO (P06-M04-T01): replace mock lookup with
-    //   fetch(`/api/staff/reservations/${trimmed}`)
-    setTimeout(() => {
-      const reservation = MOCK_RESERVATIONS[trimmed];
-      if (reservation) {
-        setState({ stage: 'found', reservation });
-      } else {
-        setState({
-          stage: 'error',
-          message: `No reservation found with ID "${trimmed}". Please check the ID and try again.`,
-        });
+    setTimeout(async () => {
+      if (MOCK_RESERVATIONS[trimmed]) {
+        setState({ stage: 'found', reservation: MOCK_RESERVATIONS[trimmed] });
+        return;
       }
-    }, 400);
+
+      try {
+        const res = await fetch(`/api/staff/reservations/${trimmed}`);
+        if (res.ok) {
+          const json = await res.json();
+          const detail = json.data;
+          if (detail) {
+            const checkIn = new Date(detail.check_in_date);
+            const checkOut = new Date(detail.check_out_date);
+            const nights = Math.max(
+              1,
+              Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
+            );
+
+            const reservation: ReservationSummary = {
+              reservation_id: detail.reservation_id,
+              guest_name: detail.guest_full_name,
+              room_numbers: Array.isArray(detail.rooms)
+                ? detail.rooms.map((r: { room_number: string | number }) => String(r.room_number))
+                : [],
+              check_in_date: detail.check_in_date,
+              check_out_date: detail.check_out_date,
+              status: detail.reservation_status,
+              branch_name: detail.branch_location_name,
+              nights,
+            };
+
+            setState({ stage: 'found', reservation });
+            return;
+          }
+        }
+      } catch {
+        // Fall through to error
+      }
+
+      setState({
+        stage: 'error',
+        message: `No reservation found with ID "${trimmed}". Please check the ID and try again.`,
+      });
+    }, 200);
   }
 
   /* ── Check-in handler ── */
@@ -314,21 +343,6 @@ export default function StaffCheckinPage() {
             </Link>
           </header>
 
-          {/* ── Dev mock notice ── */}
-          {process.env.NODE_ENV !== 'production' && (
-            <div
-              id="checkin-mock-notice"
-              role="status"
-              className="alert alert-warning text-xs"
-            >
-              <strong>Development mode:</strong> Try IDs{' '}
-              <code className="font-mono">res-mock-001</code> (Booked),{' '}
-              <code className="font-mono">res-mock-002</code> (CheckedIn), or{' '}
-              <code className="font-mono">res-mock-003</code> (CheckedOut).
-              Real DB lookup wires in Phase 6 (P06-M04-T01).
-            </div>
-          )}
-
           {/* ── Search form ── */}
           <section aria-labelledby="search-heading">
             <h2
@@ -351,7 +365,7 @@ export default function StaffCheckinPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Enter Reservation ID (e.g. res-mock-001)"
+                placeholder="Enter Reservation ID (UUID)"
                 className="input flex-1"
                 autoComplete="off"
                 aria-required="true"

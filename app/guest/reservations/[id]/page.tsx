@@ -37,19 +37,33 @@ import type { ReservationStatus } from '@/types/enums';
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Human-readable status badge styles — mirrors T16's pattern for consistency. */
-const STATUS_BADGE_CLASS: Record<ReservationStatus, string> = {
-  Booked:     'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
-  CheckedIn:  'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
-  CheckedOut: 'bg-neutral-100 text-neutral-600 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700',
-  Cancelled:  'bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800',
-};
+interface StatusBadgeConfig {
+  container: string;
+  dot: string;
+  label: string;
+}
 
-const STATUS_LABEL: Record<ReservationStatus, string> = {
-  Booked:     'Booked',
-  CheckedIn:  'Checked In',
-  CheckedOut: 'Checked Out',
-  Cancelled:  'Cancelled',
+const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
+  Booked: {
+    container: 'bg-[#c5a880]/15 text-[#e5d3b3] border border-[#c5a880]/50 shadow-[0_0_12px_rgba(197,168,128,0.15)]',
+    dot: 'bg-[#c5a880] shadow-[0_0_8px_#c5a880]',
+    label: 'Booked',
+  },
+  CheckedIn: {
+    container: 'bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]',
+    dot: 'bg-emerald-400 shadow-[0_0_8px_#34d399]',
+    label: 'Checked In',
+  },
+  CheckedOut: {
+    container: 'bg-[#22201e] text-[#a8a29e] border border-[#3e3933]',
+    dot: 'bg-[#78716c]',
+    label: 'Checked Out',
+  },
+  Cancelled: {
+    container: 'bg-red-950/60 text-red-300 border border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.15)]',
+    dot: 'bg-red-400 shadow-[0_0_8px_#f87171]',
+    label: 'Cancelled',
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -125,29 +139,29 @@ function DetailSkeleton() {
       <span className="sr-only">Loading reservation details&hellip;</span>
 
       {/* Header skeleton */}
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
-        <div className="h-2 bg-gradient-to-r from-neutral-200 to-neutral-100 dark:from-neutral-700 dark:to-neutral-600" />
-        <div className="p-6 flex flex-col gap-4">
-          <div className="flex justify-between">
-            <div className="h-5 bg-neutral-200 dark:bg-neutral-700 rounded w-1/3" />
-            <div className="h-6 bg-neutral-100 dark:bg-neutral-800 rounded-full w-24" />
+      <div className="bg-[#181716]/90 rounded-xs border border-[#38332c] overflow-hidden">
+        <div className="h-1 bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30" />
+        <div className="p-8 flex flex-col gap-6">
+          <div className="flex justify-between items-center">
+            <div className="h-6 bg-[#2e2a24] rounded-xs w-1/3" />
+            <div className="h-7 bg-[#2e2a24] rounded-full w-28" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="h-4 bg-neutral-100 dark:bg-neutral-700 rounded w-4/5" />
-            <div className="h-4 bg-neutral-100 dark:bg-neutral-700 rounded w-4/5" />
-            <div className="h-4 bg-neutral-100 dark:bg-neutral-700 rounded w-3/5" />
-            <div className="h-4 bg-neutral-100 dark:bg-neutral-700 rounded w-3/5" />
+          <div className="grid grid-cols-2 gap-6">
+            <div className="h-4 bg-[#2e2a24] rounded-xs w-4/5" />
+            <div className="h-4 bg-[#2e2a24] rounded-xs w-4/5" />
+            <div className="h-4 bg-[#2e2a24] rounded-xs w-3/5" />
+            <div className="h-4 bg-[#2e2a24] rounded-xs w-3/5" />
           </div>
         </div>
       </div>
 
       {/* Rooms skeleton */}
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
-        <div className="h-2 bg-gradient-to-r from-neutral-200 to-neutral-100 dark:from-neutral-700 dark:to-neutral-600" />
-        <div className="p-6 flex flex-col gap-3">
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-1/4" />
-          <div className="h-10 bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-          <div className="h-10 bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+      <div className="bg-[#181716]/90 rounded-xs border border-[#38332c] overflow-hidden">
+        <div className="h-1 bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30" />
+        <div className="p-8 flex flex-col gap-4">
+          <div className="h-4 bg-[#2e2a24] rounded-xs w-1/4" />
+          <div className="h-16 bg-[#121110] border border-[#2e2a24] rounded-xs" />
+          <div className="h-16 bg-[#121110] border border-[#2e2a24] rounded-xs" />
         </div>
       </div>
     </div>
@@ -162,9 +176,9 @@ function NotFoundState() {
   return (
     <div
       id="reservation-detail-not-found"
-      className="flex flex-col items-center justify-center py-24 text-center gap-5"
+      className="flex flex-col items-center justify-center py-24 text-center gap-6 bg-[#181716]/90 border border-[#38332c] rounded-xs p-10 max-w-xl mx-auto shadow-2xl backdrop-blur-xl"
     >
-      <div className="w-20 h-20 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+      <div className="w-16 h-16 rounded-full bg-[#c5a880]/10 border border-[#c5a880]/30 flex items-center justify-center text-[#c5a880]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -173,7 +187,7 @@ function NotFoundState() {
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="w-10 h-10 text-neutral-400"
+          className="w-8 h-8"
           aria-hidden="true"
         >
           <circle cx="11" cy="11" r="8" />
@@ -184,27 +198,20 @@ function NotFoundState() {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200">
-          Reservation not found
+        <h2 className="text-2xl font-serif text-white">
+          Reservation Not Found
         </h2>
-        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-sm">
-          This reservation does not exist or does not belong to your account.
+        <p className="mt-2 text-sm text-[#a8a29e] max-w-sm">
+          This reservation reference does not exist or does not belong to your account.
         </p>
       </div>
 
       <Link
         href="/guest/reservations"
         id="not-found-back-btn"
-        className="
-          inline-flex items-center gap-2
-          px-5 py-2.5 rounded-xl
-          bg-blue-600 hover:bg-blue-700
-          text-white text-sm font-semibold
-          transition-colors duration-200
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-        "
+        className="gold-btn px-6 py-2.5 rounded-xs text-sm uppercase tracking-wider font-semibold inline-flex items-center gap-2"
       >
-        &larr; My Reservations
+        &larr; Return to Reservations
       </Link>
     </div>
   );
@@ -219,9 +226,9 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
     <div
       id="reservation-detail-error"
       role="alert"
-      className="flex flex-col items-center justify-center py-20 text-center gap-5"
+      className="flex flex-col items-center justify-center py-20 text-center gap-6 bg-[#181716]/90 border border-red-500/30 rounded-xs p-10 max-w-xl mx-auto shadow-2xl backdrop-blur-xl"
     >
-      <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-950 flex items-center justify-center">
+      <div className="w-16 h-16 rounded-full bg-red-950/60 border border-red-500/30 flex items-center justify-center text-red-400">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -230,7 +237,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="w-8 h-8 text-red-400"
+          className="w-8 h-8"
           aria-hidden="true"
         >
           <circle cx="12" cy="12" r="10" />
@@ -240,43 +247,27 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">
-          Could not load reservation
+        <h2 className="text-2xl font-serif text-white">
+          Could Not Load Reservation
         </h2>
-        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400 max-w-sm">
+        <p className="mt-2 text-sm text-[#a8a29e] max-w-sm">
           {message}
         </p>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <button
           id="detail-retry-btn"
           type="button"
           onClick={onRetry}
-          className="
-            inline-flex items-center gap-2
-            px-5 py-2.5 rounded-xl
-            border border-neutral-300 dark:border-neutral-600
-            text-neutral-700 dark:text-neutral-300
-            hover:bg-neutral-50 dark:hover:bg-neutral-800
-            text-sm font-medium
-            transition-colors duration-200
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400
-          "
+          className="gold-btn px-6 py-2.5 rounded-xs text-sm uppercase tracking-wider font-semibold"
         >
           Try Again
         </button>
         <Link
           href="/guest/reservations"
           id="detail-error-back-btn"
-          className="
-            inline-flex items-center gap-2
-            px-5 py-2.5 rounded-xl
-            bg-blue-600 hover:bg-blue-700
-            text-white text-sm font-medium
-            transition-colors duration-200
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-          "
+          className="px-6 py-2.5 rounded-xs border border-[#38332c] hover:border-[#c5a880] text-sm text-neutral-300 hover:text-white transition-colors duration-200"
         >
           &larr; My Reservations
         </Link>
@@ -291,11 +282,11 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 
 function DetailRow({ label, value, id }: { label: string; value: React.ReactNode; id: string }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+    <div className="flex flex-col gap-1">
+      <dt className="text-[11px] font-medium text-[#a8a29e] uppercase tracking-[0.16em]">
         {label}
       </dt>
-      <dd id={id} className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+      <dd id={id} className="text-sm font-semibold text-neutral-100">
         {value}
       </dd>
     </div>
@@ -309,7 +300,7 @@ function DetailRow({ label, value, id }: { label: string; value: React.ReactNode
 function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
   if (rooms.length === 0) {
     return (
-      <p className="text-sm text-neutral-400 dark:text-neutral-500 italic">
+      <p className="text-sm text-[#a8a29e] italic">
         No room records found for this reservation.
       </p>
     );
@@ -319,7 +310,7 @@ function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
     <ul
       id="reservation-rooms-list"
       aria-label="Reserved rooms"
-      className="flex flex-col gap-2 list-none p-0 m-0"
+      className="flex flex-col gap-3 list-none p-0 m-0"
     >
       {rooms.map((room) => (
         <li
@@ -327,20 +318,20 @@ function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
           id={`reservation-room-${room.room_id}`}
           className="
             flex items-center justify-between gap-4
-            px-4 py-3 rounded-xl
-            bg-neutral-50 dark:bg-neutral-800
-            border border-neutral-100 dark:border-neutral-700
+            p-4 rounded-xs
+            bg-[#121110]/80
+            border border-[#2e2a24]
             text-sm
           "
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             {/* Bed icon */}
             <span
               aria-hidden="true"
               className="
                 flex items-center justify-center
-                w-8 h-8 rounded-lg flex-shrink-0
-                bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400
+                w-10 h-10 rounded-xs flex-shrink-0
+                bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
               "
             >
               <svg
@@ -351,23 +342,23 @@ function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-4 h-4"
+                className="w-5 h-5"
               >
                 <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
               </svg>
             </span>
             <div>
-              <p className="font-semibold text-neutral-800 dark:text-neutral-200">
+              <p className="font-serif text-lg font-medium text-white tracking-wide">
                 Room {room.room_number}
               </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">{room.type_name}</p>
+              <p className="text-xs text-[#a8a29e]">{room.type_name}</p>
             </div>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="font-semibold tabular-nums text-neutral-800 dark:text-neutral-200">
+            <p className="font-sans font-semibold text-base tabular-nums text-[#e5d3b3]">
               {formatRate(room.rate_per_night)}
             </p>
-            <p className="text-xs text-neutral-400 dark:text-neutral-500">/ night (at booking)</p>
+            <p className="text-[11px] text-[#8c827a]">/ night (at booking)</p>
           </div>
         </li>
       ))}
@@ -381,222 +372,270 @@ function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
 
 function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
   const nights      = countNights(detail.check_in_date, detail.check_out_date);
-  const badgeClass  = STATUS_BADGE_CLASS[detail.reservation_status] ?? STATUS_BADGE_CLASS.Booked;
-  const statusLabel = STATUS_LABEL[detail.reservation_status] ?? detail.reservation_status;
+  const badgeConfig = STATUS_BADGE_STYLE[detail.reservation_status] ?? STATUS_BADGE_STYLE.Booked;
+  const statusLabel = badgeConfig.label;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      {/* ── Reservation summary card ───────────────────────────────────── */}
-      <div
-        id="reservation-detail-card"
-        className="
-          bg-white dark:bg-neutral-900
-          border border-neutral-200 dark:border-neutral-700
-          rounded-2xl shadow-sm overflow-hidden
-        "
-      >
-        {/* Gradient accent */}
+      {/* ── Left Column: Primary Reservation & Rooms (7 cols) ───────────── */}
+      <div className="lg:col-span-7 flex flex-col gap-8">
+
+        {/* Reservation summary card */}
         <div
-          aria-hidden="true"
-          className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500"
-        />
+          id="reservation-detail-card"
+          className="
+            bg-[#181716]/90 backdrop-blur-xl
+            border border-[#38332c]
+            rounded-xs shadow-2xl overflow-hidden
+          "
+        >
+          {/* Luxury gold accent */}
+          <div
+            aria-hidden="true"
+            className="h-1 w-full bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30"
+          />
 
-        <div className="p-6 md:p-8 flex flex-col gap-6">
+          <div className="p-6 sm:p-8 flex flex-col gap-6">
 
-          {/* Header: reference + status */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-            <div>
-              <p className="text-xs text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-1">
-                Booking Reference
-              </p>
-              <p
-                id="detail-reservation-id"
-                className="font-mono text-base font-semibold text-neutral-800 dark:text-neutral-200 break-all"
+            {/* Header: reference + status pill */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <p className="text-[11px] text-[#c5a880] uppercase tracking-[0.2em] font-semibold mb-1">
+                  Reservation Reference
+                </p>
+                <p
+                  id="detail-reservation-id"
+                  className="font-mono text-xl sm:text-2xl font-semibold text-neutral-100 tracking-wider break-all"
+                >
+                  {detail.reservation_id}
+                </p>
+              </div>
+
+              <span
+                id="detail-status-badge"
+                className={`
+                  inline-flex items-center gap-2 flex-shrink-0 self-start
+                  px-3.5 py-1.5 rounded-full border
+                  text-[11px] font-semibold uppercase tracking-[0.16em]
+                  ${badgeConfig.container}
+                `}
+                aria-label={`Status: ${statusLabel}`}
               >
-                {detail.reservation_id}
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${badgeConfig.dot}`} aria-hidden="true" />
+                {statusLabel}
+              </span>
+            </div>
+
+            {/* Branch / Property display */}
+            <div className="flex items-center gap-2.5 text-neutral-300">
+              <div className="w-7 h-7 rounded-xs bg-[#c5a880]/15 border border-[#c5a880]/40 flex items-center justify-center text-[#c5a880] shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-3.5 h-3.5"
+                  aria-hidden="true"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <span className="font-serif text-xl tracking-wide text-white">
+                SkyNest {detail.branch_location_name}
+              </span>
+            </div>
+
+            {/* Dates itinerary panel — framed luxury box with clear fonts */}
+            <div className="bg-[#121110]/80 border border-[#2e2a24] rounded-xs p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[11px] text-[#a8a29e] uppercase tracking-[0.18em] font-medium">
+                  Check-in
+                </span>
+                <span
+                  id="detail-check-in"
+                  className="font-sans text-base sm:text-lg font-semibold text-neutral-100 tracking-wide"
+                >
+                  {formatDate(detail.check_in_date)}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1 sm:border-l sm:border-[#2e2a24] sm:pl-4">
+                <span className="text-[11px] text-[#a8a29e] uppercase tracking-[0.18em] font-medium">
+                  Check-out
+                </span>
+                <span
+                  id="detail-check-out"
+                  className="font-sans text-base sm:text-lg font-semibold text-neutral-100 tracking-wide"
+                >
+                  {formatDate(detail.check_out_date)}
+                </span>
+              </div>
+            </div>
+
+            {/* Details grid */}
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 pt-2 border-t border-[#2e2a24]">
+              <DetailRow
+                label="Branch"
+                id="detail-branch"
+                value={`SkyNest ${detail.branch_location_name}`}
+              />
+
+              <DetailRow
+                label="Booking Source"
+                id="detail-source"
+                value={detail.booking_source}
+              />
+
+              <DetailRow
+                label="Duration"
+                id="detail-duration"
+                value={`${nights} ${nights === 1 ? 'night' : 'nights'}`}
+              />
+
+              <DetailRow
+                label="Discount"
+                id="detail-discount"
+                value={
+                  detail.discount_percentage
+                    ? <span className="text-emerald-400 font-semibold">{detail.discount_percentage}% OFF</span>
+                    : <span className="text-[#8c827a]">None</span>
+                }
+              />
+
+              <DetailRow
+                label="Booked On"
+                id="detail-created-at"
+                value={formatDateTime(detail.created_at)}
+              />
+
+              {detail.processed_by_employee_id && (
+                <DetailRow
+                  label="Processed by Employee"
+                  id="detail-employee"
+                  value={`#${detail.processed_by_employee_id}`}
+                />
+              )}
+            </dl>
+          </div>
+        </div>
+
+        {/* Reserved rooms card */}
+        <div
+          id="reservation-rooms-card"
+          className="
+            bg-[#181716]/90 backdrop-blur-xl
+            border border-[#38332c]
+            rounded-xs shadow-2xl overflow-hidden
+          "
+        >
+          <div className="h-1 w-full bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30" aria-hidden="true" />
+
+          <div className="p-6 sm:p-8 flex flex-col gap-5">
+            <h2 className="text-xs font-semibold text-[#c5a880] uppercase tracking-[0.2em]">
+              Reserved Rooms ({detail.rooms.length} {detail.rooms.length === 1 ? 'room' : 'rooms'})
+            </h2>
+            <RoomsList rooms={detail.rooms} />
+
+            <p className="text-xs text-[#8c827a] mt-1">
+              Rates shown are the historical snapshot captured at booking time.
+              Final billing is calculated at checkout by the hotel system.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Right Column: Guest Info & Billing Action (5 cols) ─────────── */}
+      <div className="lg:col-span-5 flex flex-col gap-8">
+
+        {/* Billing & Payment CTA card */}
+        <div
+          id="reservation-billing-card"
+          className="
+            bg-[#181716]/90 backdrop-blur-xl
+            border border-[#38332c]
+            rounded-xs shadow-2xl overflow-hidden
+          "
+        >
+          <div className="h-1 w-full bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30" aria-hidden="true" />
+
+          <div className="p-6 sm:p-8 flex flex-col gap-5">
+            <div>
+              <h2 className="text-xs font-semibold text-[#c5a880] uppercase tracking-[0.2em]">
+                Billing &amp; Payments
+              </h2>
+              <p className="text-sm text-[#a8a29e] mt-2 leading-relaxed">
+                Review your itemized invoice breakdown, room charges, taxes, and settled payment history.
               </p>
             </div>
 
-            <span
-              id="detail-status-badge"
-              className={`
-                inline-flex items-center gap-1.5 flex-shrink-0
-                px-3 py-1.5 rounded-full border text-sm font-medium
-                ${badgeClass}
-              `}
-              aria-label={`Status: ${statusLabel}`}
+            <Link
+              href={`/guest/reservations/${detail.reservation_id}/pay`}
+              id="detail-pay-bill-btn"
+              className="gold-btn py-3 px-6 text-sm flex items-center justify-center gap-2 rounded-xs font-semibold uppercase tracking-wider w-full shadow-lg"
             >
-              <span className="w-2 h-2 rounded-full bg-current" aria-hidden="true" />
-              {statusLabel}
-            </span>
+              <span>View Bill &amp; Settle Balance</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
-
-          <hr className="border-neutral-100 dark:border-neutral-800" />
-
-          {/* Details grid */}
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-
-            <DetailRow
-              label="Branch"
-              id="detail-branch"
-              value={`SkyNest ${detail.branch_location_name}`}
-            />
-
-            <DetailRow
-              label="Booking Source"
-              id="detail-source"
-              value={detail.booking_source}
-            />
-
-            <DetailRow
-              label="Check-in"
-              id="detail-check-in"
-              value={formatDate(detail.check_in_date)}
-            />
-
-            <DetailRow
-              label="Check-out"
-              id="detail-check-out"
-              value={formatDate(detail.check_out_date)}
-            />
-
-            <DetailRow
-              label="Duration"
-              id="detail-duration"
-              value={`${nights} ${nights === 1 ? 'night' : 'nights'}`}
-            />
-
-            <DetailRow
-              label="Discount"
-              id="detail-discount"
-              value={
-                detail.discount_percentage
-                  ? <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{detail.discount_percentage}%</span>
-                  : <span className="text-neutral-400 dark:text-neutral-500">None</span>
-              }
-            />
-
-            <DetailRow
-              label="Booked On"
-              id="detail-created-at"
-              value={formatDateTime(detail.created_at)}
-            />
-
-            {detail.processed_by_employee_id && (
-              <DetailRow
-                label="Processed by Employee"
-                id="detail-employee"
-                value={`#${detail.processed_by_employee_id}`}
-              />
-            )}
-          </dl>
         </div>
-      </div>
 
-      {/* ── Guest info card ─────────────────────────────────────────────── */}
-      <div
-        id="reservation-guest-card"
-        className="
-          bg-white dark:bg-neutral-900
-          border border-neutral-200 dark:border-neutral-700
-          rounded-2xl shadow-sm overflow-hidden
-        "
-      >
-        <div className="h-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" aria-hidden="true" />
+        {/* Guest info card */}
+        <div
+          id="reservation-guest-card"
+          className="
+            bg-[#181716]/90 backdrop-blur-xl
+            border border-[#38332c]
+            rounded-xs shadow-2xl overflow-hidden
+          "
+        >
+          <div className="h-1 w-full bg-gradient-to-r from-[#c5a880]/30 via-[#c5a880] to-[#c5a880]/30" aria-hidden="true" />
 
-        <div className="p-6 flex flex-col gap-4">
-          <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
-            Guest Information
-          </h2>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-            <DetailRow
-              label="Full Name"
-              id="detail-guest-name"
-              value={detail.guest_full_name}
-            />
-            <DetailRow
-              label="Email"
-              id="detail-guest-email"
-              value={
-                <a
-                  href={`mailto:${detail.guest_email}`}
-                  className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2"
-                >
-                  {detail.guest_email}
-                </a>
-              }
-            />
-          </dl>
-        </div>
-      </div>
-
-      {/* ── Reserved rooms card ─────────────────────────────────────────── */}
-      <div
-        id="reservation-rooms-card"
-        className="
-          bg-white dark:bg-neutral-900
-          border border-neutral-200 dark:border-neutral-700
-          rounded-2xl shadow-sm overflow-hidden
-        "
-      >
-        <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" aria-hidden="true" />
-
-        <div className="p-6 flex flex-col gap-4">
-          <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
-            Reserved Rooms
-            <span className="ml-2 text-xs font-normal text-neutral-400 dark:text-neutral-500 normal-case tracking-normal">
-              ({detail.rooms.length} {detail.rooms.length === 1 ? 'room' : 'rooms'})
-            </span>
-          </h2>
-          <RoomsList rooms={detail.rooms} />
-
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-            Rates shown are the historical snapshot captured at booking time.
-            Final billing is calculated at checkout by the hotel system.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Billing & Payment CTA card ───────────────────────────────────── */}
-      <div
-        id="reservation-billing-card"
-        className="
-          bg-white dark:bg-neutral-900
-          border border-neutral-200 dark:border-neutral-700
-          rounded-2xl shadow-sm overflow-hidden
-        "
-      >
-        <div className="h-2 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500" aria-hidden="true" />
-
-        <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
-              Billing &amp; Payments
+          <div className="p-6 sm:p-8 flex flex-col gap-5">
+            <h2 className="text-xs font-semibold text-[#c5a880] uppercase tracking-[0.2em]">
+              Guest Information
             </h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-              View your itemized invoice breakdown, taxes, payment history, and settle outstanding balances online.
-            </p>
+            <dl className="flex flex-col gap-4">
+              <DetailRow
+                label="Full Name"
+                id="detail-guest-name"
+                value={detail.guest_full_name}
+              />
+              <DetailRow
+                label="Email"
+                id="detail-guest-email"
+                value={
+                  <a
+                    href={`mailto:${detail.guest_email}`}
+                    className="text-[#c5a880] hover:underline underline-offset-2"
+                  >
+                    {detail.guest_email}
+                  </a>
+                }
+              />
+            </dl>
           </div>
-
-          <Link
-            href={`/guest/reservations/${detail.reservation_id}/pay`}
-            id="detail-pay-bill-btn"
-            className="
-              inline-flex items-center gap-2 flex-shrink-0
-              px-5 py-2.5 rounded-xl
-              bg-blue-600 hover:bg-blue-700
-              text-white text-sm font-semibold
-              shadow-sm shadow-blue-500/20
-              transition-colors duration-200
-            "
-          >
-            <span>View Bill &amp; Pay</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
+
+        {/* Concierge Assistance Card */}
+        <div className="bg-[#181716]/70 border border-[#2e2a24] rounded-xs p-6 flex flex-col gap-3">
+          <p className="text-[11px] text-[#c5a880] uppercase tracking-[0.2em] font-semibold">
+            Concierge &amp; Reception
+          </p>
+          <p className="text-xs text-[#a8a29e] leading-relaxed">
+            Need to request room service, schedule early arrival, or make itinerary adjustments? Contact our front desk at your destination branch 24/7.
+          </p>
+          <div className="pt-2 text-xs text-[#8c827a]">
+            Standard check-in begins at 14:00. Checkout is at 12:00 noon.
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -689,124 +728,139 @@ export default function ReservationDetailPage() {
 
       <main
         className="
-          min-h-screen
-          bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50
-          dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900
+          min-h-screen relative text-neutral-100 bg-[#0d0c0b]
         "
       >
-        {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section
-          aria-labelledby="detail-heading"
-          className="
-            relative overflow-hidden
-            bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700
-            dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900
-            py-12 px-4 md:px-6 lg:px-8
-          "
+        {/* ── Ambient background with subtle blur ──────────────────────── */}
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
         >
-          {/* Decorative blobs */}
-          <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute -top-24 -left-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-          </div>
+          <img
+            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2400&q=80"
+            alt=""
+            className="w-full h-full object-cover filter blur-[2px] opacity-40 brightness-[0.65] scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0f0e0d]/90 via-[#141312]/85 to-[#0c0b0a]/95" />
+        </div>
 
-          <div className="relative max-w-4xl mx-auto">
-            {/* Breadcrumb */}
-            <nav aria-label="Breadcrumb" className="mb-4">
-              <ol className="flex items-center gap-2 text-sm text-blue-200 list-none p-0 m-0">
-                <li>
-                  <Link
-                    href="/search"
-                    id="breadcrumb-search"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Search
-                  </Link>
-                </li>
-                <li aria-hidden="true" className="text-blue-400">&rsaquo;</li>
-                <li>
-                  <Link
-                    href="/guest/reservations"
-                    id="breadcrumb-reservations"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    My Reservations
-                  </Link>
-                </li>
-                <li aria-hidden="true" className="text-blue-400">&rsaquo;</li>
-                <li aria-current="page" className="text-white font-medium">
-                  {shortId ? `${shortId}\u2026` : 'Detail'}
-                </li>
-              </ol>
-            </nav>
+        <div className="relative z-10">
 
-            <h1
-              id="detail-heading"
-              className="text-3xl md:text-4xl font-extrabold text-white leading-tight"
-            >
-              Reservation Detail
-            </h1>
-            <p className="mt-2 text-blue-100 text-base">
-              {isSuccess
-                ? `SkyNest ${detail!.branch_location_name}`
-                : 'SkyNest Hotels'}
-            </p>
-          </div>
-        </section>
+          {/* ── Hero header ─────────────────────────────────────────────── */}
+          <section
+            aria-labelledby="detail-heading"
+            className="
+              relative overflow-hidden
+              bg-black/40 backdrop-blur-md
+              border-b border-[#38332b]
+              py-12 px-4 sm:px-8 lg:px-12
+            "
+          >
+            {/* Subtle gold watermark */}
+            <div aria-hidden="true" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#c5a880]/5 rounded-full blur-3xl pointer-events-none" />
 
-        {/* ── Content ─────────────────────────────────────────────────── */}
-        <section
-          className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-10"
-          aria-live="polite"
-          aria-busy={isLoading}
-        >
-          {/* Back link — always visible (except during loading to avoid clutter) */}
-          {!isLoading && (
-            <div className="mb-6">
-              <Link
-                href="/guest/reservations"
-                id="detail-back-link"
-                className="
-                  inline-flex items-center gap-2
-                  text-sm text-neutral-500 dark:text-neutral-400
-                  hover:text-blue-600 dark:hover:text-blue-400
-                  transition-colors duration-200
-                "
+            <div className="relative max-w-[1600px] w-full mx-auto">
+              {/* Breadcrumb */}
+              <nav aria-label="Breadcrumb" className="mb-4">
+                <ol className="flex items-center gap-2 text-sm text-[#c5a880]/80 list-none p-0 m-0">
+                  <li>
+                    <Link
+                      href="/search"
+                      id="breadcrumb-search"
+                      className="hover:text-white transition-colors duration-200"
+                    >
+                      Search
+                    </Link>
+                  </li>
+                  <li aria-hidden="true" className="text-[#c5a880]/40">&rsaquo;</li>
+                  <li>
+                    <Link
+                      href="/guest/reservations"
+                      id="breadcrumb-reservations"
+                      className="hover:text-white transition-colors duration-200"
+                    >
+                      My Reservations
+                    </Link>
+                  </li>
+                  <li aria-hidden="true" className="text-[#c5a880]/40">&rsaquo;</li>
+                  <li aria-current="page" className="text-white font-medium">
+                    {shortId ? `${shortId}\u2026` : 'Detail'}
+                  </li>
+                </ol>
+              </nav>
+
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[#c5a880] text-xs">★★★★★</span>
+                <span className="text-xs uppercase tracking-[0.2em] text-[#c5a880] font-medium">SkyNest Guest Services</span>
+              </div>
+
+              <h1
+                id="detail-heading"
+                className="text-3xl sm:text-4xl md:text-5xl font-serif text-white leading-tight"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-4 h-4"
-                  aria-hidden="true"
-                >
-                  <line x1="19" y1="12" x2="5" y2="12" />
-                  <polyline points="12 19 5 12 12 5" />
-                </svg>
-                Back to My Reservations
-              </Link>
+                Reservation Detail
+              </h1>
+              <p className="mt-2 text-[#e2cfb4]/80 text-sm">
+                {isSuccess
+                  ? `SkyNest ${detail!.branch_location_name}`
+                  : 'SkyNest Hotels & Resorts'}
+              </p>
             </div>
-          )}
+          </section>
 
-          {/* Loading skeleton */}
-          {isLoading && <DetailSkeleton />}
+          {/* ── Content ─────────────────────────────────────────────────── */}
+          <section
+            className="max-w-[1600px] w-full mx-auto px-4 sm:px-8 lg:px-12 py-10"
+            aria-live="polite"
+            aria-busy={isLoading}
+          >
+            {/* Back link — always visible (except during loading to avoid clutter) */}
+            {!isLoading && (
+              <div className="mb-6">
+                <Link
+                  href="/guest/reservations"
+                  id="detail-back-link"
+                  className="
+                    inline-flex items-center gap-2
+                    text-sm text-[#c5a880] hover:text-white
+                    transition-colors duration-200
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                  >
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                  </svg>
+                  Back to My Reservations
+                </Link>
+              </div>
+            )}
 
-          {/* Not found */}
-          {isNotFound && <NotFoundState />}
+            {/* Loading skeleton */}
+            {isLoading && <DetailSkeleton />}
 
-          {/* Error */}
-          {isError && (
-            <ErrorState message={errorMessage} onRetry={handleRetry} />
-          )}
+            {/* Not found */}
+            {isNotFound && <NotFoundState />}
 
-          {/* Success */}
-          {isSuccess && <ReservationDetailView detail={detail!} />}
+            {/* Error */}
+            {isError && (
+              <ErrorState message={errorMessage} onRetry={handleRetry} />
+            )}
 
-        </section>
+            {/* Success */}
+            {isSuccess && <ReservationDetailView detail={detail!} />}
+
+          </section>
+        </div>
       </main>
     </>
   );
