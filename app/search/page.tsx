@@ -199,39 +199,47 @@ export default function SearchPage() {
   return (
     <>
 
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900">
+      <main className="min-h-screen bg-[#faf8f5] dark:bg-[#121110] text-[#1c1917] dark:text-[#f8f6f0]">
 
         {/* ── Hero / search form section ──────────────────────────────── */}
         <section
           aria-labelledby="search-heading"
           className="
             relative overflow-hidden
-            bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700
-            dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900
-            py-16 px-4 md:px-6 lg:px-8
+            bg-[#141312] text-white
+            pt-16 pb-20 px-4 md:px-6 lg:px-8
+            border-b border-[#2e2a24]
           "
         >
-          {/* Decorative background blobs */}
+          {/* Subtle luxury ambient background */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 opacity-10 pointer-events-none"
+            className="absolute inset-0 pointer-events-none opacity-20"
           >
-            <div className="absolute -top-32 -left-32 w-96 h-96 bg-white rounded-full blur-3xl" />
-            <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-white rounded-full blur-3xl" />
+            <img
+              src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=2000&q=80"
+              alt=""
+              className="w-full h-full object-cover filter blur-xs"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#141312] via-[#141312]/80 to-[#141312]/90" />
           </div>
 
           <div className="relative max-w-4xl mx-auto text-center mb-10">
-            <p className="text-blue-200 text-sm font-medium uppercase tracking-widest mb-3">
-              SkyNest Hotels · Colombo · Kandy · Galle
-            </p>
+            <div className="flex items-center justify-center gap-1 text-[#c5a880] text-xs mb-3">
+              <span>★★★★★</span>
+              <span className="mx-2 opacity-50">·</span>
+              <span className="uppercase tracking-[0.25em] font-medium text-[11px]">
+                Colombo · Kandy · Galle
+              </span>
+            </div>
             <h1
               id="search-heading"
-              className="text-4xl md:text-5xl font-extrabold text-white leading-tight"
+              className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-white leading-tight"
             >
-              Find Your Perfect Room
+              Discover Available Rooms &amp; Suites
             </h1>
-            <p className="mt-4 text-blue-100 text-lg max-w-xl mx-auto">
-              Search availability across all three SkyNest branches and book instantly.
+            <p className="mt-4 text-[#c5a880]/90 text-sm sm:text-base max-w-xl mx-auto font-light">
+              Check real-time room availability across SkyNest properties with guaranteed transparent billing.
             </p>
           </div>
 
@@ -243,8 +251,8 @@ export default function SearchPage() {
               noValidate
               aria-label="Room availability search"
               className="
-                bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm
-                rounded-2xl shadow-2xl p-6 md:p-8
+                bg-[#181716] border border-[#38332c]
+                rounded-xs shadow-2xl p-6 md:p-8
               "
             >
               {/* General error banner */}
@@ -254,14 +262,14 @@ export default function SearchPage() {
                   role="alert"
                   aria-live="assertive"
                   className="
-                    mb-6 flex items-start gap-3 p-4 rounded-xl
-                    bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800
-                    text-red-700 dark:text-red-300 text-sm
+                    mb-6 flex items-start gap-3 p-4 rounded-xs
+                    bg-[#2d1212] border border-[#6b2525]
+                    text-[#ff9c9c] text-xs uppercase tracking-wider
                   "
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                    className="w-5 h-5 flex-shrink-0 mt-0.5" aria-hidden="true">
+                    className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#ff7575]" aria-hidden="true">
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
                     <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -276,9 +284,9 @@ export default function SearchPage() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="search-branch"
-                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                    className="text-xs uppercase tracking-[0.16em] font-semibold text-[#c5a880]"
                   >
-                    Branch <span aria-label="required">*</span>
+                    Destination <span aria-label="required">*</span>
                   </label>
                   <select
                     id="search-branch"
@@ -290,22 +298,22 @@ export default function SearchPage() {
                     aria-invalid={!!errors.branchId}
                     aria-describedby={errors.branchId ? 'search-branch-error' : undefined}
                     className="
-                      w-full px-3 py-2.5 rounded-xl
-                      border border-neutral-300 dark:border-neutral-600
-                      bg-white dark:bg-neutral-800
-                      text-neutral-900 dark:text-white
-                      focus:outline-none focus:ring-2 focus:ring-blue-500
-                      aria-invalid:border-red-400 aria-invalid:ring-red-400
-                      text-sm
+                      w-full px-3.5 py-3 rounded-xs
+                      border border-[#3e3932]
+                      bg-[#242220]
+                      text-white
+                      focus:outline-none focus:border-[#c5a880]
+                      aria-invalid:border-red-500
+                      text-xs tracking-wider
                     "
                   >
-                    <option value="" disabled>Select a branch</option>
+                    <option value="" disabled className="bg-[#181716]">Select a property</option>
                     {BRANCHES.map((b) => (
-                      <option key={b.id} value={b.id}>{b.name}</option>
+                      <option key={b.id} value={b.id} className="bg-[#181716]">{b.name} SkyNest Hotel</option>
                     ))}
                   </select>
                   {errors.branchId && (
-                    <p id="search-branch-error" role="alert" className="text-xs text-red-600 dark:text-red-400">
+                    <p id="search-branch-error" role="alert" className="text-xs text-red-400 mt-1">
                       {errors.branchId}
                     </p>
                   )}
@@ -315,9 +323,9 @@ export default function SearchPage() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="search-check-in"
-                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                    className="text-xs uppercase tracking-[0.16em] font-semibold text-[#c5a880]"
                   >
-                    Check-in <span aria-label="required">*</span>
+                    Check-in Date <span aria-label="required">*</span>
                   </label>
                   <input
                     id="search-check-in"
@@ -331,17 +339,17 @@ export default function SearchPage() {
                     aria-invalid={!!errors.checkIn}
                     aria-describedby={errors.checkIn ? 'search-check-in-error' : undefined}
                     className="
-                      w-full px-3 py-2.5 rounded-xl
-                      border border-neutral-300 dark:border-neutral-600
-                      bg-white dark:bg-neutral-800
-                      text-neutral-900 dark:text-white
-                      focus:outline-none focus:ring-2 focus:ring-blue-500
-                      aria-invalid:border-red-400 aria-invalid:ring-red-400
-                      text-sm
+                      w-full px-3.5 py-3 rounded-xs
+                      border border-[#3e3932]
+                      bg-[#242220]
+                      text-white
+                      focus:outline-none focus:border-[#c5a880]
+                      aria-invalid:border-red-500
+                      text-xs tracking-wider
                     "
                   />
                   {errors.checkIn && (
-                    <p id="search-check-in-error" role="alert" className="text-xs text-red-600 dark:text-red-400">
+                    <p id="search-check-in-error" role="alert" className="text-xs text-red-400 mt-1">
                       {errors.checkIn}
                     </p>
                   )}
@@ -351,9 +359,9 @@ export default function SearchPage() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="search-check-out"
-                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                    className="text-xs uppercase tracking-[0.16em] font-semibold text-[#c5a880]"
                   >
-                    Check-out <span aria-label="required">*</span>
+                    Check-out Date <span aria-label="required">*</span>
                   </label>
                   <input
                     id="search-check-out"
@@ -367,17 +375,17 @@ export default function SearchPage() {
                     aria-invalid={!!errors.checkOut}
                     aria-describedby={errors.checkOut ? 'search-check-out-error' : undefined}
                     className="
-                      w-full px-3 py-2.5 rounded-xl
-                      border border-neutral-300 dark:border-neutral-600
-                      bg-white dark:bg-neutral-800
-                      text-neutral-900 dark:text-white
-                      focus:outline-none focus:ring-2 focus:ring-blue-500
-                      aria-invalid:border-red-400 aria-invalid:ring-red-400
-                      text-sm
+                      w-full px-3.5 py-3 rounded-xs
+                      border border-[#3e3932]
+                      bg-[#242220]
+                      text-white
+                      focus:outline-none focus:border-[#c5a880]
+                      aria-invalid:border-red-500
+                      text-xs tracking-wider
                     "
                   />
                   {errors.checkOut && (
-                    <p id="search-check-out-error" role="alert" className="text-xs text-red-600 dark:text-red-400">
+                    <p id="search-check-out-error" role="alert" className="text-xs text-red-400 mt-1">
                       {errors.checkOut}
                     </p>
                   )}
@@ -386,27 +394,27 @@ export default function SearchPage() {
               </div>
 
               {/* Submit button */}
-              <div className="mt-6 flex justify-center md:justify-end">
+              <div className="mt-8 flex justify-center md:justify-end">
                 <button
                   id="search-submit-btn"
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
                   className="
-                    inline-flex items-center gap-2
-                    px-8 py-3 rounded-xl
-                    bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+                    inline-flex items-center gap-2.5
+                    px-8 py-3.5 rounded-xs
+                    bg-[#c5a880] hover:bg-[#b59469] active:bg-[#a68042]
                     disabled:opacity-60 disabled:cursor-not-allowed
-                    text-white font-semibold text-sm
-                    transition-colors duration-200
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
+                    text-[#161514] font-semibold text-xs uppercase tracking-[0.18em]
+                    transition-all duration-200 shadow-md cursor-pointer
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880] focus-visible:ring-offset-2
                   "
                 >
                   {loading ? (
                     <>
                       {/* Spinner */}
                       <svg
-                        className="animate-spin w-4 h-4"
+                        className="animate-spin w-4 h-4 text-[#161514]"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -426,7 +434,7 @@ export default function SearchPage() {
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                       </svg>
-                      Search Rooms
+                      Search Available Rooms
                     </>
                   )}
                 </button>
@@ -439,18 +447,23 @@ export default function SearchPage() {
         <section
           aria-label="Search results"
           aria-live="polite"
-          className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12"
+          className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16"
         >
           {/* Results header */}
           {searched && !loading && result && (
-            <div id="results-header" className="mb-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {hasResults
-                  ? `${result.rooms.length} room${result.rooms.length !== 1 ? 's' : ''} available`
-                  : 'No rooms available'}
-              </h2>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                {selectedBranch?.name} · {result.checkIn} → {result.checkOut} · {nightsLabel}
+            <div id="results-header" className="mb-10 pb-4 border-b border-[#e7e2d9] dark:border-[#2f2b26] flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
+              <div>
+                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
+                  AVAILABILITY RESULTS
+                </span>
+                <h2 className="font-serif text-3xl font-medium text-[#1c1917] dark:text-[#f8f6f0] mt-1">
+                  {hasResults
+                    ? `${result.rooms.length} Room${result.rooms.length !== 1 ? 's' : ''} Available`
+                    : 'No Rooms Available'}
+                </h2>
+              </div>
+              <p className="text-xs uppercase tracking-wider text-[#78716c] dark:text-[#a8a29e]">
+                {selectedBranch?.name} Property · {result.checkIn} → {result.checkOut} ({nightsLabel})
               </p>
             </div>
           )}
@@ -461,26 +474,20 @@ export default function SearchPage() {
               id="search-loading-skeleton"
               role="status"
               aria-label="Loading available rooms"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="animate-pulse bg-white dark:bg-neutral-800 rounded-2xl shadow-sm overflow-hidden"
+                  className="animate-pulse bg-white dark:bg-[#1a1918] border border-[#e7e2d9] dark:border-[#2f2b26] rounded-xs shadow-sm overflow-hidden"
                 >
-                  <div className="h-2 bg-gradient-to-r from-neutral-200 to-neutral-100 dark:from-neutral-700 dark:to-neutral-600" />
+                  <div className="aspect-[16/10] bg-[#e7e2d9]/60 dark:bg-[#282624]" />
                   <div className="p-6 space-y-4">
-                    <div className="flex gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-neutral-200 dark:bg-neutral-700" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/5" />
-                        <div className="h-3 bg-neutral-100 dark:bg-neutral-600 rounded w-2/5" />
-                      </div>
-                    </div>
-                    <div className="h-3 bg-neutral-100 dark:bg-neutral-700 rounded w-1/3" />
-                    <div className="h-px bg-neutral-100 dark:bg-neutral-800" />
-                    <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded w-2/3" />
-                    <div className="h-12 bg-neutral-200 dark:bg-neutral-700 rounded-xl" />
+                    <div className="h-3 bg-[#c5a880]/30 rounded w-1/4" />
+                    <div className="h-6 bg-[#e7e2d9] dark:bg-[#2e2a26] rounded w-3/5" />
+                    <div className="h-3 bg-[#e7e2d9] dark:bg-[#2e2a26] rounded w-1/2" />
+                    <div className="h-px bg-[#f0ece5] dark:border-[#2f2b26]" />
+                    <div className="h-9 bg-[#c5a880]/20 rounded-xs" />
                   </div>
                 </div>
               ))}
@@ -491,7 +498,7 @@ export default function SearchPage() {
           {!loading && hasResults && (
             <ul
               id="results-grid"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 list-none p-0 m-0"
               aria-label={`${result!.rooms.length} available rooms`}
             >
               {result!.rooms.map((room, i) => (
@@ -513,24 +520,24 @@ export default function SearchPage() {
               id="results-empty-state"
               className="
                 flex flex-col items-center justify-center
-                py-20 text-center gap-6
+                py-20 text-center gap-6 max-w-lg mx-auto
               "
             >
               {/* Bed illustration */}
-              <div className="w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-[#c5a880]/15 border border-[#c5a880]/40 flex items-center justify-center text-[#c5a880]">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"
-                  className="w-10 h-10 text-blue-400" aria-hidden="true">
+                  className="w-10 h-10" aria-hidden="true">
                   <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200">
-                  No rooms available
+                <h2 className="font-serif text-2xl font-medium text-[#1c1917] dark:text-[#f8f6f0]">
+                  No Rooms Available
                 </h2>
-                <p className="mt-2 text-neutral-500 dark:text-neutral-400 max-w-md">
-                  All rooms in {selectedBranch?.name ?? 'this branch'} are booked for those dates.
-                  Try different dates or choose another branch.
+                <p className="mt-2 text-[#78716c] dark:text-[#a8a29e] text-sm font-light">
+                  All rooms at our {selectedBranch?.name ?? 'selected'} property are reserved for those dates.
+                  Please adjust your travel dates or consider one of our other island sanctuaries.
                 </p>
               </div>
               <button
@@ -542,12 +549,7 @@ export default function SearchPage() {
                   document.getElementById('search-branch')?.focus();
                 }}
                 className="
-                  px-6 py-2.5 rounded-xl
-                  border border-blue-300 dark:border-blue-700
-                  text-blue-700 dark:text-blue-300
-                  hover:bg-blue-50 dark:hover:bg-blue-950
-                  text-sm font-medium transition-colors duration-200
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
+                  gold-btn-outline py-3 px-6 text-xs uppercase tracking-[0.16em]
                 "
               >
                 Try Different Dates
@@ -559,18 +561,21 @@ export default function SearchPage() {
           {!loading && !searched && (
             <div
               id="search-prompt"
-              className="flex flex-col items-center justify-center py-16 text-center gap-4"
+              className="flex flex-col items-center justify-center py-20 text-center gap-4 max-w-sm mx-auto"
             >
-              <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center text-[#c5a880]">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"
-                  className="w-8 h-8 text-indigo-400" aria-hidden="true">
+                  className="w-7 h-7" aria-hidden="true">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
               </div>
-              <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-xs">
-                Select a branch and your dates above to see available rooms.
+              <p className="font-serif text-lg text-[#1c1917] dark:text-[#f8f6f0]">
+                Plan Your Sanctuary Stay
+              </p>
+              <p className="text-[#78716c] dark:text-[#a8a29e] text-xs font-light tracking-wide">
+                Select your preferred destination and stay dates above to explore available suites and seasonal rates.
               </p>
             </div>
           )}

@@ -17,11 +17,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { reservationService, ServiceError } from '@/services/reservation.service';
+import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB — replace with getSession(req) from P01-M01-T07
+// DEV SESSION STUB — fallback when cookies are not present in dev mode
 // ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
@@ -30,6 +31,21 @@ function getDevSession(): Partial<SessionData> {
     employeeId: 3,
     branchId:   1,
   };
+}
+
+async function resolveSession(): Promise<Partial<SessionData>> {
+  try {
+    const session = await getSession();
+    if (session.userId && session.role) {
+      return session;
+    }
+  } catch {
+    // Cookie not present
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    return getDevSession();
+  }
+  return {};
 }
 
 // ---------------------------------------------------------------------------
@@ -70,8 +86,7 @@ export async function PATCH(
   _req: NextRequest,
   context: RouteContext
 ): Promise<NextResponse> {
-  // TODO (P01-M01-T07): const session = await getSession(req);
-  const session = getDevSession();
+  const session = await resolveSession();
 
   if (!session.userId || !isStaffRole(session.role)) {
     return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');

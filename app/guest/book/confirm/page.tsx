@@ -455,12 +455,6 @@ function BookingConfirmContent() {
                 </Link>
               </div>
 
-              {/* Mock-first note */}
-              <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center leading-relaxed">
-                Mock-first mode active &mdash; reservation ID shown is from in-memory data.
-                Real DB wired in Phase 6 (P06-M03-T01).
-              </p>
-
             </div>
           )}
         </section>

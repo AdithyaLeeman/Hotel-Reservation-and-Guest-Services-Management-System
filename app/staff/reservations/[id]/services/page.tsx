@@ -257,19 +257,7 @@ export default function ServiceUsageLoggingPage({
             </Link>
           </header>
 
-          {/* ── Dev mock notice ── */}
-          {process.env.NODE_ENV !== 'production' && (
-            <div
-              id="service-usage-mock-notice"
-              role="status"
-              className="alert alert-warning text-xs"
-            >
-              <strong>Development mode:</strong> Catalogue loaded from{' '}
-              GET /api/staff/services. Usage rows submitted to{' '}
-              POST /api/staff/reservations/[id]/services. Guest details are mock.
-              Real wiring in Phase 6 (P06-M04-T01).
-            </div>
-          )}
+
 
           {/* ── Two-column layout ── */}
           <div className="grid lg:grid-cols-5 gap-6">

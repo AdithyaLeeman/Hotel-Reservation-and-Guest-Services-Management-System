@@ -182,8 +182,8 @@ function GuestLoginForm() {
       <main
         className="
           min-h-screen flex flex-col
-          bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50
-          dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900
+          bg-[#faf8f5] dark:bg-[#121110]
+          text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
         {/* ── Hero header ── */}
@@ -191,41 +191,36 @@ function GuestLoginForm() {
           aria-labelledby="login-heading"
           className="
             relative overflow-hidden
-            bg-gradient-to-br from-[var(--color-primary)] via-blue-700 to-indigo-700
-            dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900
-            py-12 px-4 md:px-6 lg:px-8
+            bg-[#141312] text-white
+            py-14 px-4 md:px-6 lg:px-8
+            border-b border-[#2e2a24]
           "
         >
-          {/* Decorative blobs */}
-          <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute -top-20 -left-20 w-64 h-64 bg-white rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white rounded-full blur-3xl" />
-          </div>
-
           <div className="relative max-w-lg mx-auto text-center">
             {/* Logo mark */}
-            <div className="inline-flex items-center gap-2 mb-4 text-white/80 text-sm font-medium">
-              <svg aria-hidden="true" width="24" height="24" viewBox="0 0 28 28" fill="none">
-                <rect x="4" y="4" width="20" height="20" rx="5" fill="hsl(196 80% 30%)" />
-                <path d="M14 7L19 12L14 21L9 12L14 7Z" fill="hsl(40 80% 55%)" />
-              </svg>
-              SkyNest Hotels
+            <div className="inline-flex items-center gap-2 mb-3 text-[#c5a880] text-xs font-semibold uppercase tracking-[0.22em]">
+              <div className="w-6 h-6 rounded-xs bg-[#c5a880]/20 border border-[#c5a880]/50 flex items-center justify-center text-[#c5a880]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </div>
+              SkyNest Hotels &amp; Resorts
             </div>
 
             <h1
               id="login-heading"
-              className="text-3xl md:text-4xl font-extrabold text-white leading-tight"
+              className="font-serif text-3xl md:text-4xl font-normal text-white leading-tight"
             >
-              Welcome Back
+              Welcome Back — Guest Portal
             </h1>
-            <p className="mt-2 text-blue-100 text-sm">
-              Sign in to view your reservations and manage your stay.
+            <p className="mt-2 text-[#c5a880]/80 text-xs uppercase tracking-wider font-light">
+              Access your reservations, view itemized charges, and checkout
             </p>
           </div>
         </section>
 
         {/* ── Form card ── */}
-        <section className="flex-1 flex items-start justify-center px-4 py-10">
+        <section className="flex-1 flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-md">
 
             {/* Global submit error */}
@@ -235,15 +230,14 @@ function GuestLoginForm() {
                 role="alert"
                 aria-live="assertive"
                 className="
-                  mb-6 flex items-start gap-3 p-4 rounded-xl
-                  bg-red-50 dark:bg-red-950
-                  border border-red-200 dark:border-red-800
-                  text-red-700 dark:text-red-300 text-sm
+                  mb-6 flex items-start gap-3 p-4 rounded-xs
+                  bg-[#2d1212] border border-[#6b2525]
+                  text-[#ff9c9c] text-xs uppercase tracking-wider
                 "
               >
                 <svg
                   aria-hidden="true"
-                  className="w-5 h-5 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#ff7575]"
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
                 >
@@ -261,24 +255,24 @@ function GuestLoginForm() {
               noValidate
               aria-label="Guest login form"
               className="
-                bg-white dark:bg-neutral-900
-                border border-neutral-200 dark:border-neutral-700
-                rounded-2xl shadow-sm p-6 md:p-8
+                bg-white dark:bg-[#1a1918]
+                border border-[#e7e2d9] dark:border-[#2f2b26]
+                rounded-xs shadow-md p-6 md:p-8
                 flex flex-col gap-5
               "
             >
-              <div>
-                <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
+              <div className="border-b border-[#f0ece5] dark:border-[#2f2b26] pb-4">
+                <h2 className="font-serif text-xl font-medium text-[#1c1917] dark:text-[#f8f6f0]">
                   Guest Sign In
                 </h2>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                  Not a guest account?{' '}
+                <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mt-1">
+                  Staff member?{' '}
                   <Link
                     id="guest-login-staff-link"
                     href="/staff/login"
-                    className="font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+                    className="font-medium text-[#c5a880] hover:underline transition-colors"
                   >
-                    Staff login
+                    Staff Login →
                   </Link>
                 </p>
               </div>
@@ -373,12 +367,12 @@ function GuestLoginForm() {
                 aria-busy={submitting}
                 className="
                   w-full inline-flex items-center justify-center gap-2
-                  px-6 py-3 rounded-xl
-                  bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
+                  px-6 py-3.5 rounded-xs
+                  bg-[#c5a880] hover:bg-[#b59469] active:bg-[#a68042]
                   disabled:opacity-60 disabled:cursor-not-allowed
-                  text-white font-semibold text-sm
-                  transition-colors duration-200
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
+                  text-[#161514] font-semibold text-xs uppercase tracking-[0.18em]
+                  transition-all duration-200 shadow-md cursor-pointer
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880]
                 "
               >
                 {submitting ? (

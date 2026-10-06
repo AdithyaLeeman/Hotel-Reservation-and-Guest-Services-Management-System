@@ -27,14 +27,23 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  /* ── Initialise theme from localStorage — lazy initializer avoids useEffect ── */
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
+  /* ── Initialise theme as false on initial render to prevent SSR hydration mismatch ── */
+  const [isDark, setIsDark] = useState<boolean>(false);
+
+  /* ── Sync theme from localStorage / system preference on client mount ── */
+  useEffect(() => {
     const stored = localStorage.getItem('skynest-theme');
-    if (stored === 'dark') return true;
-    if (stored === 'light') return false;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+    if (stored === 'dark') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsDark(true);
+    } else if (stored === 'light') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsDark(false);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsDark(true);
+    }
+  }, []);
   const [loggingOut, setLoggingOut] = useState(false);
   const menuId = useId();
 
@@ -80,24 +89,24 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
   /* ── Link class helper ── */
   const navLinkClass = (href: string) =>
     [
-      'relative px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors duration-[var(--duration-fast)]',
+      'relative px-3.5 py-1.5 rounded-sm text-xs uppercase tracking-[0.14em] font-medium transition-colors duration-[var(--duration-fast)]',
       isActive(href)
-        ? 'text-[var(--color-primary)] bg-[var(--color-primary-muted)]'
+        ? 'text-[var(--color-primary)] bg-[var(--color-primary-muted)] font-semibold'
         : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-subtle)]',
     ].join(' ');
 
   const mobileLinkClass = (href: string) =>
     [
-      'block px-4 py-3 rounded-[var(--radius-lg)] text-sm font-medium transition-colors duration-[var(--duration-fast)]',
+      'block px-4 py-3 rounded-sm text-xs uppercase tracking-[0.14em] font-medium transition-colors duration-[var(--duration-fast)]',
       isActive(href)
-        ? 'text-[var(--color-primary)] bg-[var(--color-primary-muted)]'
+        ? 'text-[var(--color-primary)] bg-[var(--color-primary-muted)] font-semibold'
         : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-subtle)]',
     ].join(' ');
 
   return (
     <header
       id="guest-nav"
-      className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md"
+      className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md shadow-xs"
     >
       <nav
         aria-label="Guest navigation"
@@ -107,33 +116,34 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
         <Link
           id="guest-nav-logo"
           href="/"
-          className="flex items-center gap-2 font-semibold text-[var(--color-primary)] text-lg tracking-tight hover:opacity-80 transition-opacity duration-[var(--duration-fast)] no-underline"
+          className="flex items-center gap-2.5 hover:opacity-90 transition-opacity duration-[var(--duration-fast)] no-underline group"
           aria-label="SkyNest Hotels — home"
         >
-          {/* Diamond icon representing a luxury hotel */}
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="4"
-              y="4"
-              width="20"
-              height="20"
-              rx="5"
-              fill="hsl(196 80% 30%)"
-            />
-            <path
-              d="M14 7L19 12L14 21L9 12L14 7Z"
-              fill="hsl(40 80% 55%)"
-            />
-          </svg>
-          <span>SkyNest Hotels</span>
+          {/* Elegant gold crest icon */}
+          <div className="flex items-center justify-center w-8 h-8 rounded-sm bg-[#c5a880]/15 border border-[#c5a880]/50 text-[#c5a880]">
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-serif text-lg tracking-[0.08em] font-semibold text-[var(--color-text)] leading-tight">
+              SKYNEST
+            </span>
+            <span className="text-[9px] uppercase tracking-[0.24em] font-medium text-[#c5a880] leading-none">
+              Hotels & Resorts
+            </span>
+          </div>
         </Link>
 
         {/* ── Desktop Nav Links ── */}
@@ -152,14 +162,15 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
         </div>
 
         {/* ── Desktop Auth Controls ── */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2.5">
           {/* Theme toggle */}
           <button
             id="guest-nav-theme-toggle"
             type="button"
+            suppressHydrationWarning
             onClick={toggleTheme}
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="btn btn-ghost btn-sm px-2"
+            className="btn btn-ghost btn-sm px-2 text-[var(--color-text-muted)] hover:text-[#c5a880]"
           >
             {isDark ? (
               /* Sun icon */
@@ -182,10 +193,10 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
               {guestName && (
                 <span
                   id="guest-nav-greeting"
-                  className="text-sm text-[var(--color-text-muted)] px-2"
+                  className="text-xs uppercase tracking-wider text-[var(--color-text-muted)] px-2"
                   aria-label={`Logged in as ${guestName}`}
                 >
-                  Hi, <span className="font-medium text-[var(--color-text)]">{guestName}</span>
+                  Hi, <span className="font-semibold text-[var(--color-text)]">{guestName}</span>
                 </span>
               )}
               <button
@@ -193,7 +204,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
                 type="button"
                 onClick={handleLogout}
                 disabled={loggingOut}
-                className="btn btn-outline btn-sm"
+                className="btn btn-outline btn-sm text-xs uppercase tracking-wider"
                 aria-busy={loggingOut}
               >
                 {loggingOut ? <span className="spinner" aria-hidden="true" /> : null}
@@ -202,10 +213,10 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
             </>
           ) : (
             <>
-              <Link id="guest-nav-login" href="/guest/login" className="btn btn-ghost btn-sm">
+              <Link id="guest-nav-login" href="/guest/login" className="btn btn-ghost btn-sm text-xs uppercase tracking-wider font-medium text-[var(--color-text)] hover:text-[#c5a880]">
                 Login
               </Link>
-              <Link id="guest-nav-register" href="/guest/register" className="btn btn-primary btn-sm">
+              <Link id="guest-nav-register" href="/guest/register" className="gold-btn btn-sm text-xs font-semibold tracking-wider uppercase py-1.5 px-3.5">
                 Register
               </Link>
             </>

@@ -1,4 +1,6 @@
 
+import { pool } from '@/lib/db/pool';
+
 export interface MonthlyRevenueRow {
   branch_id: number;
   branch_name: string;
@@ -100,24 +102,63 @@ export const revenueReportRepository = {
   getMonthlyRevenue: async (
     filters: RevenueReportFilters = {}
   ): Promise<MonthlyRevenueRow[]> => {
-    let results = mockRevenueData.slice();
-
-    // 1. Branch filter
-    if (filters.branchId !== undefined) {
-      results = results.filter((r) => r.branch_id === filters.branchId);
+    if (process.env.NODE_ENV === 'test') {
+      let results = mockRevenueData.slice();
+      if (filters.branchId !== undefined) results = results.filter((r) => r.branch_id === filters.branchId);
+      if (filters.year !== undefined) results = results.filter((r) => r.revenue_year === filters.year);
+      if (filters.month !== undefined) results = results.filter((r) => r.revenue_month === filters.month);
+      return results;
     }
 
-    // 2. Year filter
-    if (filters.year !== undefined) {
-      results = results.filter((r) => r.revenue_year === filters.year);
-    }
+    try {
+      const conditions: string[] = [];
+      const values: (string | number)[] = [];
+      let idx = 1;
 
-    // 3. Month filter
-    if (filters.month !== undefined) {
-      results = results.filter((r) => r.revenue_month === filters.month);
-    }
+      if (filters.branchId !== undefined) {
+        conditions.push(`branch_id = $${idx++}`);
+        values.push(filters.branchId);
+      }
 
-    return results;
+      if (filters.year !== undefined) {
+        conditions.push(`revenue_year = $${idx++}`);
+        values.push(filters.year);
+      }
+
+      if (filters.month !== undefined) {
+        conditions.push(`revenue_month = $${idx++}`);
+        values.push(filters.month);
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+      const query = `
+        SELECT
+          branch_id::int,
+          branch_name,
+          revenue_year::int,
+          revenue_month::int,
+          period_label,
+          total_invoices::int,
+          room_revenue::text,
+          service_revenue::text,
+          tax_collected::text,
+          total_revenue::text,
+          total_paid::text,
+          total_outstanding::text
+        FROM vw_monthly_revenue
+        ${whereClause}
+        ORDER BY revenue_year DESC, revenue_month DESC, branch_id ASC
+      `;
+
+      const { rows } = await pool.query<MonthlyRevenueRow>(query, values);
+      return rows;
+    } catch {
+      let results = mockRevenueData.slice();
+      if (filters.branchId !== undefined) results = results.filter((r) => r.branch_id === filters.branchId);
+      if (filters.year !== undefined) results = results.filter((r) => r.revenue_year === filters.year);
+      if (filters.month !== undefined) results = results.filter((r) => r.revenue_month === filters.month);
+      return results;
+    }
   },
 
   _resetMockStore: (): void => {

@@ -325,8 +325,7 @@ export default function GuestPayPage() {
       id="guest-pay-page-root"
       className="
         min-h-screen
-        bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50
-        dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900
+        bg-[#faf8f5] dark:bg-[#141312]
       "
     >
       {/* ── Hero Banner ──────────────────────────────────────────────── */}
@@ -334,42 +333,44 @@ export default function GuestPayPage() {
         aria-labelledby="pay-heading"
         className="
           relative overflow-hidden
-          bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700
-          dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900
+          bg-gradient-to-br from-[#1c1a17] via-[#24211d] to-[#141312]
+          border-b border-[#38332b]
           py-12 px-4 md:px-6 lg:px-8 text-white
         "
       >
-        <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-white rounded-full blur-3xl" />
-        </div>
+        <div aria-hidden="true" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#c5a880]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative max-w-4xl mx-auto">
           {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-sm text-blue-200 list-none p-0 m-0">
+            <ol className="flex items-center gap-2 text-sm text-[#c5a880]/80 list-none p-0 m-0">
               <li>
                 <Link href="/guest/reservations" className="hover:text-white transition-colors">
                   My Reservations
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-blue-400">&rsaquo;</li>
+              <li aria-hidden="true" className="text-[#c5a880]/40">&rsaquo;</li>
               <li>
                 <Link href={`/guest/reservations/${reservationId}`} className="hover:text-white transition-colors">
                   {reservationId ? `Res #${reservationId.slice(0, 8)}` : 'Detail'}
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-blue-400">&rsaquo;</li>
+              <li aria-hidden="true" className="text-[#c5a880]/40">&rsaquo;</li>
               <li aria-current="page" className="text-white font-medium">
                 Bill &amp; Pay
               </li>
             </ol>
           </nav>
 
-          <h1 id="pay-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[#c5a880] text-xs">★★★★★</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-[#c5a880] font-medium">SkyNest Payment Portal</span>
+          </div>
+
+          <h1 id="pay-heading" className="text-3xl md:text-4xl font-serif tracking-tight text-white">
             Reservation Invoice &amp; Payment
           </h1>
-          <p className="mt-2 text-blue-100 text-sm sm:text-base">
+          <p className="mt-2 text-[#e2cfb4]/80 text-sm sm:text-base">
             {reservation ? `SkyNest ${reservation.branch_name}` : 'SkyNest Luxury Hotels & Resorts'}
           </p>
         </div>
@@ -434,7 +435,7 @@ export default function GuestPayPage() {
             >
               <div
                 aria-hidden="true"
-                className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"
+                className="h-1.5 w-full bg-gradient-to-r from-[#c5a880] via-[#e2cfb4] to-[#c5a880]"
               />
 
               <div className="p-6 sm:p-8">
@@ -784,10 +785,8 @@ export default function GuestPayPage() {
                       disabled={isSubmitting || parseFloat(amountInput || '0') <= 0}
                       className="
                         w-full py-4 px-6 rounded-2xl
-                        bg-gradient-to-r from-blue-600 to-indigo-600
-                        hover:from-blue-700 hover:to-indigo-700
-                        text-white font-bold text-base
-                        shadow-lg shadow-blue-500/25
+                        gold-btn font-bold text-base
+                        shadow-lg shadow-[#c5a880]/20
                         transition-all duration-200
                         disabled:opacity-50 disabled:cursor-not-allowed
                         flex items-center justify-center gap-2

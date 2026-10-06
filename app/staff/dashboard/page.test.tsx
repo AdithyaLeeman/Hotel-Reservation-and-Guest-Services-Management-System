@@ -235,8 +235,8 @@ describe('StaffDashboardPage — Receptionist role', () => {
   it('shows the branch name in the subtitle for Receptionist', async () => {
     mockGetSession.mockResolvedValue(receptionistSession());
     await renderDashboard();
-    // Mock always returns 'Colombo' for Receptionist
-    expect(screen.getByText(/colombo/i)).toBeInTheDocument();
+    const header = document.getElementById('dashboard-header')!;
+    expect(within(header).getByText(/colombo/i)).toBeInTheDocument();
   });
 
   it('shows correct role badge', async () => {
@@ -330,14 +330,14 @@ describe('StaffDashboardPage — activity feed', () => {
   it('renders at least one activity item', async () => {
     mockGetSession.mockResolvedValue(receptionistSession());
     await renderDashboard();
-    expect(screen.getByText(/guest checked in/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/guest checked in/i).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders status badges inside the activity feed', async () => {
     mockGetSession.mockResolvedValue(receptionistSession());
     await renderDashboard();
     const feed = document.getElementById('dashboard-activity-feed')!;
-    expect(within(feed).getByText('Checked In')).toBeInTheDocument();
+    expect(within(feed).getAllByText('Checked In').length).toBeGreaterThanOrEqual(1);
   });
 });
 

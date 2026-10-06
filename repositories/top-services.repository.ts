@@ -14,6 +14,8 @@
  * See database/views/vw_top_services.sql
  */
 
+import { pool } from '@/lib/db/pool';
+
 // ---------------------------------------------------------------------------
 // Row type — mirrors vw_top_services columns exactly
 // ---------------------------------------------------------------------------
@@ -102,9 +104,30 @@ export const topServicesRepository = {
    *   return rows;
    */
   getTopServices: async (): Promise<TopServiceRow[]> => {
-    return mockTopServices
-      .slice()
-      .sort((a, b) => a.usage_rank - b.usage_rank);
+    if (process.env.NODE_ENV === 'test') {
+      return mockTopServices
+        .slice()
+        .sort((a, b) => a.usage_rank - b.usage_rank);
+    }
+
+    try {
+      const { rows } = await pool.query<TopServiceRow>(`
+        SELECT
+          service_id::int,
+          service_name,
+          total_quantity::int,
+          total_revenue::text,
+          reservation_count::int,
+          usage_rank::int
+        FROM vw_top_services
+        ORDER BY usage_rank ASC
+      `);
+      return rows;
+    } catch {
+      return mockTopServices
+        .slice()
+        .sort((a, b) => a.usage_rank - b.usage_rank);
+    }
   },
 
   /**

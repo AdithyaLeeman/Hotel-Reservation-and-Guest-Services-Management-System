@@ -439,17 +439,7 @@ export default function StaffReservationsPage() {
             </Link>
           </header>
 
-          {/* ── Dev mock notice ──────────────────────────────────────────── */}
-          {process.env.NODE_ENV !== 'production' && (
-            <div
-              id="reservations-mock-notice"
-              role="status"
-              className="rounded-lg border border-[var(--color-warning)] bg-[var(--color-warning-bg)] px-4 py-2 text-xs text-[var(--color-warning)]"
-            >
-              <strong>Development mode:</strong> Data comes from the mock repository.
-              Real DB lookup wires in Phase 6 (P06-M03-T01).
-            </div>
-          )}
+
 
           {/* ── Stats strip ──────────────────────────────────────────────── */}
           {fetchState.stage === 'success' && (
