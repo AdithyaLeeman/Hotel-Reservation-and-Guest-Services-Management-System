@@ -125,6 +125,7 @@ export default function RoomCard({ room, checkIn, checkOut, index = 0 }: RoomCar
 
   const reserveParams = new URLSearchParams({
     roomId:   String(room.room_id),
+    branchId: String(room.branch_id),
     checkIn,
     checkOut,
   });

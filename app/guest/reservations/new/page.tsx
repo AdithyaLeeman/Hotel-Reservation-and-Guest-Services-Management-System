@@ -73,15 +73,26 @@ function formatDate(iso: string): string {
   });
 }
 
+interface FormErrors {
+  roomId?: string;
+  checkIn?: string;
+  checkOut?: string;
+  branchId?: string;
+}
+
 /** Validate URL search params before rendering the booking form. */
 function validateParams(
   roomId: string | null,
   checkIn: string | null,
   checkOut: string | null,
+  branchId: string | null,
 ): FormErrors {
   const errors: FormErrors = {};
   if (!roomId || !/^\d+$/.test(roomId)) {
     errors.roomId = 'No valid room selected. Please go back to the search page.';
+  }
+  if (!branchId || !/^\d+$/.test(branchId)) {
+    errors.branchId = 'Missing property branch. Please select a room from the search page.';
   }
   if (!checkIn || !/^\d{4}-\d{2}-\d{2}$/.test(checkIn)) {
     errors.checkIn = 'Missing or invalid check-in date.';
@@ -181,7 +192,7 @@ function SummaryCard({
 
 /** Banner shown when URL params are missing or invalid. */
 function ParamErrorBanner({ errors }: { errors: FormErrors }) {
-  const messages = [errors.roomId, errors.checkIn, errors.checkOut].filter(Boolean) as string[];
+  const messages = [errors.roomId, errors.branchId, errors.checkIn, errors.checkOut].filter(Boolean) as string[];
   if (messages.length === 0) return null;
 
   return (
@@ -231,7 +242,7 @@ function NewReservationContent() {
   const rawBranchId = searchParams.get('branchId');
 
   // Validate params directly during render (validateParams is a pure function — no side effects)
-  const paramErrors = validateParams(rawRoomId, rawCheckIn, rawCheckOut);
+  const paramErrors = validateParams(rawRoomId, rawCheckIn, rawCheckOut, rawBranchId);
   const paramsValid = Object.keys(paramErrors).length === 0;
 
   // Submission state
