@@ -154,6 +154,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
     }
     console.error('[POST /api/guest/reservations]', error);
-    return err(500, ERROR_CODES.INTERNAL_ERROR, 'An unexpected error occurred.');
+    const msg = error instanceof Error ? error.message : 'An unexpected error occurred.';
+    return err(500, ERROR_CODES.INTERNAL_ERROR, msg);
   }
 }

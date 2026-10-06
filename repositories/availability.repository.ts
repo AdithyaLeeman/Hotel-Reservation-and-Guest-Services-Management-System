@@ -31,7 +31,7 @@ export const availabilityRepository = {
     checkOut: string,
   ): Promise<AvailableRoom[]> => {
     const result = await pool.query<AvailableRoom>(
-      'SELECT * FROM fn_get_available_rooms($1, $2, $3)',
+      'SELECT * FROM fn_get_available_rooms($1::bigint, $2::date, $3::date)',
       [branchId, checkIn, checkOut],
     );
     return result.rows;

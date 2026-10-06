@@ -9,6 +9,7 @@
     "lint": "eslint app components lib services repositories types",
     "migrate": "tsx --env-file=.env.local lib/db/migrate.ts",
     "seed": "tsx --env-file=.env.local lib/db/seed.ts",
+    "db:routines": "tsx --env-file=.env.local lib/db/apply-routines.ts",
     "db:reset": "tsx --env-file=.env.local lib/db/reset.ts",
     "test": "vitest run --config vitest.config.mjs",
     "test:components": "vitest run --config vitest.config.mjs components/GuestNavClient.test.tsx"

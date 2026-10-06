@@ -67,6 +67,7 @@ DECLARE
     v_room_id           BIGINT;
     v_room_branch_id    BIGINT;
     v_room_status       room_status;
+    v_type_id           BIGINT;
     v_rate_per_night    NUMERIC(12,2);
     v_overlap_count     INT;
     -- Accumulates (room_id, rate_per_night) pairs from Step 1 validation.
@@ -84,12 +85,21 @@ BEGIN
     -- ------------------------------------------------------------------
     FOREACH v_room_id IN ARRAY p_room_ids
     LOOP
-        -- 1a. Fetch room details; error if room does not exist
-        SELECT r.branch_id, r.status, rt.daily_rate
-          INTO v_room_branch_id, v_room_status, v_rate_per_night
+        -- 1a. Lock the room row for concurrency safety (L12).
+        --     FOR UPDATE on a JOIN is not allowed in PostgreSQL when a joined
+        --     table (room_type) is referenced — lock only the room row first,
+        --     then fetch the rate in a separate plain SELECT.
+        SELECT r.branch_id, r.status, r.type_id
+          INTO v_room_branch_id, v_room_status, v_type_id
           FROM room r
-          JOIN room_type rt ON rt.type_id = r.type_id
-         WHERE r.room_id = v_room_id;
+         WHERE r.room_id = v_room_id
+        FOR UPDATE;
+
+        -- Fetch the rate from room_type without a lock (read-only lookup).
+        SELECT rt.daily_rate
+          INTO v_rate_per_night
+          FROM room_type rt
+         WHERE rt.type_id = v_type_id;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Room % does not exist', v_room_id
@@ -111,21 +121,17 @@ BEGIN
                 USING ERRCODE = '45003';
         END IF;
 
-        -- 1d. Overlap check with SELECT FOR UPDATE (concurrency lock — L12)
-        --     Lock any existing reservation_rooms rows for this room that
-        --     could overlap our date window, preventing a concurrent transaction
-        --     from inserting a conflicting reservation simultaneously.
-        SELECT COUNT(*)
-          INTO v_overlap_count
+        -- 1d. Overlap check (L12)
+        --     Check whether any active reservation occupies this room in the date window.
+        PERFORM 1
           FROM reservation_rooms rr
           JOIN reservation res ON res.reservation_id = rr.reservation_id
          WHERE rr.room_id = v_room_id
            AND res.reservation_status NOT IN ('Cancelled', 'CheckedOut')
            AND res.check_in_date  < p_check_out_date   -- existing starts before our end
-           AND res.check_out_date > p_check_in_date     -- existing ends after our start
-        FOR UPDATE OF rr;                               -- lock the conflicting rows
+           AND res.check_out_date > p_check_in_date;   -- existing ends after our start
 
-        IF v_overlap_count > 0 THEN
+        IF FOUND THEN
             RAISE EXCEPTION
                 'Room % is already reserved for the requested dates', v_room_id
                 USING ERRCODE = '45001';

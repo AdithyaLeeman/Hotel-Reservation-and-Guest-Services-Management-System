@@ -49,11 +49,12 @@ export async function GET(request: NextRequest) {
     }
 
     console.error('Unhandled error in GET /api/availability:', error);
+    const detail = error instanceof Error ? error.message : 'An unexpected error occurred while searching for availability';
     return NextResponse.json(
       {
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'An unexpected error occurred while searching for availability',
+          message: detail,
         },
       },
       { status: 500 }
