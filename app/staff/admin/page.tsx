@@ -48,18 +48,19 @@ async function fetchStaff(): Promise<StaffRow[]> {
         e.employee_number,
         e.full_name,
         e.email,
-        ua.role,
-        ua.status,
+        COALESCE(ua.role::text, 'Staff') AS role,
+        COALESCE(ua.status::text, 'Active') AS status,
         b.location_name AS branch_name,
         e.department,
         e.position
       FROM employee e
-      JOIN user_account ua ON ua.user_id = e.user_id
+      LEFT JOIN user_account ua ON ua.user_id = e.user_id
       LEFT JOIN branch b ON b.branch_id = e.branch_id
       ORDER BY ua.role, e.full_name
     `);
     return result.rows;
-  } catch {
+  } catch (error) {
+    console.error('[AdminPage] fetchStaff failed:', error);
     return [];
   }
 }
@@ -72,7 +73,8 @@ async function fetchBranches(): Promise<BranchRow[]> {
       ORDER BY branch_id
     `);
     return result.rows;
-  } catch {
+  } catch (error) {
+    console.error('[AdminPage] fetchBranches failed:', error);
     return [];
   }
 }
@@ -87,7 +89,8 @@ async function fetchSystemStats(): Promise<SystemStats> {
         (SELECT COUNT(*) FROM room)::int                AS total_rooms
     `);
     return result.rows[0] ?? { total_staff: 0, total_guests: 0, total_reservations: 0, total_rooms: 0 };
-  } catch {
+  } catch (error) {
+    console.error('[AdminPage] fetchSystemStats failed:', error);
     return { total_staff: 0, total_guests: 0, total_reservations: 0, total_rooms: 0 };
   }
 }
@@ -197,9 +200,6 @@ export default async function AdminPage() {
             <h2 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#e5e7eb', margin: 0 }}>
               👥 Staff Accounts ({staff.length})
             </h2>
-            <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
-              To add staff: see SQL reference below
-            </div>
           </div>
 
           <div style={{ background: '#141414', border: '1px solid #262626', borderRadius: 12, overflow: 'hidden' }}>
