@@ -58,7 +58,7 @@ describe('Availability Repository', () => {
       );
       expect(rooms).toHaveLength(5);
       expect(pool.query).toHaveBeenCalledWith(
-        'SELECT * FROM fn_get_available_rooms($1, $2, $3)',
+        'SELECT * FROM fn_get_available_rooms($1::bigint, $2::date, $3::date)',
         [2, FUTURE_DATE(1), FUTURE_DATE(3)],
       );
     });
@@ -98,7 +98,7 @@ describe('Availability Repository', () => {
       );
       expect(rooms.map((r: AvailableRoom) => r.room_id)).not.toContain(6);
       expect(pool.query).toHaveBeenCalledWith(
-        'SELECT * FROM fn_get_available_rooms($1, $2, $3)',
+        'SELECT * FROM fn_get_available_rooms($1::bigint, $2::date, $3::date)',
         [2, '2026-10-02', '2026-10-04'],
       );
     });
