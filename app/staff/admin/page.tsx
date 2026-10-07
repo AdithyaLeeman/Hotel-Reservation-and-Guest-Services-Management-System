@@ -28,10 +28,7 @@ interface StaffRow {
 
 interface BranchRow {
   branch_id: number;
-  name: string;
-  city: string;
-  address: string | null;
-  phone: string | null;
+  location_name: string;
 }
 
 interface SystemStats {
@@ -53,7 +50,7 @@ async function fetchStaff(): Promise<StaffRow[]> {
         e.email,
         ua.role,
         ua.status,
-        b.name AS branch_name,
+        b.location_name AS branch_name,
         e.department,
         e.position
       FROM employee e
@@ -70,7 +67,7 @@ async function fetchStaff(): Promise<StaffRow[]> {
 async function fetchBranches(): Promise<BranchRow[]> {
   try {
     const result = await pool.query<BranchRow>(`
-      SELECT branch_id, name, city, address, phone
+      SELECT branch_id, location_name
       FROM branch
       ORDER BY branch_id
     `);
@@ -178,17 +175,12 @@ export default async function AdminPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem' }}>
             {branches.map((b) => (
               <div key={b.branch_id} style={{ background: '#141414', border: '1px solid #262626', borderRadius: 12, padding: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '1rem' }}>{b.name}</div>
-                    <div style={{ color: '#9ca3af', fontSize: '0.85rem' }}>{b.city}</div>
-                  </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ fontWeight: 600, fontSize: '1rem' }}>{b.location_name}</div>
                   <span style={{ background: '#1a1a2e', color: '#818cf8', borderRadius: 6, padding: '2px 8px', fontSize: '0.75rem', fontWeight: 600 }}>
                     Branch #{b.branch_id}
                   </span>
                 </div>
-                {b.address && <div style={{ color: '#6b7280', fontSize: '0.8rem', marginBottom: '0.25rem' }}>📍 {b.address}</div>}
-                {b.phone && <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>📞 {b.phone}</div>}
               </div>
             ))}
             {branches.length === 0 && (

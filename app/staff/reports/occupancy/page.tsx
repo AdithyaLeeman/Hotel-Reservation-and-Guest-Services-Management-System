@@ -293,7 +293,7 @@ export default function OccupancyReportPage() {
       };
     }
 
-    const totalRooms = state.data.length;
+    const totalRooms = new Set(state.data.map((r) => r.room_id)).size;
     const totalNights = state.data.reduce((acc, row) => acc + row.total_nights_occupied, 0);
     const sumRate = state.data.reduce((acc, row) => acc + (parseFloat(row.occupancy_rate) || 0), 0);
     const totalRevenue = state.data.reduce((acc, row) => acc + parseMoney(row.total_revenue), 0);
@@ -301,7 +301,7 @@ export default function OccupancyReportPage() {
     return {
       totalRooms,
       totalNights,
-      averageOccupancyRate: totalRooms > 0 ? sumRate / totalRooms : 0,
+      averageOccupancyRate: state.data.length > 0 ? sumRate / state.data.length : 0,
       totalRevenue,
     };
   }, [state]);
