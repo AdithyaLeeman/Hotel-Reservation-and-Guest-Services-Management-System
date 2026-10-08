@@ -66,7 +66,10 @@ interface FilterState {
 /** Format an ISO date string as "01 Oct 2026" (en-GB, no time). */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
-  return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
+  const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+  const d = new Date(clean + 'T00:00:00');
+  if (isNaN(d.getTime())) return '\u2014';
+  return d.toLocaleDateString('en-GB', {
     day:   '2-digit',
     month: 'short',
     year:  'numeric',
@@ -110,7 +113,7 @@ function LoadingState() {
         className="inline-block w-8 h-8 border-[3px] border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"
         aria-hidden="true"
       />
-      <p className="text-sm text-[var(--color-text-muted)]">Loading reservations\u2026</p>
+      <p className="text-sm text-[var(--color-text-muted)]">Loading reservations…</p>
     </div>
   );
 }
@@ -200,7 +203,7 @@ function ReservationRow({ row }: { row: ActiveReservationRow }) {
     >
       {/* Reservation ID */}
       <td className="px-4 py-3 text-xs font-mono text-[var(--color-text-muted)] whitespace-nowrap">
-        <span title={row.reservation_id}>{shortId}\u2026</span>
+        <span title={row.reservation_id}>{shortId}…</span>
       </td>
 
       {/* Guest */}
@@ -381,8 +384,8 @@ export default function StaffReservationsPage() {
     let rows = fetchState.rows;
 
     if (filters.branchId) {
-      const id = parseInt(filters.branchId, 10);
-      rows = rows.filter((r) => r.branch_id === id);
+      // branch_id comes back as a string from pg — compare as strings
+      rows = rows.filter((r) => String(r.branch_id) === filters.branchId);
     }
 
     if (filters.status) {
@@ -409,7 +412,7 @@ export default function StaffReservationsPage() {
   /* ── Render ── */
   return (
     <>
-      <title>Reservations \u2014 SkyNest Hotels Staff Portal</title>
+      <title>Reservations — SkyNest Hotels Staff Portal</title>
 
       <div
         className="min-h-screen flex flex-col bg-[var(--color-bg)]"
@@ -433,9 +436,9 @@ export default function StaffReservationsPage() {
             <Link
               href="/staff/dashboard"
               id="reservations-back-link"
-              className="btn btn-ghost text-sm hidden sm:inline-flex"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#3b3631] hover:border-[#c5a880] text-xs uppercase tracking-wider text-[#c5a880] hover:text-[#e0c49c] rounded-md transition-colors"
             >
-              \u2190 Dashboard
+              ← Dashboard
             </Link>
           </header>
 
@@ -530,7 +533,7 @@ export default function StaffReservationsPage() {
                     type="search"
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder="Search\u2026"
+                    placeholder="Search…"
                     className="form-input text-sm py-1.5"
                     autoComplete="off"
                   />
@@ -599,7 +602,7 @@ export default function StaffReservationsPage() {
           id="staff-reservations-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels \u2014 Staff Portal \u00b7 All access is logged and monitored
+          SkyNest Hotels — Staff Portal · All access is logged and monitored
         </footer>
       </div>
     </>

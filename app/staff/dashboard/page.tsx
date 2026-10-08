@@ -80,7 +80,7 @@ function KpiCardEl({ card }: { card: KpiCard }) {
   return (
     <div
       id={card.id}
-      className={`card p-5 flex flex-col gap-1 border-l-4 ${card.colorClass}`}
+      className="card p-5 flex flex-col gap-1"
       aria-label={`${card.label}: ${card.value}`}
     >
       <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">
@@ -574,17 +574,12 @@ export default async function StaffDashboardPage() {
         </footer>
       </div>
 
-      {/* KPI card colour tokens — inline so no extra CSS file needed */}
+      {/* Badge colour tokens — inline so no extra CSS file needed */}
       <style>{`
-        .kpi-blue  { border-left-color: var(--color-info); }
-        .kpi-green { border-left-color: var(--color-success); }
-        .kpi-amber { border-left-color: var(--color-warning); }
-        .kpi-red   { border-left-color: var(--color-error); }
-
-        .badge-booked      { background: var(--color-info-bg);    color: var(--color-info); }
-        .badge-checked-in  { background: var(--color-success-bg); color: var(--color-success); }
-        .badge-checked-out { background: var(--color-bg-subtle);  color: var(--color-text-muted); }
-        .badge-maintenance { background: var(--color-warning-bg); color: var(--color-warning); }
+        .badge-booked      { background: rgba(197, 168, 128, 0.15); color: #c5a880; border: 1px solid rgba(197, 168, 128, 0.4); }
+        .badge-checked-in  { background: rgba(197, 168, 128, 0.22); color: #f5e6d3; border: 1px solid rgba(197, 168, 128, 0.45); }
+        .badge-checked-out { background: rgba(168, 162, 158, 0.12); color: #d6d3d1; border: 1px solid rgba(168, 162, 158, 0.3); }
+        .badge-maintenance { background: rgba(180, 83, 9, 0.15); color: #fcd34d; border: 1px solid rgba(180, 83, 9, 0.35); }
       `}</style>
     </>
   );

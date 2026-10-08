@@ -184,3 +184,38 @@ export async function POST(
     return err(500, ERROR_CODES.INTERNAL_ERROR, 'An unexpected error occurred.');
   }
 }
+
+// ---------------------------------------------------------------------------
+// GET /api/staff/reservations/[id]/services
+// ---------------------------------------------------------------------------
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
+  const session = await resolveSession();
+
+  if (!session.userId || !session.role) {
+    return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Staff authentication required.');
+  }
+
+  if (!isStaffRole(session.role)) {
+    return err(403, ERROR_CODES.INSUFFICIENT_ROLE, `Access requires staff role. Your role: ${session.role}`);
+  }
+
+  const { id: reservationId } = await params;
+
+  if (!reservationId) {
+    return err(400, ERROR_CODES.VALIDATION_ERROR, 'Reservation ID is required.');
+  }
+
+  try {
+    const usages = await serviceUsageService.listUsageByReservation(reservationId);
+    return NextResponse.json(
+      { data: usages, meta: { requestId: crypto.randomUUID() } },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('[GET /api/staff/reservations/[id]/services]', error);
+    return err(500, ERROR_CODES.INTERNAL_ERROR, 'An unexpected error occurred.');
+  }
+}

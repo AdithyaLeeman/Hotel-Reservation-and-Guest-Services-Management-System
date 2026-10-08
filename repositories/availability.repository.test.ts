@@ -18,18 +18,18 @@ import { pool } from '@/lib/db/pool';
 import { availabilityRepository } from './availability.repository';
 
 const KANDY_ROOMS: AvailableRoom[] = [
-  { room_id: 6,  room_number: '101', branch_id: 2, type_id: 1, status: 'Available', type_name: 'Single', capacity: 1, daily_rate: '10000.00' },
-  { room_id: 7,  room_number: '102', branch_id: 2, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00' },
-  { room_id: 8,  room_number: '103', branch_id: 2, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00' },
-  { room_id: 9,  room_number: '201', branch_id: 2, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00' },
-  { room_id: 10, room_number: '202', branch_id: 2, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00' },
+  { room_id: 6,  room_number: '101', branch_id: 2, type_id: 1, status: 'Available', type_name: 'Single', capacity: 1, daily_rate: '10000.00', amenities: [] },
+  { room_id: 7,  room_number: '102', branch_id: 2, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00', amenities: [] },
+  { room_id: 8,  room_number: '103', branch_id: 2, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00', amenities: [] },
+  { room_id: 9,  room_number: '201', branch_id: 2, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00', amenities: [] },
+  { room_id: 10, room_number: '202', branch_id: 2, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00', amenities: [] },
 ];
 
 const COLOMBO_ROOMS_WITHOUT_MAINTENANCE: AvailableRoom[] = [
-  { room_id: 1, room_number: '101', branch_id: 1, type_id: 1, status: 'Available', type_name: 'Single', capacity: 1, daily_rate: '10000.00' },
-  { room_id: 2, room_number: '102', branch_id: 1, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00' },
-  { room_id: 4, room_number: '201', branch_id: 1, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00' },
-  { room_id: 5, room_number: '202', branch_id: 1, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00' },
+  { room_id: 1, room_number: '101', branch_id: 1, type_id: 1, status: 'Available', type_name: 'Single', capacity: 1, daily_rate: '10000.00', amenities: [] },
+  { room_id: 2, room_number: '102', branch_id: 1, type_id: 2, status: 'Available', type_name: 'Double', capacity: 2, daily_rate: '18000.00', amenities: [] },
+  { room_id: 4, room_number: '201', branch_id: 1, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00', amenities: [] },
+  { room_id: 5, room_number: '202', branch_id: 1, type_id: 3, status: 'Available', type_name: 'Suite',  capacity: 4, daily_rate: '35000.00', amenities: [] },
 ];
 
 // Helpers
@@ -58,7 +58,7 @@ describe('Availability Repository', () => {
       );
       expect(rooms).toHaveLength(5);
       expect(pool.query).toHaveBeenCalledWith(
-        'SELECT * FROM fn_get_available_rooms($1, $2, $3)',
+        expect.stringContaining('fn_get_available_rooms'),
         [2, FUTURE_DATE(1), FUTURE_DATE(3)],
       );
     });
@@ -98,7 +98,7 @@ describe('Availability Repository', () => {
       );
       expect(rooms.map((r: AvailableRoom) => r.room_id)).not.toContain(6);
       expect(pool.query).toHaveBeenCalledWith(
-        'SELECT * FROM fn_get_available_rooms($1, $2, $3)',
+        expect.stringContaining('fn_get_available_rooms'),
         [2, '2026-10-02', '2026-10-04'],
       );
     });

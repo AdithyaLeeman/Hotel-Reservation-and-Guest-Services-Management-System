@@ -112,9 +112,9 @@ function capacityLabel(capacity: number): string {
 // ---------------------------------------------------------------------------
 
 const STATUS_BADGE: Record<string, string> = {
-  Available:   'bg-emerald-100 text-emerald-800 border-emerald-200',
-  Occupied:    'bg-amber-100   text-amber-800   border-amber-200',
-  Maintenance: 'bg-red-100     text-red-800     border-red-200',
+  Available:   'bg-[#c5a880]/15 text-[#c5a880] border border-[#c5a880]/40',
+  Occupied:    'bg-[#a8a29e]/15 text-[#d6d3d1] border border-[#a8a29e]/30',
+  Maintenance: 'bg-[#b45309]/20 text-[#fcd34d] border border-[#b45309]/40',
 };
 
 const STATUS_LABEL: Record<string, string> = {

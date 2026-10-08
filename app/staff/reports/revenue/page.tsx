@@ -106,7 +106,7 @@ const CSS = `
   cursor: pointer;
   transition: border-color 150ms, box-shadow 150ms;
 }
-.rp-filter-group select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px hsl(196 80% 30% / 0.15); }
+.rp-filter-group select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.25); }
 .rp-filter-btn {
   background: var(--color-primary); color: white;
   border: none; border-radius: 0.5rem;

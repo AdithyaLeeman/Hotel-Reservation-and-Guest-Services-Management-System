@@ -64,7 +64,9 @@ function countNights(checkIn: string, checkOut: string): number {
 /** Format an ISO date string as "Thu, 01 Oct 2026" — display only. */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
-  const d = new Date(iso + 'T00:00:00'); // avoid UTC-offset day shift
+  const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+  const d = new Date(clean + 'T00:00:00'); // avoid UTC-offset day shift
+  if (isNaN(d.getTime())) return '\u2014';
   return d.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: '2-digit',
@@ -149,8 +151,8 @@ function SummaryCard({
             <dd
               id="summary-room-id"
               className="
-                font-medium text-blue-700 dark:text-blue-300
-                bg-blue-50 dark:bg-blue-950
+                font-medium text-[#c5a880]
+                bg-[#c5a880]/15 border border-[#c5a880]/30
                 px-2.5 py-0.5 rounded-full text-xs
               "
             >
@@ -465,7 +467,7 @@ function NewReservationContent() {
                           className="
                             flex items-center justify-center
                             w-8 h-8 rounded-lg flex-shrink-0
-                            bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400
+                            bg-[#c5a880]/15 text-[#c5a880] border border-[#c5a880]/30
                           "
                         >
                           <svg
@@ -534,9 +536,9 @@ function NewReservationContent() {
                   <div
                     className="
                       flex items-start gap-3 p-3 rounded-xl
-                      bg-blue-50 dark:bg-blue-950
-                      border border-blue-100 dark:border-blue-900
-                      text-blue-700 dark:text-blue-300 text-xs
+                      bg-[#c5a880]/10
+                      border border-[#c5a880]/30
+                      text-[#d6d3d1] text-xs
                     "
                   >
                     <svg

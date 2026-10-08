@@ -12,33 +12,13 @@
  */
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function HomePage() {
-  const router = useRouter();
-
-  // Floating booking bar state
   const now = new Date();
-  const today = now.toISOString().slice(0, 10);
+  const checkIn = now.toISOString().slice(0, 10);
   const tomorrowDate = new Date(now);
   tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-  const tomorrow = tomorrowDate.toISOString().slice(0, 10);
-
-  const [checkIn, setCheckIn] = useState(today);
-  const [checkOut, setCheckOut] = useState(tomorrow);
-  const [branchId, setBranchId] = useState('1');
-  const [guests, setGuests] = useState('2');
-
-  const handleBookNow = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams({
-      branchId,
-      checkIn,
-      checkOut,
-    });
-    router.push(`/search?${params.toString()}`);
-  };
+  const checkOut = tomorrowDate.toISOString().slice(0, 10);
 
   return (
     <div className="min-h-screen bg-[#faf8f5] dark:bg-[#121110] text-[#1c1917] dark:text-[#f7f5f2] antialiased selection:bg-[#c5a880]/30 selection:text-[#161514]">
@@ -143,7 +123,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-2xl font-light tracking-wide mb-10">
-            Colombo · Kandy · Galle — Distinctive colonial heritage, beachfront serenity, and exceptional 5-star hospitality.
+            Colombo · Kandy · Galle Distinctive colonial heritage, beachfront serenity, and exceptional 5-star hospitality.
           </p>
 
           {/* Primary Call to Actions */}
@@ -164,97 +144,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FLOATING AVAILABILITY BOOKING BAR (Docks over hero & content) ── */}
-      <section className="relative z-20 max-w-6xl mx-auto -mt-20 px-4">
-        <div className="bg-[#181716] border border-[#38332c] shadow-2xl p-4 sm:p-6 rounded-xs">
-          <form onSubmit={handleBookNow} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-            {/* Check-In */}
-            <div className="space-y-1.5">
-              <label htmlFor="home-check-in" className="block text-[11px] uppercase tracking-[0.18em] font-semibold text-[#c5a880]">
-                Check In
-              </label>
-              <div className="relative">
-                <input
-                  id="home-check-in"
-                  type="date"
-                  value={checkIn}
-                  min={today}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full bg-[#242220] border border-[#3e3932] text-white text-xs px-3 py-3 rounded-xs focus:outline-none focus:border-[#c5a880] transition-colors"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Check-Out */}
-            <div className="space-y-1.5">
-              <label htmlFor="home-check-out" className="block text-[11px] uppercase tracking-[0.18em] font-semibold text-[#c5a880]">
-                Check Out
-              </label>
-              <div className="relative">
-                <input
-                  id="home-check-out"
-                  type="date"
-                  value={checkOut}
-                  min={checkIn || today}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full bg-[#242220] border border-[#3e3932] text-white text-xs px-3 py-3 rounded-xs focus:outline-none focus:border-[#c5a880] transition-colors"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Branch Selection */}
-            <div className="space-y-1.5">
-              <label htmlFor="home-branch" className="block text-[11px] uppercase tracking-[0.18em] font-semibold text-[#c5a880]">
-                Destinations
-              </label>
-              <select
-                id="home-branch"
-                value={branchId}
-                onChange={(e) => setBranchId(e.target.value)}
-                className="w-full bg-[#242220] border border-[#3e3932] text-white text-xs px-3 py-3 rounded-xs focus:outline-none focus:border-[#c5a880] transition-colors"
-              >
-                <option value="1">Colombo City Hotel</option>
-                <option value="2">Kandy Hill Resort</option>
-                <option value="3">Galle Coastal Sanctuary</option>
-              </select>
-            </div>
-
-            {/* Guests */}
-            <div className="space-y-1.5">
-              <label htmlFor="home-guests" className="block text-[11px] uppercase tracking-[0.18em] font-semibold text-[#c5a880]">
-                Guests
-              </label>
-              <select
-                id="home-guests"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                className="w-full bg-[#242220] border border-[#3e3932] text-white text-xs px-3 py-3 rounded-xs focus:outline-none focus:border-[#c5a880] transition-colors"
-              >
-                <option value="1">01 Adult, 0 Child</option>
-                <option value="2">02 Adults, 0 Child</option>
-                <option value="3">02 Adults, 1 Child</option>
-                <option value="4">03 Adults, 2 Children</option>
-              </select>
-            </div>
-
-            {/* Book Now Button */}
-            <div>
-              <button
-                type="submit"
-                id="home-book-now-btn"
-                className="w-full bg-[#c5a880] hover:bg-[#b59469] text-[#161514] font-semibold text-xs uppercase tracking-[0.2em] py-3.5 px-4 transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Book Now</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
 
       {/* ── ROOMS & SUITES SECTION (Matching screenshot middle section) ── */}
       <section id="rooms" className="py-24 px-4 bg-[#faf8f5] dark:bg-[#121110]">
@@ -422,7 +311,7 @@ export default function HomePage() {
           <div className="lg:col-span-6 relative">
             {/* Background Decorative Gold Accent Frame */}
             <div className="absolute -top-4 -left-4 w-3/4 h-3/4 border-2 border-[#c5a880] -z-0 opacity-70" />
-            
+
             {/* Main Image */}
             <div className="relative z-10 overflow-hidden shadow-2xl rounded-xs">
               <img
@@ -621,9 +510,9 @@ export default function HomePage() {
               Destinations
             </p>
             <ul className="space-y-2 text-xs text-white/75 font-light">
-              <li>Colombo — Galle Face Marine Drive</li>
-              <li>Kandy — Hanthana Ridge Sanctuary</li>
-              <li>Galle — Light House Fort Promenade</li>
+              <li>Colombo - Galle Face Marine Drive</li>
+              <li>Kandy - Hanthana Ridge Sanctuary</li>
+              <li>Galle - Light House Fort Promenade</li>
             </ul>
           </div>
 
@@ -650,7 +539,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-white/50 gap-4">
           <p>© {new Date().getFullYear()} SkyNest Hotels Group. All rights reserved.</p>
           <p className="text-white/60">
-            University of Moratuwa — Database Systems Project — Group 39 HRGSMS
+            University of Moratuwa - Database Systems Project - Group 39 HRGSMS
           </p>
         </div>
       </footer>

@@ -38,9 +38,8 @@ import type { SessionData } from '@/types/session';
 function getDevStaffSession(): Partial<SessionData> {
   return {
     userId: 'user-mock-staff-002',
-    role: 'Receptionist',
+    role: 'Manager',
     employeeId: 2,
-    branchId: 1, // Default to Colombo for Receptionist
   };
 }
 

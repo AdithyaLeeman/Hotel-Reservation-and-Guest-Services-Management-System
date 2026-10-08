@@ -73,12 +73,10 @@ function MissingIdBanner() {
         href="/search"
         id="missing-id-search-link"
         className="
-          inline-flex items-center gap-2
+          gold-btn inline-flex items-center gap-2
           px-6 py-3 rounded-xl
-          bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-          text-white text-sm font-semibold
+          text-sm font-semibold
           transition-colors duration-200
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
         "
       >
         <svg
@@ -128,8 +126,7 @@ function BookingConfirmContent() {
           aria-labelledby="confirm-heading"
           className="
             relative overflow-hidden
-            bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700
-            dark:from-emerald-900 dark:via-teal-900 dark:to-cyan-900
+            bg-[#161514] border-b border-[#3e3933]
             py-12 px-4 md:px-6 lg:px-8
           "
         >
@@ -142,27 +139,27 @@ function BookingConfirmContent() {
           <div className="relative max-w-3xl mx-auto">
             {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-4">
-              <ol className="flex items-center gap-2 text-sm text-emerald-200 list-none p-0 m-0">
+              <ol className="flex items-center gap-2 text-sm text-[#c5a880]/70 list-none p-0 m-0">
                 <li>
                   <Link
                     href="/search"
                     id="breadcrumb-search"
-                    className="hover:text-white transition-colors duration-200"
+                    className="hover:text-[#c5a880] transition-colors duration-200"
                   >
                     Search
                   </Link>
                 </li>
-                <li aria-hidden="true" className="text-emerald-400">&rsaquo;</li>
+                <li aria-hidden="true" className="text-[#c5a880]">&rsaquo;</li>
                 <li>
                   <Link
                     href="/guest/reservations/new"
                     id="breadcrumb-book"
-                    className="hover:text-white transition-colors duration-200"
+                    className="hover:text-[#c5a880] transition-colors duration-200"
                   >
                     Book Room
                   </Link>
                 </li>
-                <li aria-hidden="true" className="text-emerald-400">&rsaquo;</li>
+                <li aria-hidden="true" className="text-[#c5a880]">&rsaquo;</li>
                 <li aria-current="page" className="text-white font-medium">
                   Confirmation
                 </li>
@@ -176,7 +173,7 @@ function BookingConfirmContent() {
                 className="
                   flex-shrink-0 flex items-center justify-center
                   w-14 h-14 rounded-full
-                  bg-white/20 backdrop-blur-sm
+                  bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
                 "
               >
                 <svg
@@ -200,7 +197,7 @@ function BookingConfirmContent() {
                 >
                   Booking Confirmed!
                 </h1>
-                <p className="mt-1 text-emerald-100 text-base">
+                <p className="mt-1 text-[#d6d3d1] text-base">
                   SkyNest Hotels &mdash; your reservation has been created successfully.
                 </p>
               </div>
@@ -227,10 +224,10 @@ function BookingConfirmContent() {
                   rounded-2xl shadow-sm overflow-hidden
                 "
               >
-                {/* Gradient accent bar — green to match hero */}
+                {/* Accent bar */}
                 <div
                   aria-hidden="true"
-                  className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"
+                  className="h-1.5 w-full bg-[#c5a880]/30"
                 />
 
                 <div className="p-6 md:p-8 flex flex-col gap-5">
@@ -242,7 +239,7 @@ function BookingConfirmContent() {
                       className="
                         flex-shrink-0 flex items-center justify-center
                         w-10 h-10 rounded-full
-                        bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400
+                        bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
                       "
                     >
                       <svg
@@ -310,7 +307,7 @@ function BookingConfirmContent() {
                           className="
                             flex-shrink-0 flex items-center justify-center
                             w-5 h-5 rounded-full mt-0.5
-                            bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300
+                            bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
                             text-xs font-bold
                           "
                         >
@@ -324,7 +321,7 @@ function BookingConfirmContent() {
                           className="
                             flex-shrink-0 flex items-center justify-center
                             w-5 h-5 rounded-full mt-0.5
-                            bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300
+                            bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
                             text-xs font-bold
                           "
                         >
@@ -338,7 +335,7 @@ function BookingConfirmContent() {
                           className="
                             flex-shrink-0 flex items-center justify-center
                             w-5 h-5 rounded-full mt-0.5
-                            bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300
+                            bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880]
                             text-xs font-bold
                           "
                         >
@@ -361,12 +358,10 @@ function BookingConfirmContent() {
                   href={`/guest/reservations/${reservationId}`}
                   id="confirm-view-reservation-btn"
                   className="
-                    flex-1 inline-flex items-center justify-center gap-2
+                    flex-1 gold-btn inline-flex items-center justify-center gap-2
                     px-6 py-3 rounded-xl
-                    bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-                    text-white text-sm font-semibold
+                    text-sm font-semibold
                     transition-colors duration-200
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
                   "
                 >
                   <svg
