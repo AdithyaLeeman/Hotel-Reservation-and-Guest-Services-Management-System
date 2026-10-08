@@ -81,7 +81,10 @@ const ACTION_LABEL: Record<ActionKind, string> = {
 /** Format ISO date string as "01 Oct 2026" */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
-  return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
+  const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+  const d = new Date(clean + 'T00:00:00');
+  if (isNaN(d.getTime())) return '\u2014';
+  return d.toLocaleDateString('en-GB', {
     day:   '2-digit',
     month: 'short',
     year:  'numeric',

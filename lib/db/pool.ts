@@ -18,8 +18,12 @@
  * See context/05-library-patterns.md for query and transaction patterns.
  */
 
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
 export type { PoolClient } from 'pg';
+
+// Configure node-postgres type parsers
+// OID 1082: DATE — return as clean ISO 8601 string (YYYY-MM-DD) without timezone shift (AGENTS.md & docs/21_shared-contracts.md §4)
+types.setTypeParser(1082, (val: string) => val);
 
 // ------------------------------------------------------------------
 // Singleton guard — prevents multiple Pool instances during Next.js

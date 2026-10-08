@@ -36,26 +36,110 @@ export const roomRepository = {
    * List all rooms across all branches (Manager / Admin use).
    */
   listAll: async (): Promise<Room[]> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `SELECT room_id, room_number, branch_id, type_id, status
        FROM room
        ORDER BY branch_id, room_number`
     );
-    return result.rows;
+    return result.rows.map((r) => ({
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    }));
   },
 
   /**
    * List all rooms belonging to a specific branch.
    */
   listByBranch: async (branchId: number): Promise<Room[]> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `SELECT room_id, room_number, branch_id, type_id, status
        FROM room
        WHERE branch_id = $1
        ORDER BY room_number`,
       [branchId]
     );
-    return result.rows;
+    return result.rows.map((r) => ({
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    }));
+  },
+
+  /**
+   * List all rooms across all branches joined with room_type + amenities.
+   */
+  listWithDetailsAll: async (): Promise<RoomWithDetails[]> => {
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+      type_name: string;
+      capacity: number | string;
+      daily_rate: string;
+      amenities: Amenity[];
+    }>(
+      `SELECT
+         r.room_id,
+         r.room_number,
+         r.branch_id,
+         r.type_id,
+         r.status,
+         rt.type_name,
+         rt.capacity,
+         rt.daily_rate,
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'amenity_id',   a.amenity_id,
+               'amenity_name', a.amenity_name
+             ) ORDER BY a.amenity_name
+           ) FILTER (WHERE a.amenity_id IS NOT NULL),
+           '[]'::json
+         ) AS amenities
+       FROM room r
+       JOIN room_type rt ON rt.type_id = r.type_id
+       LEFT JOIN room_type_amenity rta ON rta.type_id = rt.type_id
+       LEFT JOIN amenity a             ON a.amenity_id  = rta.amenity_id
+       GROUP BY r.room_id, rt.type_id, rt.type_name, rt.capacity, rt.daily_rate
+       ORDER BY r.branch_id, r.room_number`
+    );
+
+    return result.rows.map((row) => ({
+      room_id:     Number(row.room_id),
+      room_number: row.room_number,
+      branch_id:   Number(row.branch_id),
+      type_id:     Number(row.type_id),
+      status:      row.status,
+      room_type: {
+        type_id:    Number(row.type_id),
+        type_name:  row.type_name,
+        capacity:   Number(row.capacity),
+        daily_rate: row.daily_rate,
+      },
+      amenities: (row.amenities ?? []).map((a) => ({
+        amenity_id:   Number(a.amenity_id),
+        amenity_name: a.amenity_name,
+      })),
+    }));
   },
 
   /**
@@ -64,13 +148,13 @@ export const roomRepository = {
    */
   listWithDetailsByBranch: async (branchId: number): Promise<RoomWithDetails[]> => {
     const result = await pool.query<{
-      room_id: number;
+      room_id: number | string;
       room_number: string;
-      branch_id: number;
-      type_id: number;
+      branch_id: number | string;
+      type_id: number | string;
       status: RoomStatus;
       type_name: string;
-      capacity: number;
+      capacity: number | string;
       daily_rate: string;
       amenities: Amenity[];
     }>(
@@ -103,18 +187,21 @@ export const roomRepository = {
     );
 
     return result.rows.map((row) => ({
-      room_id:     row.room_id,
+      room_id:     Number(row.room_id),
       room_number: row.room_number,
-      branch_id:   row.branch_id,
-      type_id:     row.type_id,
+      branch_id:   Number(row.branch_id),
+      type_id:     Number(row.type_id),
       status:      row.status,
       room_type: {
-        type_id:    row.type_id,
+        type_id:    Number(row.type_id),
         type_name:  row.type_name,
-        capacity:   row.capacity,
+        capacity:   Number(row.capacity),
         daily_rate: row.daily_rate,
       },
-      amenities: row.amenities ?? [],
+      amenities: (row.amenities ?? []).map((a) => ({
+        amenity_id:   Number(a.amenity_id),
+        amenity_name: a.amenity_name,
+      })),
     }));
   },
 
@@ -122,13 +209,27 @@ export const roomRepository = {
    * Find a room by primary key (room_id).
    */
   findById: async (roomId: number): Promise<Room | null> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `SELECT room_id, room_number, branch_id, type_id, status
        FROM room
        WHERE room_id = $1`,
       [roomId]
     );
-    return result.rows[0] ?? null;
+    if (!result.rows[0]) return null;
+    const r = result.rows[0];
+    return {
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    };
   },
 
   /**
@@ -139,13 +240,27 @@ export const roomRepository = {
     branchId: number,
     roomNumber: string
   ): Promise<Room | null> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `SELECT room_id, room_number, branch_id, type_id, status
        FROM room
        WHERE branch_id = $1 AND room_number = $2`,
       [branchId, roomNumber]
     );
-    return result.rows[0] ?? null;
+    if (!result.rows[0]) return null;
+    const r = result.rows[0];
+    return {
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    };
   },
 
   /**
@@ -154,7 +269,13 @@ export const roomRepository = {
    * on duplicate — caught and re-thrown by the service layer as RoomConflictError.
    */
   insert: async (input: CreateRoomInput): Promise<Room> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `INSERT INTO room (room_number, branch_id, type_id, status)
        VALUES ($1, $2, $3, $4)
        RETURNING room_id, room_number, branch_id, type_id, status`,
@@ -165,7 +286,14 @@ export const roomRepository = {
         input.status ?? 'Available',
       ]
     );
-    return result.rows[0];
+    const r = result.rows[0];
+    return {
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    };
   },
 
   /**
@@ -173,7 +301,13 @@ export const roomRepository = {
    * Returns the updated row; throws if room_id is not found.
    */
   updateStatus: async (roomId: number, status: RoomStatus): Promise<Room> => {
-    const result = await pool.query<Room>(
+    const result = await pool.query<{
+      room_id: number | string;
+      room_number: string;
+      branch_id: number | string;
+      type_id: number | string;
+      status: RoomStatus;
+    }>(
       `UPDATE room
        SET status = $1
        WHERE room_id = $2
@@ -183,32 +317,61 @@ export const roomRepository = {
     if (result.rows.length === 0) {
       throw new Error(`Room with ID ${roomId} not found`);
     }
-    return result.rows[0];
+    const r = result.rows[0];
+    return {
+      room_id:     Number(r.room_id),
+      room_number: r.room_number,
+      branch_id:   Number(r.branch_id),
+      type_id:     Number(r.type_id),
+      status:      r.status,
+    };
   },
 
   /**
    * List all room types in the catalogue.
    */
   listRoomTypes: async (): Promise<RoomType[]> => {
-    const result = await pool.query<RoomType>(
+    const result = await pool.query<{
+      type_id: number | string;
+      type_name: string;
+      capacity: number | string;
+      daily_rate: string;
+    }>(
       `SELECT type_id, type_name, capacity, daily_rate
        FROM room_type
        ORDER BY type_id`
     );
-    return result.rows;
+    return result.rows.map((rt) => ({
+      type_id:    Number(rt.type_id),
+      type_name:  rt.type_name,
+      capacity:   Number(rt.capacity),
+      daily_rate: rt.daily_rate,
+    }));
   },
 
   /**
    * Find a single room type by primary key.
    */
   findRoomTypeById: async (typeId: number): Promise<RoomType | null> => {
-    const result = await pool.query<RoomType>(
+    const result = await pool.query<{
+      type_id: number | string;
+      type_name: string;
+      capacity: number | string;
+      daily_rate: string;
+    }>(
       `SELECT type_id, type_name, capacity, daily_rate
        FROM room_type
        WHERE type_id = $1`,
       [typeId]
     );
-    return result.rows[0] ?? null;
+    if (!result.rows[0]) return null;
+    const rt = result.rows[0];
+    return {
+      type_id:    Number(rt.type_id),
+      type_name:  rt.type_name,
+      capacity:   Number(rt.capacity),
+      daily_rate: rt.daily_rate,
+    };
   },
 
   /**

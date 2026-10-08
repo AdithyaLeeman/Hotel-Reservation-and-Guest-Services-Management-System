@@ -279,26 +279,26 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
       role="dialog"
       aria-modal="true"
       aria-labelledby="room-form-title"
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
       onKeyDown={handleKeyDown}
     >
       {/* Overlay — click closes dialog */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0"
         onClick={onClose}
       />
 
       {/* Dialog panel */}
       <div
         ref={dialogRef}
-        className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden"
+        className="relative z-10 w-full max-w-md bg-[#1c1917] border border-[#2e2a27] rounded-xl shadow-2xl overflow-hidden text-[#f7f5f2]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#2e2a27] bg-[#161514]">
           <h2
             id="room-form-title"
-            className="text-base font-semibold text-gray-900"
+            className="font-serif text-lg font-semibold text-[#f7f5f2] tracking-wide"
           >
             {title}
           </h2>
@@ -306,7 +306,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
             id="btn-close-room-form"
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="p-1 rounded-sm text-[#a8a29e] hover:text-[#f7f5f2] hover:bg-[#2e2a27] transition-colors focus:outline-none focus:ring-1 focus:ring-[#c5a880]"
             aria-label="Close dialog"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -316,7 +316,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5">
+        <div className="px-6 py-5 bg-[#1c1917]">
 
           {/* ── CREATE MODE ── */}
           {mode === 'create' && (
@@ -331,7 +331,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                 <div
                   id="create-form-error"
                   role="alert"
-                  className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800"
+                  className="mb-4 rounded-md bg-[#7f1d1d]/30 border border-[#991b1b]/50 px-4 py-3 text-sm text-[#fca5a5]"
                 >
                   {createErrors.form}
                 </div>
@@ -341,9 +341,9 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               <div className="mb-4">
                 <label
                   htmlFor="create-room-number"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#a8a29e] mb-1.5"
                 >
-                  Room Number <span aria-label="required" className="text-red-500">*</span>
+                  Room Number <span aria-label="required" className="text-red-400">*</span>
                 </label>
                 <input
                   id="create-room-number"
@@ -357,10 +357,10 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   }
                   aria-describedby={createErrors.room_number ? 'error-room-number' : undefined}
                   aria-invalid={!!createErrors.room_number}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                  className={`w-full rounded-md border px-3 py-2 text-sm text-[#f5f5f4] placeholder-[#78716c] focus:outline-none transition ${
                     createErrors.room_number
-                      ? 'border-red-400 bg-red-50 focus:ring-red-400'
-                      : 'border-gray-300 bg-white focus:border-indigo-500'
+                      ? 'border-red-400 bg-red-950/20 focus:border-red-400'
+                      : 'border-[#3b3631] bg-[#161514] focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880]'
                   }`}
                   placeholder="e.g. 101, 201A"
                 />
@@ -371,9 +371,9 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               <div className="mb-4">
                 <label
                   htmlFor="create-branch"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#a8a29e] mb-1.5"
                 >
-                  Branch <span aria-label="required" className="text-red-500">*</span>
+                  Branch <span aria-label="required" className="text-red-400">*</span>
                 </label>
                 <select
                   id="create-branch"
@@ -384,15 +384,16 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   }
                   aria-describedby={createErrors.branch_id ? 'error-branch' : undefined}
                   aria-invalid={!!createErrors.branch_id}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                  style={{ colorScheme: 'dark' }}
+                  className={`w-full rounded-md border px-3 py-2 text-sm text-[#f5f5f4] focus:outline-none transition ${
                     createErrors.branch_id
-                      ? 'border-red-400 bg-red-50 focus:ring-red-400'
-                      : 'border-gray-300 bg-white focus:border-indigo-500'
+                      ? 'border-red-400 bg-red-950/20 focus:border-red-400'
+                      : 'border-[#3b3631] bg-[#161514] focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880]'
                   }`}
                 >
-                  <option value="">Select branch…</option>
+                  <option value="" className="bg-[#161514] text-[#f5f5f4]">Select branch…</option>
                   {BRANCHES.map((b) => (
-                    <option key={b.id} value={b.id}>{b.name}</option>
+                    <option key={b.id} value={b.id} className="bg-[#161514] text-[#f5f5f4]">{b.name}</option>
                   ))}
                 </select>
                 <FieldError id="error-branch" message={createErrors.branch_id} />
@@ -402,9 +403,9 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               <div className="mb-4">
                 <label
                   htmlFor="create-type"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#a8a29e] mb-1.5"
                 >
-                  Room Type <span aria-label="required" className="text-red-500">*</span>
+                  Room Type <span aria-label="required" className="text-red-400">*</span>
                 </label>
                 <select
                   id="create-type"
@@ -415,15 +416,16 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   }
                   aria-describedby={createErrors.type_id ? 'error-type' : undefined}
                   aria-invalid={!!createErrors.type_id}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                  style={{ colorScheme: 'dark' }}
+                  className={`w-full rounded-md border px-3 py-2 text-sm text-[#f5f5f4] focus:outline-none transition ${
                     createErrors.type_id
-                      ? 'border-red-400 bg-red-50 focus:ring-red-400'
-                      : 'border-gray-300 bg-white focus:border-indigo-500'
+                      ? 'border-red-400 bg-red-950/20 focus:border-red-400'
+                      : 'border-[#3b3631] bg-[#161514] focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880]'
                   }`}
                 >
-                  <option value="">Select type…</option>
+                  <option value="" className="bg-[#161514] text-[#f5f5f4]">Select type…</option>
                   {ROOM_TYPES.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
+                    <option key={t.id} value={t.id} className="bg-[#161514] text-[#f5f5f4]">{t.name}</option>
                   ))}
                 </select>
                 <FieldError id="error-type" message={createErrors.type_id} />
@@ -433,7 +435,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               <div className="mb-6">
                 <label
                   htmlFor="create-status"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#a8a29e] mb-1.5"
                 >
                   Initial Status
                 </label>
@@ -443,22 +445,23 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   onChange={(e) =>
                     setCreateForm((prev) => ({ ...prev, status: e.target.value }))
                   }
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  style={{ colorScheme: 'dark' }}
+                  className="w-full rounded-md border border-[#3b3631] bg-[#161514] px-3 py-2 text-sm text-[#f5f5f4] focus:outline-none focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880] transition"
                 >
                   {STATUS_OPTIONS.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
+                    <option key={s.value} value={s.value} className="bg-[#161514] text-[#f5f5f4]">{s.label}</option>
                   ))}
                 </select>
                 <FieldError id="error-create-status" message={createErrors.status} />
               </div>
 
               {/* Footer actions */}
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   id="btn-cancel-create"
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="px-4 py-2 rounded-sm border border-[#3b3631] bg-transparent text-xs uppercase tracking-wider font-semibold text-[#a8a29e] hover:text-[#f7f5f2] hover:border-[#c5a880] transition-colors focus:outline-none"
                 >
                   Cancel
                 </button>
@@ -466,7 +469,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   id="btn-submit-create"
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="gold-btn py-2 px-5 text-xs font-semibold uppercase tracking-[0.14em] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {submitLabel}
                 </button>
@@ -483,18 +486,18 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               aria-describedby={updateErrors.form ? 'update-form-error' : undefined}
             >
               {/* Room info summary */}
-              <div className="mb-5 rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-700 space-y-1">
+              <div className="mb-5 rounded-lg bg-[#161514] border border-[#2e2a27] px-4 py-3 text-sm text-[#d6d3d1] space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Room</span>
-                  <span className="font-medium font-mono">{room.room_number}</span>
+                  <span className="text-[#a8a29e]">Room</span>
+                  <span className="font-semibold font-mono text-[#c5a880]">{room.room_number}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Type</span>
-                  <span className="font-medium">{room.room_type?.type_name ?? `Type ${room.type_id}`}</span>
+                  <span className="text-[#a8a29e]">Type</span>
+                  <span className="font-medium text-[#f5f5f4]">{room.room_type?.type_name ?? `Type ${room.type_id}`}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Current Status</span>
-                  <span className="font-medium">{room.status}</span>
+                  <span className="text-[#a8a29e]">Current Status</span>
+                  <span className="font-medium text-[#f5f5f4]">{room.status}</span>
                 </div>
               </div>
 
@@ -503,7 +506,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                 <div
                   id="update-form-error"
                   role="alert"
-                  className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800"
+                  className="mb-4 rounded-md bg-[#7f1d1d]/30 border border-[#991b1b]/50 px-4 py-3 text-sm text-[#fca5a5]"
                 >
                   {updateErrors.form}
                 </div>
@@ -513,9 +516,9 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               <div className="mb-6">
                 <label
                   htmlFor="update-status"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#a8a29e] mb-1.5"
                 >
-                  New Status <span aria-label="required" className="text-red-500">*</span>
+                  New Status <span aria-label="required" className="text-red-400">*</span>
                 </label>
                 <select
                   id="update-status"
@@ -525,19 +528,20 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   onChange={(e) => setUpdateForm({ status: e.target.value })}
                   aria-describedby={updateErrors.status ? 'error-update-status' : undefined}
                   aria-invalid={!!updateErrors.status}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                  style={{ colorScheme: 'dark' }}
+                  className={`w-full rounded-md border px-3 py-2 text-sm text-[#f5f5f4] focus:outline-none transition ${
                     updateErrors.status
-                      ? 'border-red-400 bg-red-50 focus:ring-red-400'
-                      : 'border-gray-300 bg-white focus:border-indigo-500'
+                      ? 'border-red-400 bg-red-950/20 focus:border-red-400'
+                      : 'border-[#3b3631] bg-[#161514] focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880]'
                   }`}
                 >
                   {STATUS_OPTIONS.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
+                    <option key={s.value} value={s.value} className="bg-[#161514] text-[#f5f5f4]">{s.label}</option>
                   ))}
                 </select>
                 <FieldError id="error-update-status" message={updateErrors.status} />
                 {updateForm.status === 'Maintenance' && (
-                  <p className="mt-1.5 text-xs text-amber-700 flex items-center gap-1">
+                  <p className="mt-2 text-xs text-amber-400 flex items-center gap-1.5">
                     <span aria-hidden="true">&#9888;</span>
                     Setting Maintenance requires Manager or Admin role. The server will reject unauthorized requests.
                   </p>
@@ -545,12 +549,12 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
               </div>
 
               {/* Footer actions */}
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   id="btn-cancel-update"
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="px-4 py-2 rounded-sm border border-[#3b3631] bg-transparent text-xs uppercase tracking-wider font-semibold text-[#a8a29e] hover:text-[#f7f5f2] hover:border-[#c5a880] transition-colors focus:outline-none"
                 >
                   Cancel
                 </button>
@@ -558,7 +562,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   id="btn-submit-update"
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="gold-btn py-2 px-5 text-xs font-semibold uppercase tracking-[0.14em] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {submitLabel}
                 </button>

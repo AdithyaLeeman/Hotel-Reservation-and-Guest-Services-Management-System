@@ -67,10 +67,10 @@ function MoonIcon() {
 
 /* ─── Role badge colours ─────────────────────────────────────────────────────── */
 
-const ROLE_BADGE: Record<StaffRole, { bg: string; text: string }> = {
-  Receptionist: { bg: 'hsl(210 80% 45% / 0.12)', text: 'var(--color-status-booked)' },
-  Manager: { bg: 'hsl(142 60% 35% / 0.12)', text: 'var(--color-status-checked-in)' },
-  Admin: { bg: 'hsl(40 80% 50% / 0.14)', text: 'var(--color-accent)' },
+const ROLE_BADGE: Record<StaffRole, { bg: string; text: string; border: string }> = {
+  Receptionist: { bg: 'rgba(197, 168, 128, 0.12)', text: '#e0c49c', border: '1px solid rgba(197, 168, 128, 0.35)' },
+  Manager: { bg: 'rgba(180, 83, 9, 0.16)', text: '#fcd34d', border: '1px solid rgba(180, 83, 9, 0.38)' },
+  Admin: { bg: 'rgba(197, 168, 128, 0.2)', text: '#c5a880', border: '1px solid rgba(197, 168, 128, 0.45)' },
 };
 
 
@@ -154,8 +154,9 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
 
   const visibleLinks = STAFF_LINKS.filter(({ minRole }) => hasAccess(role, minRole));
   const badge = (role && ROLE_BADGE[role]) ?? {
-    bg: 'hsl(210 80% 45% / 0.12)',
-    text: 'var(--color-status-booked)',
+    bg: 'rgba(197, 168, 128, 0.12)',
+    text: '#e0c49c',
+    border: '1px solid rgba(197, 168, 128, 0.35)',
   };
 
   return (
@@ -242,7 +243,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           <span
             id="staff-nav-role-badge"
             className="text-xs font-medium px-2.5 py-1 rounded-[var(--radius-full)]"
-            style={{ background: badge.bg, color: badge.text }}
+            style={{ background: badge.bg, color: badge.text, border: badge.border }}
             aria-label={`Role: ${role}`}
           >
             {role}
@@ -337,7 +338,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           <div className="px-4 py-2 flex items-center gap-2 flex-wrap">
             <span
               className="text-xs font-medium px-2.5 py-1 rounded-[var(--radius-full)]"
-              style={{ background: badge.bg, color: badge.text }}
+              style={{ background: badge.bg, color: badge.text, border: badge.border }}
             >
               {role}
             </span>

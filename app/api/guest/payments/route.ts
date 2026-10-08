@@ -131,6 +131,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
+    if (isSqlState(error, '45020')) {
+      return err(
+        422,
+        ERROR_CODES.VALIDATION_ERROR,
+        'Payment amount exceeds the outstanding balance.'
+      );
+    }
+
     console.error('[POST /api/guest/payments]', error);
     return err(500, ERROR_CODES.INTERNAL_ERROR, 'An unexpected error occurred.');
   }

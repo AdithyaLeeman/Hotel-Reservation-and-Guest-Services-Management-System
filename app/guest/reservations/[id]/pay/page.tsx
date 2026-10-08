@@ -63,7 +63,9 @@ function formatLKR(amountStr: string | number): string {
 
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
-  const d = new Date(iso + 'T00:00:00');
+  const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+  const d = new Date(clean + 'T00:00:00');
+  if (isNaN(d.getTime())) return '\u2014';
   return d.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -130,7 +132,7 @@ function NotFoundState({ reservationId }: { reservationId: string }) {
         <Link
           href="/guest/reservations"
           id="pay-not-found-back-btn"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
+          className="gold-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
         >
           &larr; Back to My Reservations
         </Link>
@@ -167,7 +169,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
         </button>
         <Link
           href="/guest/reservations"
-          className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+          className="gold-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
         >
           My Reservations
         </Link>
@@ -318,7 +320,15 @@ export default function GuestPayPage() {
   }
 
   const outstandingNum = invoice ? parseFloat(invoice.outstanding_balance) : 0;
-  const isSettled = outstandingNum <= 0;
+  const totalPaidNum = invoice ? parseFloat(invoice.total_paid) : 0;
+  const isSettled = outstandingNum <= 0 && (totalPaidNum > 0 || parseFloat(invoice?.grand_total ?? '0') === 0);
+
+  // Authoritative payment status: if outstanding balance is 0 and payments exist, it is Paid!
+  const effectivePaymentStatus: string = isSettled
+    ? 'Paid'
+    : totalPaidNum > 0
+    ? 'Partial'
+    : (invoice?.payment_status && invoice.payment_status !== 'Paid' ? invoice.payment_status : 'Unpaid');
 
   return (
     <main
@@ -387,7 +397,7 @@ export default function GuestPayPage() {
             className="
               inline-flex items-center gap-2
               text-sm text-neutral-500 dark:text-neutral-400
-              hover:text-blue-600 dark:hover:text-blue-400
+              hover:text-[#c5a880]
               transition-colors duration-200
             "
           >
@@ -458,15 +468,15 @@ export default function GuestPayPage() {
                     data-testid="invoice-status-badge"
                     className={`
                       inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border self-start sm:self-auto
-                      ${invoice.payment_status === 'Paid'
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
-                        : invoice.payment_status === 'Partial'
-                        ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800'
-                        : 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800'}
+                      ${effectivePaymentStatus === 'Paid'
+                        ? 'bg-[#c5a880]/15 text-[#c5a880] border-[#c5a880]/40 shadow-[0_0_12px_rgba(197,168,128,0.15)]'
+                        : effectivePaymentStatus === 'Partial'
+                        ? 'bg-[#b45309]/15 text-[#fcd34d] border-[#b45309]/35'
+                        : 'bg-[rgba(127,29,29,0.2)] text-[#fca5a5] border-[rgba(127,29,29,0.35)]'}
                     `}
                   >
                     <span className="w-2 h-2 rounded-full bg-current" aria-hidden="true" />
-                    Status: {invoice.payment_status}
+                    Status: {effectivePaymentStatus}
                   </span>
                 </div>
 
@@ -500,7 +510,7 @@ export default function GuestPayPage() {
                     <span className="text-neutral-600 dark:text-neutral-300">
                       Room Charges
                       {reservation.discount_percentage && (
-                        <span className="ml-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                        <span className="ml-2 text-xs text-[#c5a880] font-medium">
                           ({reservation.discount_percentage}% discount applied)
                         </span>
                       )}
@@ -539,7 +549,7 @@ export default function GuestPayPage() {
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center py-1 text-sm text-emerald-600 dark:text-emerald-400">
+                  <div className="flex justify-between items-center py-1 text-sm text-[#c5a880]">
                     <span className="font-medium">Total Paid to Date</span>
                     <span id="breakdown-total-paid" data-testid="breakdown-total-paid" className="font-bold tabular-nums">
                       - {formatLKR(invoice.total_paid)}
@@ -554,8 +564,8 @@ export default function GuestPayPage() {
                   className={`
                     p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-2
                     ${isSettled
-                      ? 'bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
-                      : 'bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-950 dark:text-indigo-200'}
+                      ? 'bg-[#c5a880]/10 border border-[#c5a880]/30 text-[#f5e6d3]'
+                      : 'bg-[#1c1917] border border-[#3e3933] text-[#f5e6d3]'}
                   `}
                 >
                   <div>
@@ -623,7 +633,7 @@ export default function GuestPayPage() {
                           <td className="py-3 font-mono text-xs text-neutral-500 dark:text-neutral-400">
                             {p.transaction_reference ?? '\u2014'}
                           </td>
-                          <td className="py-3 text-right font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                          <td className="py-3 text-right font-bold tabular-nums text-[#c5a880]">
                             {formatLKR(p.amount_paid)}
                           </td>
                         </tr>
@@ -686,8 +696,8 @@ export default function GuestPayPage() {
                             className={`
                               py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex flex-col items-center gap-1.5
                               ${isSelected
-                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 ring-2 ring-blue-500/20'
-                                : 'border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800'}
+                                ? 'border-[#c5a880] bg-[#c5a880]/15 text-[#c5a880] ring-2 ring-[#c5a880]/20'
+                                : 'border-[#3e3933] text-[#d6d3d1] hover:bg-[#25221e]'}
                             `}
                           >
                             <span>{method}</span>
@@ -707,7 +717,7 @@ export default function GuestPayPage() {
                         type="button"
                         id="pay-full-balance-btn"
                         onClick={() => setAmountInput(outstandingNum.toFixed(2))}
-                        className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                        className="text-xs text-[#c5a880] font-medium hover:underline"
                       >
                         Pay Full Balance ({formatLKR(outstandingNum)})
                       </button>
@@ -733,7 +743,7 @@ export default function GuestPayPage() {
                           border border-neutral-300 dark:border-neutral-700
                           bg-white dark:bg-neutral-800
                           text-neutral-900 dark:text-white font-bold text-lg tabular-nums
-                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none
+                          focus:ring-2 focus:ring-[#c5a880]/30 focus:border-[#c5a880] outline-none
                           transition-all
                         "
                       />
@@ -753,7 +763,7 @@ export default function GuestPayPage() {
                         type="button"
                         id="generate-ref-btn"
                         onClick={handleAutoGenerateRef}
-                        className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                        className="text-xs text-[#c5a880] font-medium hover:underline"
                       >
                         Auto-generate Reference
                       </button>
@@ -771,7 +781,7 @@ export default function GuestPayPage() {
                         border border-neutral-300 dark:border-neutral-700
                         bg-white dark:bg-neutral-800
                         text-neutral-900 dark:text-white font-mono text-sm
-                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none
+                        focus:ring-2 focus:ring-[#c5a880]/30 focus:border-[#c5a880] outline-none
                       "
                     />
                   </div>
@@ -815,27 +825,27 @@ export default function GuestPayPage() {
               <div
                 id="settled-congratulations-card"
                 className="
-                  bg-emerald-50 dark:bg-emerald-950/40
-                  border border-emerald-200 dark:border-emerald-800
+                  bg-[#c5a880]/10
+                  border border-[#c5a880]/30
                   rounded-3xl p-8 text-center
                 "
               >
-                <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-[#c5a880]/15 border border-[#c5a880]/30 text-[#c5a880] mx-auto flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-extrabold text-emerald-950 dark:text-emerald-200">
+                <h3 className="text-xl font-extrabold text-[#f5e6d3]">
                   All Set! No Payment Required
                 </h3>
-                <p className="mt-1 text-sm text-emerald-800 dark:text-emerald-300 max-w-md mx-auto">
+                <p className="mt-1 text-sm text-[#d6d3d1] max-w-md mx-auto">
                   Your reservation billing is fully settled with a balance of LKR 0.00. You are eligible for swift checkout at the front desk.
                 </p>
                 <div className="mt-6 flex justify-center gap-3">
                   <Link
                     href={`/guest/reservations/${reservation.reservation_id}`}
                     id="settled-view-res-btn"
-                    className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition-colors"
+                    className="gold-btn px-6 py-3 rounded-xl text-sm font-semibold transition-colors"
                   >
                     View Reservation Details
                   </Link>

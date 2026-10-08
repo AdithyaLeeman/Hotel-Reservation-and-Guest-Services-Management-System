@@ -50,8 +50,8 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
     label: 'Booked',
   },
   CheckedIn: {
-    container: 'bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]',
-    dot: 'bg-emerald-400 shadow-[0_0_8px_#34d399]',
+    container: 'bg-[#c5a880]/20 text-[#f5e6d3] border border-[#c5a880]/40 shadow-[0_0_12px_rgba(197,168,128,0.12)]',
+    dot: 'bg-[#c5a880] shadow-[0_0_8px_#c5a880]',
     label: 'Checked In',
   },
   CheckedOut: {
@@ -60,8 +60,8 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
     label: 'Checked Out',
   },
   Cancelled: {
-    container: 'bg-red-950/60 text-red-300 border border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.15)]',
-    dot: 'bg-red-400 shadow-[0_0_8px_#f87171]',
+    container: 'bg-[rgba(127,29,29,0.22)] text-[#fca5a5] border border-[rgba(127,29,29,0.4)] shadow-[0_0_12px_rgba(127,29,29,0.15)]',
+    dot: 'bg-[#f87171] shadow-[0_0_8px_#f87171]',
     label: 'Cancelled',
   },
 };
@@ -73,7 +73,9 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
 /** Format ISO date as "01 Oct 2026" — display only. */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
-  const d = new Date(iso + 'T00:00:00');
+  const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+  const d = new Date(clean + 'T00:00:00');
+  if (isNaN(d.getTime())) return '\u2014';
   return d.toLocaleDateString('en-GB', {
     day:   '2-digit',
     month: 'short',
@@ -501,7 +503,7 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
                 id="detail-discount"
                 value={
                   detail.discount_percentage
-                    ? <span className="text-emerald-400 font-semibold">{detail.discount_percentage}% OFF</span>
+                    ? <span className="text-[#c5a880] font-semibold">{detail.discount_percentage}% OFF</span>
                     : <span className="text-[#8c827a]">None</span>
                 }
               />

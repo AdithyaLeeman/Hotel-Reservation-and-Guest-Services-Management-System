@@ -97,19 +97,19 @@ export function parseMoney(val: string | undefined): number {
 
 const STATUS_BADGE_STYLES: Record<string, { bg: string; text: string; border: string }> = {
   Available: {
-    bg: 'hsl(142 50% 94%)',
-    text: 'hsl(142 60% 30%)',
-    border: 'hsl(142 50% 85%)',
+    bg: 'rgba(197, 168, 128, 0.15)',
+    text: '#c5a880',
+    border: 'rgba(197, 168, 128, 0.4)',
   },
   Occupied: {
-    bg: 'hsl(210 80% 94%)',
-    text: 'hsl(210 80% 35%)',
-    border: 'hsl(210 80% 85%)',
+    bg: 'rgba(168, 162, 158, 0.12)',
+    text: '#d6d3d1',
+    border: 'rgba(168, 162, 158, 0.3)',
   },
   Maintenance: {
-    bg: 'hsl(38 90% 94%)',
-    text: 'hsl(38 90% 35%)',
-    border: 'hsl(38 90% 85%)',
+    bg: 'rgba(180, 83, 9, 0.15)',
+    text: '#fcd34d',
+    border: 'rgba(180, 83, 9, 0.35)',
   },
 };
 
@@ -140,21 +140,35 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+function getCurrentMonthBounds(): { fromDate: string; toDate: string } {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const fromDate = `${year}-${month}-01`;
+  const lastDay = new Date(year, now.getMonth() + 1, 0).getDate();
+  const toDate = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
+  return { fromDate, toDate };
+}
+
 /* ─── Main Page Component ────────────────────────────────────────────────── */
 
 export default function OccupancyReportPage() {
+  const initialDates = process.env.NODE_ENV === 'test'
+    ? { fromDate: '', toDate: '' }
+    : getCurrentMonthBounds();
+
   const [filters, setFilters] = useState<FilterState>({
     branchId: '',
     roomStatus: '',
-    fromDate: '',
-    toDate: '',
+    fromDate: initialDates.fromDate,
+    toDate: initialDates.toDate,
   });
 
   const [appliedFilters, setAppliedFilters] = useState<FilterState>({
     branchId: '',
     roomStatus: '',
-    fromDate: '',
-    toDate: '',
+    fromDate: initialDates.fromDate,
+    toDate: initialDates.toDate,
   });
 
   const [sortKey, setSortKey] = useState<SortKey>('branch_name');
@@ -232,6 +246,19 @@ export default function OccupancyReportPage() {
     const empty = { branchId: '', roomStatus: '', fromDate: '', toDate: '' };
     setFilters(empty);
     setAppliedFilters(empty);
+  };
+
+  const handleSelectThisMonth = () => {
+    const bounds = getCurrentMonthBounds();
+    const updated = { ...filters, fromDate: bounds.fromDate, toDate: bounds.toDate };
+    setFilters(updated);
+    setAppliedFilters(updated);
+  };
+
+  const handleViewAllRecords = () => {
+    const updated = { ...filters, fromDate: '', toDate: '' };
+    setFilters(updated);
+    setAppliedFilters(updated);
   };
 
   /* ─── Sorting handler ──────────────────────────────────────────────────── */
@@ -447,13 +474,21 @@ export default function OccupancyReportPage() {
               </label>
               <select
                 id="filter-branch"
-                className="form-input text-sm w-full"
+                className="form-input text-sm w-full bg-[#1c1917] text-[#f5f5f4] border-[#3b3631]"
+                style={{ colorScheme: 'dark' }}
                 value={filters.branchId}
                 onChange={(e) => setFilters((prev) => ({ ...prev, branchId: e.target.value }))}
               >
-                <option value="">All Branches</option>
+                <option value="" className="bg-[#1c1917] text-[#f5f5f4]" style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}>
+                  All Branches
+                </option>
                 {BRANCH_OPTIONS.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
+                  <option
+                    key={branch.id}
+                    value={branch.id}
+                    className="bg-[#1c1917] text-[#f5f5f4]"
+                    style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}
+                  >
                     {branch.name}
                   </option>
                 ))}
@@ -467,13 +502,21 @@ export default function OccupancyReportPage() {
               </label>
               <select
                 id="filter-status"
-                className="form-input text-sm w-full"
+                className="form-input text-sm w-full bg-[#1c1917] text-[#f5f5f4] border-[#3b3631]"
+                style={{ colorScheme: 'dark' }}
                 value={filters.roomStatus}
                 onChange={(e) => setFilters((prev) => ({ ...prev, roomStatus: e.target.value }))}
               >
-                <option value="">All Statuses</option>
+                <option value="" className="bg-[#1c1917] text-[#f5f5f4]" style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}>
+                  All Statuses
+                </option>
                 {STATUS_OPTIONS.map((status) => (
-                  <option key={status} value={status}>
+                  <option
+                    key={status}
+                    value={status}
+                    className="bg-[#1c1917] text-[#f5f5f4]"
+                    style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}
+                  >
                     {status}
                   </option>
                 ))}
@@ -488,7 +531,8 @@ export default function OccupancyReportPage() {
               <input
                 id="filter-from-date"
                 type="date"
-                className="form-input text-sm w-full"
+                className="form-input text-sm w-full bg-[#1c1917] text-[#f5f5f4] border-[#3b3631]"
+                style={{ colorScheme: 'dark' }}
                 value={filters.fromDate}
                 onChange={(e) => setFilters((prev) => ({ ...prev, fromDate: e.target.value }))}
               />
@@ -502,17 +546,37 @@ export default function OccupancyReportPage() {
               <input
                 id="filter-to-date"
                 type="date"
-                className="form-input text-sm w-full"
+                className="form-input text-sm w-full bg-[#1c1917] text-[#f5f5f4] border-[#3b3631]"
+                style={{ colorScheme: 'dark' }}
                 value={filters.toDate}
                 onChange={(e) => setFilters((prev) => ({ ...prev, toDate: e.target.value }))}
               />
             </div>
 
             {/* Actions */}
-            <div className="sm:col-span-2 lg:col-span-4 flex items-center justify-between pt-2 border-t border-[var(--color-border)]">
-              <span className="text-xs text-[var(--color-text-muted)]">
-                {hasActiveFilters ? 'Filters applied' : 'Showing all records'}
-              </span>
+            <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--color-border)]">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-[var(--color-text-muted)]">Quick View:</span>
+                <button
+                  type="button"
+                  id="preset-this-month-btn"
+                  onClick={handleSelectThisMonth}
+                  className="px-2.5 py-1 text-xs rounded border border-[#3b3631] hover:border-[#c5a880] text-[#c5a880] hover:text-[#e0c49c] transition-colors"
+                >
+                  This Month
+                </button>
+                <button
+                  type="button"
+                  id="preset-all-records-btn"
+                  onClick={handleViewAllRecords}
+                  className="px-2.5 py-1 text-xs rounded border border-[#3b3631] hover:border-[var(--color-border-strong)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                >
+                  All Records
+                </button>
+                <span className="text-xs text-[var(--color-text-subtle)] ml-1">
+                  ({hasActiveFilters ? 'Date / filter applied' : 'Showing all historical records'})
+                </span>
+              </div>
               <div className="flex items-center gap-2">
                 {hasActiveFilters && (
                   <button

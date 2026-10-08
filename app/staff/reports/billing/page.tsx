@@ -61,7 +61,10 @@ function fmt(val: string): string {
 function fmtDate(iso: string): string {
   if (!iso) return '—';
   try {
-    return new Date(iso + 'T00:00:00').toLocaleDateString('en-LK', {
+    const clean = iso.includes('T') ? iso.split('T')[0] : iso;
+    const d = new Date(clean + 'T00:00:00');
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-LK', {
       day: '2-digit', month: 'short', year: 'numeric',
     });
   } catch { return iso; }
@@ -131,7 +134,7 @@ const CSS = `
   transition: border-color 150ms, box-shadow 150ms;
 }
 .bs-filter-group select:focus, .bs-filter-group input:focus {
-  outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px hsl(196 80% 30% / 0.15);
+  outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.25);
 }
 .bs-filter-group input { min-width: 240px; }
 .bs-filter-btn {
@@ -200,21 +203,21 @@ const CSS = `
   text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 9999px;
   white-space: nowrap;
 }
-.pb--paid      { background: var(--color-success-bg); color: var(--color-success); }
-.pb--partial   { background: var(--color-warning-bg); color: var(--color-warning); }
-.pb--unpaid    { background: var(--color-error-bg);   color: var(--color-error); }
-.pb--unknown   { background: var(--color-bg-subtle);  color: var(--color-text-muted); }
+.pb--paid      { background: rgba(197, 168, 128, 0.15); color: #c5a880; border: 1px solid rgba(197, 168, 128, 0.4); }
+.pb--partial   { background: rgba(180, 83, 9, 0.15); color: #fcd34d; border: 1px solid rgba(180, 83, 9, 0.35); }
+.pb--unpaid    { background: rgba(127, 29, 29, 0.2); color: #fca5a5; border: 1px solid rgba(127, 29, 29, 0.35); }
+.pb--unknown   { background: rgba(168, 162, 158, 0.12); color: #d6d3d1; border: 1px solid rgba(168, 162, 158, 0.3); }
 
-.rb--booked     { background: var(--color-info-bg);       color: var(--color-info); }
-.rb--checkedin  { background: var(--color-success-bg);    color: var(--color-success); }
-.rb--checkedout { background: var(--color-bg-subtle);     color: var(--color-text-muted); }
-.rb--cancelled  { background: var(--color-error-bg);      color: var(--color-error); }
-.rb--unknown    { background: var(--color-bg-subtle);     color: var(--color-text-muted); }
+.rb--booked     { background: rgba(197, 168, 128, 0.15); color: #c5a880; border: 1px solid rgba(197, 168, 128, 0.4); }
+.rb--checkedin  { background: rgba(197, 168, 128, 0.22); color: #f5e6d3; border: 1px solid rgba(197, 168, 128, 0.45); }
+.rb--checkedout { background: rgba(168, 162, 158, 0.12); color: #d6d3d1; border: 1px solid rgba(168, 162, 158, 0.3); }
+.rb--cancelled  { background: rgba(127, 29, 29, 0.2); color: #fca5a5; border: 1px solid rgba(127, 29, 29, 0.35); }
+.rb--unknown    { background: rgba(168, 162, 158, 0.12); color: #d6d3d1; border: 1px solid rgba(168, 162, 158, 0.3); }
 
 /* Numeric cells */
 .cell-amt { font-weight: 500; }
 .cell-total { font-weight: 700; }
-.cell-outstanding-zero    { color: var(--color-success); font-weight: 700; }
+.cell-outstanding-zero    { color: #c5a880; font-weight: 700; }
 .cell-outstanding-nonzero { color: var(--color-error); font-weight: 700; }
 
 /* Skeleton */
@@ -431,6 +434,10 @@ export default function GuestBillingSummaryPage() {
                 {/* Data rows */}
                 {state.stage === 'success' && rows.map((row) => {
                   const outstanding = parseFloat(row.outstanding_balance);
+                  const totalPaid = parseFloat(row.total_paid);
+                  const effectivePayStatus = (outstanding <= 0 && totalPaid > 0)
+                    ? 'Paid'
+                    : (totalPaid > 0 ? 'PartiallyPaid' : row.payment_status);
                   return (
                     <tr key={`${row.reservation_id}-${row.invoice_id}`}>
                       <td>
@@ -441,12 +448,12 @@ export default function GuestBillingSummaryPage() {
                       <td>{fmtDate(row.check_in_date)}</td>
                       <td>{fmtDate(row.check_out_date)}</td>
                       <td><ReservationBadge status={row.reservation_status} /></td>
-                      <td><PaymentBadge status={row.payment_status} /></td>
+                      <td><PaymentBadge status={effectivePayStatus} /></td>
                       <td className="col-r cell-amt">{fmt(row.room_charges)}</td>
                       <td className="col-r cell-amt">{fmt(row.service_charges)}</td>
                       <td className="col-r" style={{ color: 'var(--color-warning)', fontWeight: 500 }}>{fmt(row.tax_amount)}</td>
                       <td className="col-r cell-total">{fmt(row.grand_total)}</td>
-                      <td className="col-r" style={{ color: 'var(--color-success)', fontWeight: 500 }}>{fmt(row.total_paid)}</td>
+                      <td className="col-r" style={{ color: '#c5a880', fontWeight: 500 }}>{fmt(row.total_paid)}</td>
                       <td className={`col-r ${outstanding <= 0 ? 'cell-outstanding-zero' : 'cell-outstanding-nonzero'}`}>
                         {fmt(row.outstanding_balance)}
                       </td>

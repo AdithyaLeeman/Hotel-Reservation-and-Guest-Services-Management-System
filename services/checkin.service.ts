@@ -107,7 +107,7 @@ export const checkinService = {
 
     // Receptionist can only check in reservations for their own branch.
     // Manager and Admin (branchId = null) have no restriction.
-    if (branchId !== null && reservationBranchId !== branchId) {
+    if (branchId !== null && Number(reservationBranchId) !== Number(branchId)) {
       throw new CheckinServiceError(
         'BRANCH_SCOPE_VIOLATION',
         `Reservation ${reservationId} does not belong to branch ${branchId}.`

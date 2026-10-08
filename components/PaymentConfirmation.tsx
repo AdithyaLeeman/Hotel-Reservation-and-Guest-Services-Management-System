@@ -60,7 +60,7 @@ export function PaymentConfirmation({
       {/* Decorative top accent line */}
       <div
         aria-hidden="true"
-        className="h-3 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"
+        className="h-1.5 w-full bg-[#c5a880]/30"
       />
 
       <div className="p-6 sm:p-10 flex flex-col items-center text-center">
@@ -71,10 +71,10 @@ export function PaymentConfirmation({
           className="
             w-16 h-16 sm:w-20 sm:h-20
             rounded-full
-            bg-emerald-100 dark:bg-emerald-950/80
-            text-emerald-600 dark:text-emerald-400
+            bg-[#c5a880]/15
+            text-[#c5a880]
             flex items-center justify-center
-            mb-4 ring-8 ring-emerald-50 dark:ring-emerald-900/30
+            mb-4 ring-8 ring-[#c5a880]/10 border border-[#c5a880]/30
           "
         >
           <svg
@@ -119,7 +119,7 @@ export function PaymentConfirmation({
           <div
             id="confirmation-amount-paid"
             data-testid="confirmation-amount-paid"
-            className="text-3xl sm:text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 tabular-nums"
+            className="text-3xl sm:text-4xl font-extrabold text-[#c5a880] mt-1 tabular-nums"
           >
             {formatLKR(payment.amount_paid)}
           </div>
@@ -260,13 +260,10 @@ export function PaymentConfirmation({
               href={`/guest/reservations/${reservationId}`}
               id="confirmation-view-reservation-btn"
               className="
-                inline-flex items-center justify-center gap-2
+                gold-btn inline-flex items-center justify-center gap-2
                 px-5 py-3 rounded-xl
-                bg-blue-600 hover:bg-blue-700
-                text-white text-sm font-semibold
-                shadow-sm shadow-blue-500/20
+                text-sm font-semibold
                 transition-colors duration-200
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
               "
             >
               View Reservation
@@ -279,13 +276,10 @@ export function PaymentConfirmation({
               type="button"
               onClick={onPayAgain}
               className="
-                inline-flex items-center justify-center gap-2
+                gold-btn-outline inline-flex items-center justify-center gap-2
                 px-5 py-3 rounded-xl
-                bg-emerald-600 hover:bg-emerald-700
-                text-white text-sm font-semibold
-                shadow-sm shadow-emerald-500/20
+                text-sm font-semibold
                 transition-colors duration-200
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2
               "
             >
               Pay Remaining Balance

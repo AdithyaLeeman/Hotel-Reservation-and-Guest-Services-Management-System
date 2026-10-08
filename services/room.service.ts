@@ -87,16 +87,27 @@ export const roomService = {
 
     if (branchId !== undefined) {
       roomsWithDetails = await roomRepository.listWithDetailsByBranch(branchId);
+    } else if (typeof roomRepository.listWithDetailsAll === 'function') {
+      roomsWithDetails = await roomRepository.listWithDetailsAll();
     } else {
       // For all branches, get all rooms and map their details
       const rooms = await roomRepository.listAll();
       const roomTypes = await roomRepository.listRoomTypes();
 
       roomsWithDetails = rooms.map((r) => {
-        const type = roomTypes.find((t) => t.type_id === r.type_id);
+        const type = roomTypes.find((t) => Number(t.type_id) === Number(r.type_id));
         return {
           ...r,
-          room_type: type ? { ...type } : undefined,
+          room_id: Number(r.room_id),
+          branch_id: Number(r.branch_id),
+          type_id: Number(r.type_id),
+          room_type: type
+            ? {
+                ...type,
+                type_id: Number(type.type_id),
+                capacity: Number(type.capacity),
+              }
+            : undefined,
           amenities: [],
         };
       });
@@ -107,7 +118,7 @@ export const roomService = {
     }
 
     if (typeId !== undefined) {
-      roomsWithDetails = roomsWithDetails.filter((r) => r.type_id === typeId);
+      roomsWithDetails = roomsWithDetails.filter((r) => Number(r.type_id) === Number(typeId));
     }
 
     return roomsWithDetails;
@@ -121,10 +132,19 @@ export const roomService = {
     if (!room) {
       throw new RoomNotFoundError(roomId);
     }
-    const type = await roomRepository.findRoomTypeById(room.type_id);
+    const type = await roomRepository.findRoomTypeById(Number(room.type_id));
     return {
       ...room,
-      room_type: type ? { ...type } : undefined,
+      room_id: Number(room.room_id),
+      branch_id: Number(room.branch_id),
+      type_id: Number(room.type_id),
+      room_type: type
+        ? {
+            ...type,
+            type_id: Number(type.type_id),
+            capacity: Number(type.capacity),
+          }
+        : undefined,
       amenities: [],
     };
   },
