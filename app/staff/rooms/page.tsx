@@ -24,13 +24,23 @@ import type { RoomWithDetails } from '@/repositories/room.repository';
 // Constants
 // ---------------------------------------------------------------------------
 
-const BRANCHES = [
+export interface BranchOption {
+  id: number;
+  name: string;
+}
+
+export interface RoomTypeOption {
+  id: number;
+  name: string;
+}
+
+export const DEFAULT_BRANCHES: BranchOption[] = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy' },
   { id: 3, name: 'Galle' },
 ];
 
-const ROOM_TYPES = [
+export const DEFAULT_ROOM_TYPES: RoomTypeOption[] = [
   { id: 1, name: 'Single' },
   { id: 2, name: 'Double' },
   { id: 3, name: 'Suite' },
@@ -57,8 +67,8 @@ interface FilterState {
 // ---------------------------------------------------------------------------
 
 /** pg returns numeric columns as strings — compare as strings */
-function branchName(branchId: number | string): string {
-  return BRANCHES.find((b) => String(b.id) === String(branchId))?.name ?? `Branch ${branchId}`;
+function branchName(branchId: number | string, branchList: BranchOption[] = DEFAULT_BRANCHES): string {
+  return branchList.find((b) => String(b.id) === String(branchId))?.name ?? `Branch ${branchId}`;
 }
 
 function formatRate(rate: string | undefined): string {
@@ -101,7 +111,8 @@ function statusIcon(status: string): string {
 function sortRooms(
   rooms: RoomWithDetails[],
   key: SortKey,
-  dir: SortDir
+  dir: SortDir,
+  branchList: BranchOption[] = DEFAULT_BRANCHES,
 ): RoomWithDetails[] {
   return [...rooms].sort((a, b) => {
     let aVal: string | number;
@@ -113,8 +124,8 @@ function sortRooms(
         bVal = b.room_type?.type_name ?? '';
         break;
       case 'branch_id':
-        aVal = branchName(a.branch_id);
-        bVal = branchName(b.branch_id);
+        aVal = branchName(a.branch_id, branchList);
+        bVal = branchName(b.branch_id, branchList);
         break;
       default:
         aVal = (a[key] as string | number) ?? '';
@@ -181,6 +192,8 @@ interface ModalState {
 }
 
 export default function StaffRoomsPage() {
+  const [branches, setBranches]     = useState<BranchOption[]>(DEFAULT_BRANCHES);
+  const [roomTypes, setRoomTypes]   = useState<RoomTypeOption[]>(DEFAULT_ROOM_TYPES);
   const [rooms, setRooms]           = useState<RoomWithDetails[]>([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState<string | null>(null);
@@ -189,6 +202,36 @@ export default function StaffRoomsPage() {
   const [sortDir, setSortDir]       = useState<SortDir>('asc');
   const [modal, setModal]           = useState<ModalState | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranches(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/room-types')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setRoomTypes(
+            json.data.map((t: { type_id: number; type_name: string }) => ({
+              id: Number(t.type_id),
+              name: t.type_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchRooms = useCallback(async () => {
     setLoading(true);
@@ -219,8 +262,40 @@ export default function StaffRoomsPage() {
   }, [filters]);
 
   useEffect(() => {
-    void fetchRooms();
-  }, [fetchRooms]);
+    let ignore = false;
+    const load = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (filters.branchId) params.set('branchId', filters.branchId);
+        if (filters.status)   params.set('status', filters.status);
+        if (filters.typeId)   params.set('typeId', filters.typeId);
+
+        const res = await fetch(`/api/staff/rooms?${params.toString()}`);
+        const json = await res.json() as { data?: RoomWithDetails[]; error?: { message?: string } };
+
+        if (ignore) return;
+        if (!res.ok) {
+          setError(json?.error?.message ?? 'Failed to load rooms.');
+          setRooms([]);
+        } else {
+          setRooms(json.data ?? []);
+        }
+      } catch {
+        if (!ignore) {
+          setError('Network error — could not reach the server. Please try again.');
+          setRooms([]);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    };
+    void load();
+    return () => {
+      ignore = true;
+    };
+  }, [filters]);
 
   const handleSort = (key: SortKey) => {
     if (key === sortKey) {
@@ -249,7 +324,7 @@ export default function StaffRoomsPage() {
     setTimeout(() => setSuccessMsg(null), 4000);
   };
 
-  const sortedRooms = sortRooms(rooms, sortKey, sortDir);
+  const sortedRooms = sortRooms(rooms, sortKey, sortDir, branches);
 
   const sortArrow = (key: SortKey) => {
     if (sortKey !== key) return ' ↕';
@@ -330,7 +405,7 @@ export default function StaffRoomsPage() {
                 <label htmlFor="filter-branch" className="text-xs font-medium text-[#a8a29e]">Branch</label>
                 <select id="filter-branch" value={filters.branchId} onChange={(e) => handleFilterChange('branchId', e.target.value)} style={SELECT}>
                   <option value="" className="bg-[#1c1917] text-[#f5f5f4]">All Branches</option>
-                  {BRANCHES.map((b) => <option key={b.id} value={b.id} className="bg-[#1c1917] text-[#f5f5f4]">{b.name}</option>)}
+                  {branches.map((b) => <option key={b.id} value={b.id} className="bg-[#1c1917] text-[#f5f5f4]">{b.name}</option>)}
                 </select>
               </div>
 
@@ -348,7 +423,7 @@ export default function StaffRoomsPage() {
                 <label htmlFor="filter-type" className="text-xs font-medium text-[#a8a29e]">Room Type</label>
                 <select id="filter-type" value={filters.typeId} onChange={(e) => handleFilterChange('typeId', e.target.value)} style={SELECT}>
                   <option value="" className="bg-[#1c1917] text-[#f5f5f4]">All Types</option>
-                  {ROOM_TYPES.map((t) => <option key={t.id} value={t.id} className="bg-[#1c1917] text-[#f5f5f4]">{t.name}</option>)}
+                  {roomTypes.map((t) => <option key={t.id} value={t.id} className="bg-[#1c1917] text-[#f5f5f4]">{t.name}</option>)}
                 </select>
               </div>
 
@@ -436,7 +511,7 @@ export default function StaffRoomsPage() {
                         <td style={{ ...TD, fontFamily: 'monospace', fontWeight: 600, color: '#c5a880' }}>
                           {room.room_number}
                         </td>
-                        <td style={TD}>{branchName(room.branch_id)}</td>
+                        <td style={TD}>{branchName(room.branch_id, branches)}</td>
                         <td style={TD}>{room.room_type?.type_name ?? `Type ${room.type_id}`}</td>
                         <td style={{ ...TD, textAlign: 'right', fontFamily: 'monospace' }}>
                           {formatRate(room.room_type?.daily_rate)}

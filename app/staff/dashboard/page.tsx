@@ -351,24 +351,6 @@ export default async function StaffDashboardPage() {
     recentActivities = [];
   }
 
-  if (recentActivities.length === 0) {
-    recentActivities = [
-      {
-        id: 'act-seed-1',
-        description: 'Guest checked in — Sarah Connor (Colombo)',
-        time: '10:42 AM',
-        badge: 'Checked In',
-        badgeColor: 'badge-checked-in',
-      },
-      {
-        id: 'act-seed-2',
-        description: 'New reservation booked — Michael Scott (Kandy)',
-        time: '09:15 AM',
-        badge: 'Booked',
-        badgeColor: 'badge-booked',
-      },
-    ];
-  }
 
   // Greeting based on server time
   const hour = new Date().getHours();

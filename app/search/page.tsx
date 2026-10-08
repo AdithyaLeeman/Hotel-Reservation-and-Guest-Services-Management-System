@@ -20,7 +20,7 @@
  * TODO: replace API call with real backend when SP2.2 is executed (P06-M02-T01).
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { FormEvent } from 'react';
 import RoomCard from '@/components/RoomCard';
 import type { AvailableRoom } from '@/repositories/availability.repository';
@@ -53,11 +53,16 @@ interface SearchResult {
 // Constants
 // ---------------------------------------------------------------------------
 
-const BRANCHES = [
+export interface BranchItem {
+  id: number;
+  name: string;
+}
+
+export const DEFAULT_BRANCHES: BranchItem[] = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy'   },
   { id: 3, name: 'Galle'   },
-] as const;
+];
 
 export const KNOWN_AMENITIES = [
   'Wi-Fi',
@@ -108,16 +113,51 @@ export default function SearchPage() {
   const today    = todayIso();
   const tomorrow = tomorrowIso();
 
-  const [form, setForm] = useState<SearchFormState>({
-    branchId: '',
-    checkIn:  today,
-    checkOut: tomorrow,
+  const [branches, setBranches] = useState<BranchItem[]>(DEFAULT_BRANCHES);
+  const [amenitiesList, setAmenitiesList] = useState<string[]>([...KNOWN_AMENITIES]);
+
+  const [form, setForm] = useState<SearchFormState>(() => {
+    let branchId = '';
+    let checkIn = today;
+    let checkOut = tomorrow;
+    if (typeof window !== 'undefined') {
+      const sp = new URLSearchParams(window.location.search);
+      branchId = sp.get('branchId') ?? '';
+      checkIn = sp.get('checkIn') ?? today;
+      checkOut = sp.get('checkOut') ?? tomorrow;
+    }
+    return { branchId, checkIn, checkOut };
   });
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [errors,    setErrors]    = useState<FormErrors>({});
   const [loading,   setLoading]   = useState(false);
   const [result,    setResult]    = useState<SearchResult | null>(null);
   const [searched,  setSearched]  = useState(false);
+
+  useEffect(() => {
+    fetch('/api/branches')
+      .then((res) => res.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranches(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/amenities')
+      .then((res) => res.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setAmenitiesList(json.data.map((a: { amenity_name: string }) => a.amenity_name));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // ── Amenity toggle handler ───────────────────────────────────────────────
 
@@ -201,12 +241,12 @@ export default function SearchPage() {
         setSearched(true);
       }
     },
-    [form],
+    [form, selectedAmenities],
   );
 
   // ── Derived state ─────────────────────────────────────────────────────────
 
-  const selectedBranch = BRANCHES.find((b) => String(b.id) === form.branchId);
+  const selectedBranch = branches.find((b) => String(b.id) === form.branchId);
   const hasResults     = result && result.rooms.length > 0;
   const nightsLabel    = result
     ? result.nightsRequested === 1
@@ -328,7 +368,7 @@ export default function SearchPage() {
                     "
                   >
                     <option value="" disabled className="bg-[#181716]">Select a property</option>
-                    {BRANCHES.map((b) => (
+                    {branches.map((b) => (
                       <option key={b.id} value={b.id} className="bg-[#181716]">{b.name} SkyNest Hotel</option>
                     ))}
                   </select>
@@ -411,6 +451,33 @@ export default function SearchPage() {
                   )}
                 </div>
 
+              </div>
+
+              {/* Optional Amenity Preferences */}
+              <div className="mt-6 pt-6 border-t border-[#3e3932]/70">
+                <label className="block text-xs uppercase tracking-[0.16em] font-semibold text-[#c5a880] mb-3">
+                  Filter by Room Amenities (Optional)
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {amenitiesList.map((amenity) => {
+                    const isSelected = selectedAmenities.includes(amenity);
+                    return (
+                      <button
+                        key={amenity}
+                        type="button"
+                        onClick={() => toggleAmenity(amenity)}
+                        className={`px-3 py-1.5 text-xs rounded-xs border transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#c5a880] text-[#161514] border-[#c5a880] font-semibold'
+                            : 'bg-[#242220] text-stone-300 border-[#3e3932] hover:border-[#c5a880]/50'
+                        }`}
+                      >
+                        {isSelected ? '✓ ' : '+ '}
+                        {amenity}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Submit button */}

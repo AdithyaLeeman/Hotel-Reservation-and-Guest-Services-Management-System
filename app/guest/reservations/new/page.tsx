@@ -1,7 +1,7 @@
 'use client';
 
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent } from 'react';
 
@@ -11,7 +11,7 @@ import Link from 'next/link';
 // Constants
 // ---------------------------------------------------------------------------
 
-const BRANCHES: Record<number, string> = {
+const DEFAULT_BRANCHES: Record<number, string> = {
   1: 'Colombo',
   2: 'Kandy',
   3: 'Galle',
@@ -134,11 +134,6 @@ function SummaryCard({
         bg-white dark:bg-neutral-900 shadow-sm
       "
     >
-      {/* Gradient accent bar */}
-      <div
-        aria-hidden="true"
-        className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500"
-      />
 
       <div className="p-6 flex flex-col gap-4">
         <h2 className="text-base font-semibold text-neutral-900 dark:text-white">
@@ -248,9 +243,25 @@ function NewReservationContent() {
   const paramsValid = Object.keys(paramErrors).length === 0;
 
   // Submission state
+  const [branches, setBranches] = useState<Record<number, string>>(DEFAULT_BRANCHES);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          const map: Record<number, string> = {};
+          for (const b of json.data) {
+            map[Number(b.branch_id)] = b.location_name;
+          }
+          setBranches(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Derived safe values (only used when paramsValid === true)
   const roomId = rawRoomId ?? '';
@@ -258,7 +269,7 @@ function NewReservationContent() {
   const checkOut = rawCheckOut ?? '';
   const nights = countNights(checkIn, checkOut);
   const branchId = rawBranchId ? parseInt(rawBranchId, 10) : null;
-  const branchName = branchId !== null ? (BRANCHES[branchId] ?? null) : null;
+  const branchName = branchId !== null ? (branches[branchId] ?? null) : null;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

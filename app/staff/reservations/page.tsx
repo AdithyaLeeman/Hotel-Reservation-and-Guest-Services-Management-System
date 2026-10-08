@@ -36,11 +36,16 @@ import type { ReservationStatus } from '@/types/enums';
 
 /* ─── Constants ──────────────────────────────────────────────────────────── */
 
-const BRANCHES = [
+export interface BranchItem {
+  id: number;
+  name: string;
+}
+
+export const DEFAULT_BRANCHES: BranchItem[] = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy' },
   { id: 3, name: 'Galle' },
-] as const;
+];
 
 const STATUS_FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   { value: '',           label: 'All Statuses' },
@@ -313,6 +318,7 @@ function ReservationsTable({ rows }: { rows: ActiveReservationRow[] }) {
 /* ─── Page ───────────────────────────────────────────────────────────────── */
 
 export default function StaffReservationsPage() {
+  const [branches, setBranches]     = useState<BranchItem[]>(DEFAULT_BRANCHES);
   const [fetchState, setFetchState] = useState<FetchState>({ stage: 'loading' });
   const [filters,    setFilters]    = useState<FilterState>({
     branchId: '',
@@ -321,6 +327,24 @@ export default function StaffReservationsPage() {
   });
   // Incrementing retryKey re-triggers the fetch effect on demand
   const [retryKey, setRetryKey] = useState(0);
+
+  /* ── Dynamic branch lookup ── */
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') return;
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranches(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   /* ── Fetch ── */
   useEffect(() => {
@@ -494,7 +518,7 @@ export default function StaffReservationsPage() {
                     className="form-input text-sm py-1.5"
                   >
                     <option value="">All Branches</option>
-                    {BRANCHES.map((b) => (
+                    {branches.map((b) => (
                       <option key={b.id} value={b.id}>{b.name}</option>
                     ))}
                   </select>

@@ -25,7 +25,7 @@ const CreateStaffSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(50),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum(['Receptionist', 'Manager']),
-  branch_id: z.number().int().positive(),
+  branch_id: z.coerce.number().int().positive(),
   employee_number: z.string().min(1).max(50),
   department: z.string().max(50).optional(),
   position: z.string().max(50).optional(),
@@ -34,8 +34,8 @@ const CreateStaffSchema = z.object({
 
 const UpdateBranchSchema = z.object({
   action: z.literal('update_branch'),
-  employee_id: z.number().int().positive(),
-  branch_id: z.number().int().positive(),
+  employee_id: z.coerce.number().int().positive(),
+  branch_id: z.coerce.number().int().positive(),
 });
 
 const ToggleStatusSchema = z.object({
@@ -43,10 +43,6 @@ const ToggleStatusSchema = z.object({
   user_id: z.string().uuid(),
   new_status: z.enum(['Active', 'Inactive', 'Suspended']),
 });
-
-type AdminAction = z.infer<typeof CreateStaffSchema>
-  | z.infer<typeof UpdateBranchSchema>
-  | z.infer<typeof ToggleStatusSchema>;
 
 // ─── Route Handler ───────────────────────────────────────────────────────────
 
@@ -154,8 +150,9 @@ async function handleCreateStaff(body: unknown): Promise<NextResponse> {
 async function handleUpdateBranch(body: unknown): Promise<NextResponse> {
   const parse = UpdateBranchSchema.safeParse(body);
   if (!parse.success) {
+    const firstErr = Object.values(parse.error.flatten().fieldErrors).flat()[0];
     return NextResponse.json(
-      { error: { code: 'VALIDATION_ERROR', message: 'Invalid input', fields: parse.error.flatten().fieldErrors } },
+      { error: { code: 'VALIDATION_ERROR', message: firstErr ?? 'Invalid input', fields: parse.error.flatten().fieldErrors } },
       { status: 400 }
     );
   }

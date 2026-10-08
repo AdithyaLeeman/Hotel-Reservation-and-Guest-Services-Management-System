@@ -38,13 +38,13 @@ import type { RoomWithDetails } from '@/repositories/room.repository';
 // Constants
 // ---------------------------------------------------------------------------
 
-const BRANCHES = [
+const DEFAULT_BRANCHES = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy' },
   { id: 3, name: 'Galle' },
 ];
 
-const ROOM_TYPES = [
+const DEFAULT_ROOM_TYPES = [
   { id: 1, name: 'Single' },
   { id: 2, name: 'Double' },
   { id: 3, name: 'Suite' },
@@ -139,6 +139,39 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
   });
   const [updateErrors, setUpdateErrors] = useState<UpdateFormErrors>({});
 
+  const [branches, setBranches] = useState(DEFAULT_BRANCHES);
+  const [roomTypes, setRoomTypes] = useState(DEFAULT_ROOM_TYPES);
+
+  useEffect(() => {
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranches(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/room-types')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setRoomTypes(
+            json.data.map((t: { type_id: number; type_name: string }) => ({
+              id: Number(t.type_id),
+              name: t.type_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // ── Focus trap / Escape key ────────────────────────────────────────────
 
   useEffect(() => {
@@ -214,7 +247,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
       }
 
       const newRoom = json.data;
-      const branchLabel = BRANCHES.find((b) => b.id === newRoom.branch_id)?.name ?? `Branch ${newRoom.branch_id}`;
+      const branchLabel = branches.find((b) => b.id === newRoom.branch_id)?.name ?? `Branch ${newRoom.branch_id}`;
       onSuccess(`Room ${newRoom.room_number} at ${branchLabel} created successfully.`);
     } catch {
       setCreateErrors({ form: 'Network error. Please try again.' });
@@ -392,7 +425,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   }`}
                 >
                   <option value="" className="bg-[#161514] text-[#f5f5f4]">Select branch…</option>
-                  {BRANCHES.map((b) => (
+                  {branches.map((b) => (
                     <option key={b.id} value={b.id} className="bg-[#161514] text-[#f5f5f4]">{b.name}</option>
                   ))}
                 </select>
@@ -424,7 +457,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
                   }`}
                 >
                   <option value="" className="bg-[#161514] text-[#f5f5f4]">Select type…</option>
-                  {ROOM_TYPES.map((t) => (
+                  {roomTypes.map((t) => (
                     <option key={t.id} value={t.id} className="bg-[#161514] text-[#f5f5f4]">{t.name}</option>
                   ))}
                 </select>
