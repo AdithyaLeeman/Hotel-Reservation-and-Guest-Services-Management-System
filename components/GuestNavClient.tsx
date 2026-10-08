@@ -27,23 +27,6 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  /* ── Initialise theme as false on initial render to prevent SSR hydration mismatch ── */
-  const [isDark, setIsDark] = useState<boolean>(false);
-
-  /* ── Sync theme from localStorage / system preference on client mount ── */
-  useEffect(() => {
-    const stored = localStorage.getItem('skynest-theme');
-    if (stored === 'dark') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsDark(true);
-    } else if (stored === 'light') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsDark(false);
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsDark(true);
-    }
-  }, []);
   const [loggingOut, setLoggingOut] = useState(false);
   const menuId = useId();
 
@@ -62,16 +45,6 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [menuOpen]);
-
-  const toggleTheme = useCallback(() => {
-    setIsDark((prev) => {
-      const next = !prev;
-      const token = next ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', token);
-      localStorage.setItem('skynest-theme', token);
-      return next;
-    });
-  }, []);
 
   const handleLogout = useCallback(async () => {
     setLoggingOut(true);
@@ -163,31 +136,6 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
 
         {/* ── Desktop Auth Controls ── */}
         <div className="hidden md:flex items-center gap-2.5">
-          {/* Theme toggle */}
-          <button
-            id="guest-nav-theme-toggle"
-            type="button"
-            suppressHydrationWarning
-            onClick={toggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="btn btn-ghost btn-sm px-2 text-[var(--color-text-muted)] hover:text-[#c5a880]"
-          >
-            {isDark ? (
-              /* Sun icon */
-              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            ) : (
-              /* Moon icon */
-              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            )}
-          </button>
-
           {isLoggedIn ? (
             <>
               {guestName && (
@@ -223,28 +171,8 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
           )}
         </div>
 
-        {/* ── Mobile: theme + hamburger ── */}
+        {/* ── Mobile: hamburger ── */}
         <div className="flex md:hidden items-center gap-2">
-          <button
-            id="guest-nav-theme-toggle-mobile"
-            type="button"
-            onClick={toggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="btn btn-ghost btn-sm px-2"
-          >
-            {isDark ? (
-              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            ) : (
-              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            )}
-          </button>
           <button
             id="guest-nav-hamburger"
             type="button"
