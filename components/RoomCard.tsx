@@ -26,6 +26,61 @@ export interface RoomCardProps {
   checkOut: string;
   /** Visual index for unique IDs (position in the results list) */
   index?: number;
+  /** Optional amenities that match the user's active filter to highlight */
+  highlightedAmenities?: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function AmenityIcon({ name }: { name: string }) {
+  const lower = name.toLowerCase();
+  if (lower.includes('wi-fi') || lower.includes('wifi')) {
+    return (
+      <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+        <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+        <line x1="12" y1="20" x2="12.01" y2="20" />
+      </svg>
+    );
+  }
+  if (lower.includes('air') || lower.includes('ac')) {
+    return (
+      <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" />
+      </svg>
+    );
+  }
+  if (lower.includes('mini bar') || lower.includes('bar')) {
+    return (
+      <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M8 22h8M12 11v11M5 3l7 8 7-8z" />
+      </svg>
+    );
+  }
+  if (lower.includes('ocean') || lower.includes('view')) {
+    return (
+      <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+    );
+  }
+  if (lower.includes('jacuzzi')) {
+    return (
+      <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M2 12h20M7 19h10a4 4 0 0 0 4-4v-1H3v1a4 4 0 0 0 4 4z" />
+        <path d="M6 8a2 2 0 0 1 2-2M12 8a2 2 0 0 1 2-2M18 8a2 2 0 0 1 2-2" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="w-3.5 h-3.5 text-[#c5a880] shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+    </svg>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -116,7 +171,13 @@ const ROOM_IMAGES: Record<string, string> = {
  * RoomCard displays a single available room from the /api/availability response.
  * The reserve CTA pre-fills the booking form with check-in/check-out dates.
  */
-export default function RoomCard({ room, checkIn, checkOut, index = 0 }: RoomCardProps) {
+export default function RoomCard({
+  room,
+  checkIn,
+  checkOut,
+  index = 0,
+  highlightedAmenities = [],
+}: RoomCardProps) {
   const cardId   = `room-card-${room.room_id}`;
   const reserveId = `reserve-btn-${room.room_id}-${index}`;
 
@@ -124,8 +185,12 @@ export default function RoomCard({ room, checkIn, checkOut, index = 0 }: RoomCar
   const statusLabel = STATUS_LABEL[room.status] ?? room.status;
 
   const reserveParams = new URLSearchParams({
-    roomId:   String(room.room_id),
-    branchId: String(room.branch_id),
+    roomId:     String(room.room_id),
+    roomNumber: room.room_number,
+    branchId:   String(room.branch_id),
+    typeName:   room.type_name,
+    dailyRate:  room.daily_rate,
+    amenities:  (room.amenities || []).join(','),
     checkIn,
     checkOut,
   });
@@ -215,9 +280,47 @@ export default function RoomCard({ room, checkIn, checkOut, index = 0 }: RoomCar
               className="w-4 h-4 text-[#c5a880]" aria-hidden="true">
               <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
             </svg>
-            <span>King Size Bed</span>
+            <span>{room.type_name === 'Single' ? 'Twin/Single Bed' : 'King Size Bed'}</span>
           </div>
         </div>
+
+        {/* Amenities Badges */}
+        {room.amenities && room.amenities.length > 0 && (
+          <div className="pt-2 border-t border-[#f0ece5] dark:border-[#2b2723]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-[#8c827a] dark:text-[#a8a29e]">
+                Included Amenities
+              </span>
+              <span className="text-[10px] text-[#c5a880] font-medium">
+                {room.amenities.length} {room.amenities.length === 1 ? 'feature' : 'features'}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5" aria-label={`Amenities for Room ${room.room_number}`}>
+              {room.amenities.map((amenity) => {
+                const isHighlighted = highlightedAmenities.some(
+                  (h) => h.toLowerCase() === amenity.toLowerCase()
+                );
+                return (
+                  <span
+                    key={amenity}
+                    className={`
+                      inline-flex items-center gap-1.5
+                      text-[11px] font-medium
+                      px-2.5 py-1 rounded-xs
+                      transition-colors
+                      ${isHighlighted
+                        ? 'bg-[#c5a880]/20 text-[#e5d3b3] border border-[#c5a880] shadow-[0_0_8px_rgba(197,168,128,0.2)]'
+                        : 'bg-[#f6f2ec] dark:bg-[#201d19] text-[#57534e] dark:text-[#d6cec3] border border-[#e8e2d7] dark:border-[#38332c]'}
+                    `}
+                  >
+                    <AmenityIcon name={amenity} />
+                    <span>{amenity}</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Reserve CTA */}
         <div className="mt-auto pt-3">

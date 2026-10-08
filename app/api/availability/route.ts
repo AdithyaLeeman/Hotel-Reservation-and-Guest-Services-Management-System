@@ -24,6 +24,10 @@ export async function GET(request: NextRequest) {
     }
 
     const branchId = parseInt(branchIdStr, 10);
+    const amenitiesParam = searchParams.get('amenities');
+    const requestedAmenities = amenitiesParam
+      ? amenitiesParam.split(',').map((s) => s.trim()).filter(Boolean)
+      : undefined;
 
     // Delegate to service orchestration
     // Note: service performs deep validation (dates, past dates, min nights)
@@ -31,6 +35,7 @@ export async function GET(request: NextRequest) {
       branchId,
       checkIn,
       checkOut,
+      amenities: requestedAmenities,
     });
 
     return NextResponse.json({ data: result }, { status: 200 });
