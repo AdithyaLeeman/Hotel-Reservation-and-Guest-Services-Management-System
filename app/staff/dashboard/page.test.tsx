@@ -58,6 +58,42 @@ vi.mock('@/lib/auth/session', () => ({
   getSession: () => mockGetSession(),
 }));
 
+const mockGetRecentActivity = vi.fn().mockResolvedValue([
+  {
+    auditId: '1',
+    reservationId: 'res-1',
+    guestFullName: 'Sarah Connor',
+    branchLocationName: 'Colombo',
+    oldStatus: 'Booked',
+    newStatus: 'CheckedIn',
+    changedAt: new Date(),
+    changedByName: 'Staff Member',
+    actorRole: 'Receptionist',
+  },
+]);
+
+vi.mock('@/repositories/dashboard.repository', () => ({
+  dashboardRepository: {
+    getEmployeeInfo: vi.fn().mockResolvedValue(null),
+    getReceptionistKpis: vi.fn().mockResolvedValue({
+      arrivals: 5,
+      departures: 3,
+      occupiedRooms: 12,
+      totalRooms: 40,
+      maintenanceRooms: 2,
+    }),
+    getManagerKpis: vi.fn().mockResolvedValue({
+      occupiedRooms: 12,
+      totalRooms: 40,
+      todayRevenue: '145200.00',
+      totalRevenue: '520000.00',
+      pendingCheckout: 2,
+      cancelledTotal: 1,
+    }),
+    getRecentActivity: (...args: unknown[]) => mockGetRecentActivity(...args),
+  },
+}));
+
 /* ─── Helper: render the RSC page ─────────────────────────────────────────── */
 
 async function renderDashboard() {
@@ -334,10 +370,30 @@ describe('StaffDashboardPage — activity feed', () => {
   });
 
   it('renders status badges inside the activity feed', async () => {
+    mockGetRecentActivity.mockResolvedValueOnce([
+      {
+        auditId: '1',
+        reservationId: 'res-1',
+        guestFullName: 'Sarah Connor',
+        branchLocationName: 'Colombo',
+        oldStatus: 'Booked',
+        newStatus: 'CheckedIn',
+        changedAt: new Date(),
+        changedByName: 'Staff Member',
+        actorRole: 'Receptionist',
+      },
+    ]);
     mockGetSession.mockResolvedValue(receptionistSession());
     await renderDashboard();
     const feed = document.getElementById('dashboard-activity-feed')!;
     expect(within(feed).getAllByText('Checked In').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders empty message when there is no activity', async () => {
+    mockGetRecentActivity.mockResolvedValueOnce([]);
+    mockGetSession.mockResolvedValue(receptionistSession());
+    await renderDashboard();
+    expect(screen.getByText('No recent activity.')).toBeInTheDocument();
   });
 });
 

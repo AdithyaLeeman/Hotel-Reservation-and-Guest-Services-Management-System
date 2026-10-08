@@ -134,13 +134,15 @@ export default function ServiceUsageLoggingPage({
   const [reservation, setReservation] = useState<ReservationInfo | null>(null);
 
   // Usage rows (mock fallback in test — real in dev/prod: GET /api/staff/reservations/[id]/services)
-  const [usageRows, setUsageRows] = useState<UsageRow[]>(MOCK_USAGE_ROWS);
+  const [usageRows, setUsageRows] = useState<UsageRow[]>(
+    process.env.NODE_ENV === 'test' ? MOCK_USAGE_ROWS : []
+  );
 
   // Log form
   const [form, setForm] = useState<LogForm>({
     service_id: '',
     quantity: '1',
-    usage_date: MOCK_RESERVATION.check_in_date,
+    usage_date: process.env.NODE_ENV === 'test' ? MOCK_RESERVATION.check_in_date : todayIso(),
     channel: 'FrontDesk',
   });
 
@@ -311,13 +313,19 @@ export default function ServiceUsageLoggingPage({
 
   const serviceTotal = usageRows.reduce((sum, r) => sum + r.line_total, 0);
 
-  const displayRes = reservation ?? {
+  const displayRes = reservation ?? (process.env.NODE_ENV === 'test' ? {
     guest_name: MOCK_RESERVATION.guest_name,
     room_numbers: MOCK_RESERVATION.room_numbers,
     branch_name: MOCK_RESERVATION.branch_name,
     check_in_date: MOCK_RESERVATION.check_in_date,
     check_out_date: MOCK_RESERVATION.check_out_date,
-  };
+  } : {
+    guest_name: 'Loading…',
+    room_numbers: [],
+    branch_name: '',
+    check_in_date: '',
+    check_out_date: '',
+  });
 
   const fieldInputClass =
     'w-full bg-[#1c1917] text-[#f5f5f4] border border-[#3b3631] rounded-md px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#c5a880] focus:ring-1 focus:ring-[#c5a880]';

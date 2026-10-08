@@ -11,9 +11,68 @@
  * - Staff Portal (/staff/login)
  */
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+interface RoomType {
+  type_id: number;
+  type_name: string;
+  capacity: number;
+  daily_rate: string;
+}
+
+const ROOM_METADATA: Record<string, {
+  tag: string;
+  subtitle: string;
+  bed: string;
+  image: string;
+  branchId: number;
+}> = {
+  Single: {
+    tag: 'COMFORT ROOM',
+    subtitle: '500 Sq Ft / City or Garden Vista',
+    bed: '1 Single Bed',
+    image: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80',
+    branchId: 1,
+  },
+  Double: {
+    tag: 'DELUXE ROOM',
+    subtitle: '850 Sq Ft / Up to 2 Guests',
+    bed: '1 King Bed',
+    image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+    branchId: 2,
+  },
+  Suite: {
+    tag: 'LUXURY SUITE',
+    subtitle: '1400 Sq Ft / Private Balcony & Lounge',
+    bed: '2 King Beds',
+    image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+    branchId: 3,
+  },
+};
+
+const DEFAULT_ROOM_TYPES: RoomType[] = [
+  { type_id: 1, type_name: 'Single', capacity: 1, daily_rate: '5000.00' },
+  { type_id: 2, type_name: 'Double', capacity: 2, daily_rate: '8000.00' },
+  { type_id: 3, type_name: 'Suite', capacity: 4, daily_rate: '15000.00' },
+];
+
 export default function HomePage() {
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>(DEFAULT_ROOM_TYPES);
+
+  useEffect(() => {
+    fetch('/api/room-types')
+      .then((res) => res.json())
+      .then((payload) => {
+        if (Array.isArray(payload.data) && payload.data.length > 0) {
+          setRoomTypes(payload.data);
+        }
+      })
+      .catch(() => {
+        // Fall back to database defaults
+      });
+  }, []);
+
   const now = new Date();
   const checkIn = now.toISOString().slice(0, 10);
   const tomorrowDate = new Date(now);
@@ -166,133 +225,65 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 3 Luxury Room Cards Grid */}
+          {/* Dynamic Database Room Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {/* Card 1: Deluxe Family Room */}
-            <article className="group bg-white dark:bg-[#1a1918] border border-[#e7e2d9] dark:border-[#2f2b26] rounded-xs overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="relative aspect-[16/11] overflow-hidden bg-neutral-900">
-                <img
-                  src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"
-                  alt="Deluxe Family Room"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute top-3 right-3 bg-[#c5a880] text-[#161514] font-semibold text-xs tracking-wider uppercase px-3 py-1.5 shadow-md">
-                  LKR 45,000 / NIGHT
-                </div>
-              </div>
-              <div className="p-6">
-                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
-                  LUXURY ROOM
-                </span>
-                <h3 className="font-serif text-2xl font-medium text-[#1c1917] dark:text-[#f8f6f0] mt-1 mb-2 group-hover:text-[#c5a880] transition-colors">
-                  Deluxe Family Room
-                </h3>
-                <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mb-4">
-                  1000 Sq Ft / Up to 4 Guests
-                </p>
-                <div className="flex items-center justify-between pt-4 border-t border-[#f0ece5] dark:border-[#2b2723] text-xs text-[#78716c] dark:text-[#a8a29e]">
-                  <div className="flex items-center gap-1.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[#c5a880]">
-                      <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
-                    </svg>
-                    <span>2 King Bed</span>
+            {roomTypes.map((rt) => {
+              const meta = ROOM_METADATA[rt.type_name] ?? {
+                tag: 'HOTEL ROOM',
+                subtitle: `Capacity: ${rt.capacity} Guest${rt.capacity > 1 ? 's' : ''}`,
+                bed: `${rt.capacity} Bed`,
+                image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+                branchId: 1,
+              };
+              const formattedRate = Number(rt.daily_rate).toLocaleString('en-US');
+              return (
+                <article
+                  key={rt.type_id}
+                  className="group bg-white dark:bg-[#1a1918] border border-[#e7e2d9] dark:border-[#2f2b26] rounded-xs overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-[16/11] overflow-hidden bg-neutral-900">
+                      <img
+                        src={meta.image}
+                        alt={`${rt.type_name} Room`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute top-3 right-3 bg-[#c5a880] text-[#161514] font-semibold text-xs tracking-wider uppercase px-3 py-1.5 shadow-md">
+                        LKR {formattedRate} / NIGHT
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
+                        {meta.tag}
+                      </span>
+                      <h3 className="font-serif text-2xl font-medium text-[#1c1917] dark:text-[#f8f6f0] mt-1 mb-2 group-hover:text-[#c5a880] transition-colors">
+                        {rt.type_name} Room
+                      </h3>
+                      <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mb-4">
+                        {meta.subtitle}
+                      </p>
+                      <div className="flex items-center justify-between pt-4 border-t border-[#f0ece5] dark:border-[#2b2723] text-xs text-[#78716c] dark:text-[#a8a29e]">
+                        <div className="flex items-center gap-1.5">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[#c5a880]">
+                            <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
+                          </svg>
+                          <span>{meta.bed}</span>
+                        </div>
+                        <div className="flex text-[#c5a880] text-xs">★★★★★</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex text-[#c5a880] text-xs">★★★★★</div>
-                </div>
-                <div className="mt-5">
-                  <Link
-                    href={`/search?branchId=1&checkIn=${checkIn}&checkOut=${checkOut}`}
-                    className="block w-full text-center py-2.5 bg-[#c5a880] hover:bg-[#b59469] !text-[#161514] hover:!text-[#000000] text-xs font-semibold uppercase tracking-[0.16em] transition-colors"
-                  >
-                    Check Availability
-                  </Link>
-                </div>
-              </div>
-            </article>
-
-            {/* Card 2: Double Suite Room */}
-            <article className="group bg-white dark:bg-[#1a1918] border border-[#e7e2d9] dark:border-[#2f2b26] rounded-xs overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="relative aspect-[16/11] overflow-hidden bg-neutral-900">
-                <img
-                  src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80"
-                  alt="Double Suite Room"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute top-3 right-3 bg-[#c5a880] text-[#161514] font-semibold text-xs tracking-wider uppercase px-3 py-1.5 shadow-md">
-                  LKR 65,000 / NIGHT
-                </div>
-              </div>
-              <div className="p-6">
-                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
-                  LUXURY SUITE
-                </span>
-                <h3 className="font-serif text-2xl font-medium text-[#1c1917] dark:text-[#f8f6f0] mt-1 mb-2 group-hover:text-[#c5a880] transition-colors">
-                  Double Suite Room
-                </h3>
-                <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mb-4">
-                  1400 Sq Ft / Private Balcony & Lounge
-                </p>
-                <div className="flex items-center justify-between pt-4 border-t border-[#f0ece5] dark:border-[#2b2723] text-xs text-[#78716c] dark:text-[#a8a29e]">
-                  <div className="flex items-center gap-1.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[#c5a880]">
-                      <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
-                    </svg>
-                    <span>2 King Bed</span>
+                  <div className="p-6 pt-0">
+                    <Link
+                      href={`/search?branchId=${meta.branchId}&roomTypeId=${rt.type_id}&checkIn=${checkIn}&checkOut=${checkOut}`}
+                      className="block w-full text-center py-2.5 bg-[#c5a880] hover:bg-[#b59469] !text-[#161514] hover:!text-[#000000] text-xs font-semibold uppercase tracking-[0.16em] transition-colors"
+                    >
+                      Check Availability
+                    </Link>
                   </div>
-                  <div className="flex text-[#c5a880] text-xs">★★★★★</div>
-                </div>
-                <div className="mt-5">
-                  <Link
-                    href={`/search?branchId=2&checkIn=${checkIn}&checkOut=${checkOut}`}
-                    className="block w-full text-center py-2.5 bg-[#c5a880] hover:bg-[#b59469] !text-[#161514] hover:!text-[#000000] text-xs font-semibold uppercase tracking-[0.16em] transition-colors"
-                  >
-                    Check Availability
-                  </Link>
-                </div>
-              </div>
-            </article>
-
-            {/* Card 3: Superior Bed Room */}
-            <article className="group bg-white dark:bg-[#1a1918] border border-[#e7e2d9] dark:border-[#2f2b26] rounded-xs overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="relative aspect-[16/11] overflow-hidden bg-neutral-900">
-                <img
-                  src="https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80"
-                  alt="Superior Bed Room"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute top-3 right-3 bg-[#c5a880] text-[#161514] font-semibold text-xs tracking-wider uppercase px-3 py-1.5 shadow-md">
-                  LKR 35,000 / NIGHT
-                </div>
-              </div>
-              <div className="p-6">
-                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c5a880]">
-                  SUPERIOR ROOM
-                </span>
-                <h3 className="font-serif text-2xl font-medium text-[#1c1917] dark:text-[#f8f6f0] mt-1 mb-2 group-hover:text-[#c5a880] transition-colors">
-                  Superior Bed Room
-                </h3>
-                <p className="text-xs text-[#78716c] dark:text-[#a8a29e] mb-4">
-                  800 Sq Ft / Garden or Ocean Vista
-                </p>
-                <div className="flex items-center justify-between pt-4 border-t border-[#f0ece5] dark:border-[#2b2723] text-xs text-[#78716c] dark:text-[#a8a29e]">
-                  <div className="flex items-center gap-1.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[#c5a880]">
-                      <path d="M3 7v10M21 7v10M3 12h18M5 7h14a2 2 0 0 1 2 2v1H3V9a2 2 0 0 1 2-2z" />
-                    </svg>
-                    <span>1 King Bed</span>
-                  </div>
-                  <div className="flex text-[#c5a880] text-xs">★★★★★</div>
-                </div>
-                <div className="mt-5">
-                  <Link
-                    href={`/search?branchId=3&checkIn=${checkIn}&checkOut=${checkOut}`}
-                    className="block w-full text-center py-2.5 bg-[#c5a880] hover:bg-[#b59469] !text-[#161514] hover:!text-[#000000] text-xs font-semibold uppercase tracking-[0.16em] transition-colors"
-                  >
-                    Check Availability
-                  </Link>
-                </div>
-              </div>
-            </article>
+                </article>
+              );
+            })}
           </div>
 
           {/* Pagination Indicators (matching screenshot dot indicator) */}

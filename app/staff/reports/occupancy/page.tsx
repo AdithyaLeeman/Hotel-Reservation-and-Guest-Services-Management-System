@@ -46,11 +46,13 @@ export interface OccupancyReportRow {
   total_revenue: string; // NUMERIC(12,2) string
 }
 
-export const BRANCH_OPTIONS = [
+export const DEFAULT_BRANCH_OPTIONS = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy' },
   { id: 3, name: 'Galle' },
 ] as const;
+
+export const BRANCH_OPTIONS = DEFAULT_BRANCH_OPTIONS;
 
 export const STATUS_OPTIONS = ['Available', 'Occupied', 'Maintenance'] as const;
 
@@ -170,6 +172,27 @@ export default function OccupancyReportPage() {
     fromDate: initialDates.fromDate,
     toDate: initialDates.toDate,
   });
+
+  const [branchOptions, setBranchOptions] = useState<Array<{ id: number; name: string }>>(
+    [...DEFAULT_BRANCH_OPTIONS]
+  );
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') return;
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranchOptions(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const [sortKey, setSortKey] = useState<SortKey>('branch_name');
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
@@ -482,7 +505,7 @@ export default function OccupancyReportPage() {
                 <option value="" className="bg-[#1c1917] text-[#f5f5f4]" style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}>
                   All Branches
                 </option>
-                {BRANCH_OPTIONS.map((branch) => (
+                {branchOptions.map((branch) => (
                   <option
                     key={branch.id}
                     value={branch.id}

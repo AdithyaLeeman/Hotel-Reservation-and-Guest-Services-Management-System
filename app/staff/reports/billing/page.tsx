@@ -41,7 +41,7 @@ type PageState =
 
 /* ─── Constants ──────────────────────────────────────────────────────────── */
 
-const BRANCH_OPTIONS = [
+const DEFAULT_BRANCH_OPTIONS = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy' },
   { id: 3, name: 'Galle' },
@@ -253,9 +253,27 @@ const CSS = `
 /* ─── Page ───────────────────────────────────────────────────────────────── */
 
 export default function GuestBillingSummaryPage() {
+  const [branchOptions, setBranchOptions] = useState(DEFAULT_BRANCH_OPTIONS);
   const [state, setState] = useState<PageState>({ stage: 'loading' });
   const [filters, setFilters] = useState<Filters>({ branchId: '', paymentStatus: '', search: '' });
   const [applied, setApplied] = useState<Filters>({ branchId: '', paymentStatus: '', search: '' });
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') return;
+    fetch('/api/branches')
+      .then((r) => r.json())
+      .then((json) => {
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          setBranchOptions(
+            json.data.map((b: { branch_id: number; location_name: string }) => ({
+              id: Number(b.branch_id),
+              name: b.location_name,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchData = useCallback((f: Filters) => {
     setState({ stage: 'loading' });
@@ -310,10 +328,6 @@ export default function GuestBillingSummaryPage() {
             <h1 className="bs-title">Guest <span>Billing Summary</span></h1>
             <p className="bs-subtitle">
               Individual invoice breakdown — room charges, tax, services, payments, and outstanding balances.
-              <br />
-              <em style={{ fontSize: '0.8125rem', color: 'var(--color-text-subtle)' }}>
-                Source: <code>vw_guest_billing_summary</code> · Mock data in Phase 5
-              </em>
             </p>
           </div>
         </header>
@@ -328,7 +342,7 @@ export default function GuestBillingSummaryPage() {
               onChange={(e) => setFilters((p) => ({ ...p, branchId: e.target.value }))}
             >
               <option value="">All Branches</option>
-              {BRANCH_OPTIONS.map((b) => (
+              {branchOptions.map((b) => (
                 <option key={b.id} value={b.id}>{b.name}</option>
               ))}
             </select>

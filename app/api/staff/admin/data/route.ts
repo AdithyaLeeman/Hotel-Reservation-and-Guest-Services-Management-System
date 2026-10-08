@@ -28,14 +28,14 @@ export async function GET(): Promise<NextResponse> {
       // Staff with user_id for toggle-status action
       pool.query(`
         SELECT
-          e.employee_id,
+          e.employee_id::int                  AS employee_id,
           ua.user_id,
           e.employee_number,
           e.full_name,
           e.email,
           COALESCE(ua.role::text, 'Staff')   AS role,
           COALESCE(ua.status::text, 'Active') AS status,
-          e.branch_id,
+          e.branch_id::int                    AS branch_id,
           b.location_name                     AS branch_name,
           e.department,
           e.position
@@ -44,7 +44,7 @@ export async function GET(): Promise<NextResponse> {
         LEFT JOIN branch b ON b.branch_id = e.branch_id
         ORDER BY ua.role, e.full_name
       `),
-      pool.query(`SELECT branch_id, location_name FROM branch ORDER BY branch_id`),
+      pool.query(`SELECT branch_id::int AS branch_id, location_name FROM branch ORDER BY branch_id`),
       pool.query(`
         SELECT
           (SELECT COUNT(*) FROM employee)::int     AS total_staff,

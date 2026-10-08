@@ -18,6 +18,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 
@@ -296,7 +297,11 @@ function ChangeBranchModal({ staff, branches, onClose, onSuccess }: ChangeBranch
       const res = await fetch('/api/staff/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'update_branch', employee_id: staff.employee_id, branch_id: parseInt(branchId) }),
+        body: JSON.stringify({
+          action: 'update_branch',
+          employee_id: Number(staff.employee_id),
+          branch_id: parseInt(branchId, 10),
+        }),
       });
       const json = await res.json();
       if (!res.ok) { setError(json.error?.message ?? 'Failed to update branch'); return; }
@@ -354,6 +359,7 @@ function ChangeBranchModal({ staff, branches, onClose, onSuccess }: ChangeBranch
 /* ─── Page ────────────────────────────────────────────────────────────────── */
 
 export default function AdminPage() {
+  const router = useRouter();
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -373,7 +379,7 @@ export default function AdminPage() {
       const res = await fetch('/api/staff/admin/data');
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-          window.location.href = '/staff/login';
+          router.push('/staff/login');
           return;
         }
         throw new Error('Failed to load admin data');
@@ -382,12 +388,40 @@ export default function AdminPage() {
       setData(json.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
     }
-  }, []);
+  }, [router]);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    let ignore = false;
+    async function init() {
+      try {
+        const res = await fetch('/api/staff/admin/data');
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            router.push('/staff/login');
+            return;
+          }
+          throw new Error('Failed to load admin data');
+        }
+        const json = await res.json();
+        if (!ignore) {
+          setData(json.data);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    init();
+    return () => {
+      ignore = true;
+    };
+  }, [router]);
 
   const handleToggleStatus = async (user_id: string, current_status: string) => {
     const new_status = current_status === 'Active' ? 'Suspended' : 'Active';
@@ -631,7 +665,15 @@ export default function AdminPage() {
                               {s.role}
                             </span>
                           </td>
-                          <td style={{ ...td, color: '#d6d3d1' }}>{s.branch_name ?? <em style={{ color: '#78716c' }}>All branches</em>}</td>
+                          <td style={{ ...td, color: '#d6d3d1' }}>
+                            {s.role === 'Admin' ? (
+                              <span style={{ color: '#c5a880', fontStyle: 'italic', fontSize: '0.8rem' }}>
+                                All branches (Global)
+                              </span>
+                            ) : (
+                              s.branch_name ?? <em style={{ color: '#78716c' }}>All branches</em>
+                            )}
+                          </td>
                           <td style={{ ...td, color: '#a8a29e' }}>{[s.department, s.position].filter(Boolean).join(' · ') || <em style={{ color: '#78716c' }}>—</em>}</td>
                           <td style={td}>
                             <span style={{ ...statusBadgeStyle(s.status), borderRadius: 4, padding: '2px 8px', fontSize: '0.72rem', fontWeight: 600, display: 'inline-block' }}>
@@ -639,23 +681,27 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td style={td}>
-                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                              {/* Change Branch */}
-                              <button
-                                id={`change-branch-${s.employee_id}`}
-                                onClick={() => setChangeBranchTarget(s)}
-                                style={{
-                                  background: '#161514', border: '1px solid #3b3631', borderRadius: 4,
-                                  color: '#c5a880', padding: '3px 9px', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600,
-                                  textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'border-color 0.15s',
-                                }}
-                                onMouseEnter={e => (e.currentTarget.style.borderColor = '#c5a880')}
-                                onMouseLeave={e => (e.currentTarget.style.borderColor = '#3b3631')}
-                              >
-                                Branch
-                              </button>
-                              {/* Toggle Status — hide for Admins (protect system accounts) */}
-                              {s.role !== 'Admin' && (
+                            {s.role === 'Admin' ? (
+                              <span style={{ color: '#78716c', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                                System Account
+                              </span>
+                            ) : (
+                              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                {/* Change Branch */}
+                                <button
+                                  id={`change-branch-${s.employee_id}`}
+                                  onClick={() => setChangeBranchTarget(s)}
+                                  style={{
+                                    background: '#161514', border: '1px solid #3b3631', borderRadius: 4,
+                                    color: '#c5a880', padding: '3px 9px', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600,
+                                    textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'border-color 0.15s',
+                                  }}
+                                  onMouseEnter={e => (e.currentTarget.style.borderColor = '#c5a880')}
+                                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#3b3631')}
+                                >
+                                  Branch
+                                </button>
+                                {/* Toggle Status */}
                                 <button
                                   id={`toggle-status-${s.user_id}`}
                                   onClick={() => handleToggleStatus(s.user_id, s.status)}
@@ -671,8 +717,8 @@ export default function AdminPage() {
                                 >
                                   {s.status === 'Active' ? 'Suspend' : 'Activate'}
                                 </button>
-                              )}
-                            </div>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))}

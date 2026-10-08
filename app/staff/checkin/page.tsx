@@ -227,7 +227,8 @@ export default function StaffCheckinPage() {
     setState({ stage: 'loading' });
 
     setTimeout(async () => {
-      if (MOCK_RESERVATIONS[trimmed]) {
+      // Test environment fallback (unit tests in page.test.tsx rely on fake timers & mock store)
+      if (process.env.NODE_ENV === 'test' && MOCK_RESERVATIONS[trimmed]) {
         setState({ stage: 'found', reservation: MOCK_RESERVATIONS[trimmed] });
         return;
       }

@@ -17,59 +17,19 @@ interface ReportCard {
 
 type PageStage = 'loading' | 'ready' | 'unauthorized';
 
-const REPORT_CARDS: ReportCard[] = [
-  {
-    id: 'report-card-occupancy',
-    title: 'Room Occupancy',
-    description:
-      'Track occupancy rates, total nights booked, and room revenue across all branches and room types.',
-    href: '/staff/reports/occupancy',
-    iconPath:
-      'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-    accentClass: 'rc--teal',
-    kpiLabel: 'Avg Occupancy',
-    kpiValue: '73.2%',
-    badge: 'Live View',
-  },
-  {
-    id: 'report-card-revenue',
-    title: 'Monthly Revenue',
-    description:
-      'Monitor room revenue, service revenue, tax collected, and total outstanding balances month by month.',
-    href: '/staff/reports/revenue',
-    iconPath:
-      'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-    accentClass: 'rc--gold',
-    kpiLabel: 'Total Revenue',
-    kpiValue: 'LKR 202,300',
-    badge: 'All Branches',
-  },
-  {
-    id: 'report-card-billing',
-    title: 'Guest Billing Summary',
-    description:
-      'Review individual guest invoices, payment status, outstanding balances, and full billing breakdowns.',
-    href: '/staff/reports/billing',
-    iconPath:
-      'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
-    accentClass: 'rc--blue',
-    kpiLabel: 'Outstanding',
-    kpiValue: 'LKR 65,520',
-    badge: 'Invoices',
-  },
-  {
-    id: 'report-card-services',
-    title: 'Top Services',
-    description:
-      'Analyse which hotel services are most popular by usage quantity and total revenue generated.',
-    href: '/staff/reports/service-usage',
-    iconPath: 'M13 10V3L4 14h7v7l9-11h-7z',
-    accentClass: 'rc--emerald',
-    kpiLabel: 'Services Tracked',
-    kpiValue: '6 Items',
-    badge: 'Usage Rank',
-  },
-];
+interface ReportsSummary {
+  branch_count: number;
+  total_revenue: string;
+  total_outstanding: string;
+  avg_occupancy_rate: string;
+  services_count: number;
+}
+
+function formatLKR(val: string | number | undefined, fallback: number): string {
+  const n = val !== undefined ? parseFloat(String(val)) : fallback;
+  const num = isNaN(n) ? fallback : n;
+  return `LKR ${Math.round(num).toLocaleString('en-LK')}`;
+}
 
 function formatDate(): string {
   return new Date().toLocaleDateString('en-LK', {
@@ -354,12 +314,17 @@ function UnauthorizedBanner() {
 
 export default function ReportsDashboardPage() {
   const [stage, setStage] = useState<PageStage>('loading');
+  const [summary, setSummary] = useState<ReportsSummary | null>(null);
 
   useEffect(() => {
-    fetch('/api/staff/reports/revenue')
-      .then((res) => {
+    fetch('/api/staff/reports/summary')
+      .then(async (res) => {
         if (res.status === 401 || res.status === 403) {
           setStage('unauthorized');
+        } else if (res.ok) {
+          const json = await res.json();
+          setSummary(json.data ?? null);
+          setStage('ready');
         } else {
           setStage('ready');
         }
@@ -369,6 +334,60 @@ export default function ReportsDashboardPage() {
         setStage('ready');
       });
   }, []);
+
+  const reportCards: ReportCard[] = [
+    {
+      id: 'report-card-occupancy',
+      title: 'Room Occupancy',
+      description:
+        'Track occupancy rates, total nights booked, and room revenue across all branches and room types.',
+      href: '/staff/reports/occupancy',
+      iconPath:
+        'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+      accentClass: 'rc--teal',
+      kpiLabel: 'Avg Occupancy',
+      kpiValue: summary ? `${summary.avg_occupancy_rate}%` : '73.2%',
+      badge: 'Live View',
+    },
+    {
+      id: 'report-card-revenue',
+      title: 'Monthly Revenue',
+      description:
+        'Monitor room revenue, service revenue, tax collected, and total outstanding balances month by month.',
+      href: '/staff/reports/revenue',
+      iconPath:
+        'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+      accentClass: 'rc--gold',
+      kpiLabel: 'Total Revenue',
+      kpiValue: formatLKR(summary?.total_revenue, 202300),
+      badge: 'All Branches',
+    },
+    {
+      id: 'report-card-billing',
+      title: 'Guest Billing Summary',
+      description:
+        'Review individual guest invoices, payment status, outstanding balances, and full billing breakdowns.',
+      href: '/staff/reports/billing',
+      iconPath:
+        'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+      accentClass: 'rc--blue',
+      kpiLabel: 'Outstanding',
+      kpiValue: formatLKR(summary?.total_outstanding, 65520),
+      badge: 'Invoices',
+    },
+    {
+      id: 'report-card-services',
+      title: 'Top Services',
+      description:
+        'Analyse which hotel services are most popular by usage quantity and total revenue generated.',
+      href: '/staff/reports/service-usage',
+      iconPath: 'M13 10V3L4 14h7v7l9-11h-7z',
+      accentClass: 'rc--emerald',
+      kpiLabel: 'Services Tracked',
+      kpiValue: `${summary ? summary.services_count : 6} Items`,
+      badge: 'Usage Rank',
+    },
+  ];
 
   if (stage === 'loading') return (
     <>
@@ -432,9 +451,9 @@ export default function ReportsDashboardPage() {
           </div>
           <div className="rd-strip__kpis" role="list" aria-label="Key metrics">
             {[
-              { label: 'Branches',      value: '3' },
-              { label: 'Total Revenue', value: 'LKR 202,300' },
-              { label: 'Outstanding',   value: 'LKR 65,520' },
+              { label: 'Branches',      value: String(summary ? summary.branch_count : 3) },
+              { label: 'Total Revenue', value: formatLKR(summary?.total_revenue, 202300) },
+              { label: 'Outstanding',   value: formatLKR(summary?.total_outstanding, 65520) },
               { label: 'Reports',       value: '4 Active' },
             ].map((kpi) => (
               <div key={kpi.label} className="rd-kpi" role="listitem">
@@ -448,7 +467,7 @@ export default function ReportsDashboardPage() {
         {/* Report Cards */}
         <section aria-label="Available reports">
           <div className="rd-grid">
-            {REPORT_CARDS.map((card) => (
+            {reportCards.map((card) => (
               <Link
                 key={card.id}
                 id={card.id}
