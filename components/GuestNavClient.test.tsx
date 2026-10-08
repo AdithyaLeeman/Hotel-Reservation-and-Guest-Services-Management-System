@@ -14,7 +14,7 @@
  *  5. Logout button calls POST /api/guest/logout and navigates to /
  *  6. Hamburger toggle opens / closes mobile menu (ARIA attributes)
  *  7. Mobile menu: correct links for logged-in / logged-out states
- *  8. Theme toggle button is present and has correct aria-label
+ *  8. Theme toggle button is not rendered
  *  9. Active route link gets active class
  */
 
@@ -228,32 +228,11 @@ describe('GuestNavClient', () => {
     expect(logoutBtns.length).toBeGreaterThanOrEqual(2);
   });
 
-  /* 8a. Theme toggle button is always present */
-  it('renders a theme toggle button', () => {
+  /* 8. Theme toggle button is removed from guest navigation */
+  it('does not render a theme toggle button', () => {
     renderNav();
-    // May be two (desktop + mobile)
-    const toggles = screen.getAllByRole('button', { name: /switch to .* mode/i });
-    expect(toggles.length).toBeGreaterThan(0);
-  });
-
-  /* 8b. Theme toggle sets data-theme on html element */
-  it('theme toggle sets data-theme=dark on html when toggling to dark', async () => {
-    renderNav();
-    const toggleBtns = screen.getAllByRole('button', { name: /switch to dark mode/i });
-    await act(async () => { fireEvent.click(toggleBtns[0]); });
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    expect(localStorageMock.getItem('skynest-theme')).toBe('dark');
-  });
-
-  /* 8c. Theme toggle persists light back */
-  it('theme toggle sets data-theme=light when toggling back to light', async () => {
-    renderNav();
-    const darkToggles = screen.getAllByRole('button', { name: /switch to dark mode/i });
-    await act(async () => { fireEvent.click(darkToggles[0]); });
-    const lightToggles = screen.getAllByRole('button', { name: /switch to light mode/i });
-    await act(async () => { fireEvent.click(lightToggles[0]); });
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-    expect(localStorageMock.getItem('skynest-theme')).toBe('light');
+    const toggles = screen.queryAllByRole('button', { name: /switch to .* mode/i });
+    expect(toggles).toHaveLength(0);
   });
 
   /* 9. Active route link receives active CSS classes */
