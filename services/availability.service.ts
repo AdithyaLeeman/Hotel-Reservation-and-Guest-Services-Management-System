@@ -45,6 +45,8 @@ export interface AvailabilitySearchInput {
   checkIn: string;
   /** ISO date string YYYY-MM-DD */
   checkOut: string;
+  /** Optional array of required amenity names */
+  amenities?: string[];
 }
 
 /**
@@ -145,11 +147,24 @@ export const availabilityService = {
     }
 
     // --- Delegation to repository ---
-    const rooms = await availabilityRepository.getAvailableRooms(
+    let rooms = await availabilityRepository.getAvailableRooms(
       input.branchId,
       input.checkIn,
       input.checkOut,
     );
+
+    if (input.amenities && input.amenities.length > 0) {
+      const required = input.amenities
+        .map((a) => a.trim().toLowerCase())
+        .filter(Boolean);
+      if (required.length > 0) {
+        rooms = rooms.filter((room) =>
+          required.every((req) =>
+            (room.amenities || []).some((a) => a.toLowerCase() === req),
+          ),
+        );
+      }
+    }
 
     return {
       rooms,

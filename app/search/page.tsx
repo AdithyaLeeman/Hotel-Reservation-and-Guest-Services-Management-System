@@ -20,7 +20,7 @@
  * TODO: replace API call with real backend when SP2.2 is executed (P06-M02-T01).
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { FormEvent } from 'react';
 import RoomCard from '@/components/RoomCard';
 import type { AvailableRoom } from '@/repositories/availability.repository';
@@ -57,6 +57,14 @@ const BRANCHES = [
   { id: 1, name: 'Colombo' },
   { id: 2, name: 'Kandy'   },
   { id: 3, name: 'Galle'   },
+] as const;
+
+export const KNOWN_AMENITIES = [
+  'Wi-Fi',
+  'Air Conditioning',
+  'Mini Bar',
+  'Ocean View',
+  'Jacuzzi',
 ] as const;
 
 /** Today in YYYY-MM-DD, used as the min date for date inputs */
@@ -105,10 +113,19 @@ export default function SearchPage() {
     checkIn:  today,
     checkOut: tomorrow,
   });
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [errors,    setErrors]    = useState<FormErrors>({});
   const [loading,   setLoading]   = useState(false);
   const [result,    setResult]    = useState<SearchResult | null>(null);
   const [searched,  setSearched]  = useState(false);
+
+  // ── Amenity toggle handler ───────────────────────────────────────────────
+
+  const toggleAmenity = useCallback((amenity: string) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
+    );
+  }, []);
 
   // ── Field change handler ──────────────────────────────────────────────────
 
@@ -145,6 +162,9 @@ export default function SearchPage() {
           checkIn:  form.checkIn,
           checkOut: form.checkOut,
         });
+        if (selectedAmenities.length > 0) {
+          params.set('amenities', selectedAmenities.join(','));
+        }
 
         // TODO: replace with real API call once SP2.2 is executed (P06-M02-T01)
         const response = await fetch(`/api/availability?${params.toString()}`);
