@@ -17,7 +17,7 @@ BEGIN
     WHERE reservation_id = p_reservation_id;
 
     IF FOUND THEN
-        -- Invoice already created — return existing id, no changes made
+        -- Invoice already created - return existing id, no changes made
         p_invoice_id := v_existing_invoice_id;
         RETURN;
     END IF;
@@ -69,7 +69,7 @@ $$;
 
 COMMENT ON PROCEDURE sp_finalize_invoice IS
     'Create (or retrieve) the billing_summary invoice for a reservation. '
-    'IDEMPOTENT: safe to call multiple times — returns existing invoice_id if one exists. '
+    'IDEMPOTENT: safe to call multiple times - returns existing invoice_id if one exists. '
     'Snapshots the active tax rate from tax_policies into billing_summary.tax_percentage_applied '
     'so future tax rate changes do not affect this invoice (Decision D005). '
     'SQLSTATE 45040 = reservation not found. '

@@ -20,7 +20,7 @@ export interface GuestBillingSummaryRow {
   tax_amount: string;          // NUMERIC(12,2) as string
   grand_total: string;         // NUMERIC(12,2) as string
   total_paid: string;          // NUMERIC(12,2) as string
-  outstanding_balance: string; // NUMERIC(12,2) — authoritative, never calculated in TS
+  outstanding_balance: string; // NUMERIC(12,2) - authoritative, never calculated in TS
 }
 
 export interface BillingReportFilters {

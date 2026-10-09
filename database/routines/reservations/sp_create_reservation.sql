@@ -1,10 +1,10 @@
 -- =============================================================================
 -- Routine:   sp_create_reservation.sql
 -- Owner:     Member 3 (Hiripitiya S.K., 240238C)
--- Phase:     P3 — SP3.2 (Reservation DB)
+-- Phase:     P3 - SP3.2 (Reservation DB)
 -- Task:      P03-M03-T03
 -- Depends:   SP3.1 executed (reservation + reservation_rooms tables exist)
---            SP2.2 done (fn_get_available_rooms — for availability, but overlap
+--            SP2.2 done (fn_get_available_rooms - for availability, but overlap
 --            is independently enforced here via SELECT FOR UPDATE)
 -- Execute:   After SP3.1 + SP2.2 are DONE on real DB
 -- =============================================================================
@@ -15,38 +15,38 @@
 --     1. All rooms belong to the same branch as the reservation (45002)
 --     2. No room is in Maintenance status (45003)
 --     3. No active reservation already occupies any room in the date range (45001)
---        — Uses SELECT FOR UPDATE for concurrency safety (L12)
+--        - Uses SELECT FOR UPDATE for concurrency safety (L12)
 --     4. Snapshots rate_per_night from room_type.daily_rate at booking time
 --
 -- INPUTS (via INOUT / IN parameters):
---   p_guest_id              UUID    — from session.guestId (never from client body)
---   p_branch_id             BIGINT  — target branch
---   p_check_in_date         DATE    — inclusive start date
---   p_check_out_date        DATE    — exclusive end date (check_out > check_in)
---   p_room_ids              BIGINT[]— one or more room IDs
---   p_booking_source        booking_source — 'Online' | 'Reception' | 'Phone'
---   p_created_by_user_id    UUID    — from session.userId
---   p_employee_id           BIGINT  — NULL for online; staff employee_id for Reception/Phone
---   p_discount_percentage   NUMERIC(5,2) — NULL = no discount
+--   p_guest_id              UUID    - from session.guestId (never from client body)
+--   p_branch_id             BIGINT  - target branch
+--   p_check_in_date         DATE    - inclusive start date
+--   p_check_out_date        DATE    - exclusive end date (check_out > check_in)
+--   p_room_ids              BIGINT[]- one or more room IDs
+--   p_booking_source        booking_source - 'Online' | 'Reception' | 'Phone'
+--   p_created_by_user_id    UUID    - from session.userId
+--   p_employee_id           BIGINT  - NULL for online; staff employee_id for Reception/Phone
+--   p_discount_percentage   NUMERIC(5,2) - NULL = no discount
 --
 -- OUTPUT:
---   p_reservation_id        UUID    — INOUT, filled on success
+--   p_reservation_id        UUID    - INOUT, filled on success
 --
 -- SQLSTATE CODES:
---   45001 — Room overlap: a room is already reserved for the date range
---   45002 — Branch mismatch: a room does not belong to p_branch_id
---   45003 — Room in Maintenance: a room cannot be reserved
+--   45001 - Room overlap: a room is already reserved for the date range
+--   45002 - Branch mismatch: a room does not belong to p_branch_id
+--   45003 - Room in Maintenance: a room cannot be reserved
 --
 -- TRANSACTION: This procedure does NOT issue COMMIT/ROLLBACK.
 --   Single-call pattern: pool.query() (autocommit applies to the CALL statement).
 --   Multi-op pattern: wrap in BEGIN/COMMIT via pool.connect().
---   Do NOT call COMMIT inside this procedure — SELECT FOR UPDATE holds the
+--   Do NOT call COMMIT inside this procedure - SELECT FOR UPDATE holds the
 --   row lock until the caller's transaction commits or rolls back.
 --
 -- LECTURE ALIGNMENT:
---   L05 — Stored procedures, SQLSTATE
---   L08 — Functions and procedures
---   L12 — Concurrency: SELECT FOR UPDATE, serialization
+--   L05 - Stored procedures, SQLSTATE
+--   L08 - Functions and procedures
+--   L12 - Concurrency: SELECT FOR UPDATE, serialization
 -- =============================================================================
 
 CREATE OR REPLACE PROCEDURE sp_create_reservation(
@@ -87,7 +87,7 @@ BEGIN
     LOOP
         -- 1a. Lock the room row for concurrency safety (L12).
         --     FOR UPDATE on a JOIN is not allowed in PostgreSQL when a joined
-        --     table (room_type) is referenced — lock only the room row first,
+        --     table (room_type) is referenced - lock only the room row first,
         --     then fetch the rate in a separate plain SELECT.
         SELECT r.branch_id, r.status, r.type_id
           INTO v_room_branch_id, v_room_status, v_type_id
@@ -187,7 +187,7 @@ BEGIN
         );
     END LOOP;
 
-    -- p_reservation_id is already set — procedure returns via INOUT
+    -- p_reservation_id is already set - procedure returns via INOUT
 END;
 $$;
 

@@ -2,7 +2,7 @@
 import { pool } from '@/lib/db/pool';
 
 /**
- * Occupancy Report Repository — P05-M02-T02
+ * Occupancy Report Repository - P05-M02-T02
  * Queries live PostgreSQL view `vw_room_occupancy`.
  */
 
@@ -15,7 +15,7 @@ export interface OccupancyReportRow {
   room_status: string;         // 'Available' | 'Occupied' | 'Maintenance'
   period_date: string;         // ISO date string (YYYY-MM-DD)
   total_nights_occupied: number;
-  occupancy_rate: string;      // NUMERIC(5,2) as string — percentage
+  occupancy_rate: string;      // NUMERIC(5,2) as string - percentage
   total_revenue: string;       // NUMERIC(12,2) as string
 }
 
@@ -187,7 +187,7 @@ export const occupancyReportRepository = {
     }
   },
 
-  /** Test helper — resets mock store to initial seed data. */
+  /** Test helper - resets mock store to initial seed data. */
   _resetMockStore: (): void => {
     mockOccupancyData = [...INITIAL_MOCK_DATA];
   },

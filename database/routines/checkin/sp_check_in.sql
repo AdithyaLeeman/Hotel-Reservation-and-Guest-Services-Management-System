@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Routine:   sp_check_in.sql
 -- Owner:     Member 4
--- Phase:     P4 — Stay Services and Billing
+-- Phase:     P4 - Stay Services and Billing
 -- Task:      P04-M04-T04
 -- =============================================================================
 

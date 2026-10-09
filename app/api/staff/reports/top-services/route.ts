@@ -1,7 +1,7 @@
 /**
  * Route: /api/staff/reports/top-services
  *
- * GET — return top-used services ranked by total quantity consumed.
+ * GET - return top-used services ranked by total quantity consumed.
  *       Data sourced from vw_top_services (mock-first; real DB in Phase 6).
  *
  * Security:
@@ -53,7 +53,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
 }
 
 // ---------------------------------------------------------------------------
-// Response helpers — conform to docs/21_shared-contracts.md Section 6
+// Response helpers - conform to docs/21_shared-contracts.md Section 6
 // { data, meta } for success | { error: { code, message } } for errors
 // ---------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ function err(status: number, code: string, message: string): NextResponse {
 
 // ---------------------------------------------------------------------------
 // Roles permitted to access report endpoints (Manager and Admin only).
-// Receptionist is excluded — reports are management-level views.
+// Receptionist is excluded - reports are management-level views.
 // ---------------------------------------------------------------------------
 const REPORT_ROLES = ['Manager', 'Admin'] as const;
 type ReportRole = (typeof REPORT_ROLES)[number];

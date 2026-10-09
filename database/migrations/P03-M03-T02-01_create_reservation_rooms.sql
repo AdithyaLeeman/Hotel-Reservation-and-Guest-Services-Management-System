@@ -1,8 +1,8 @@
 -- =============================================================================
 -- Migration: P03-M03-T02-01_create_reservation_rooms.sql
 -- Owner:     Member 3 (Hiripitiya S.K., 240238C)
--- Phase:     P3 — Guests and Reservations
--- Depends:   P03-M03-T01 (reservation), P02-M02-T01 (room) — both executed
+-- Phase:     P3 - Guests and Reservations
+-- Depends:   P03-M03-T01 (reservation), P02-M02-T01 (room) - both executed
 -- Execute:   After P03-M03-T01 + P02-M02-T01 are DONE on real DB
 -- NOTE:      After this migration executes → notify M2 so they can run
 --            fn_get_available_rooms (SP2.2-T03) which depends on this table.
@@ -12,7 +12,7 @@
 -- reservation_rooms
 -- Junction table linking a reservation to one or more rooms.
 -- Captures rate_per_night as a historical snapshot at booking time.
--- The rate is immutable after creation — it is NOT updated if room_type.daily_rate changes.
+-- The rate is immutable after creation - it is NOT updated if room_type.daily_rate changes.
 
 CREATE TABLE IF NOT EXISTS reservation_rooms (
     reservation_id  UUID            NOT NULL,
@@ -41,11 +41,11 @@ CREATE INDEX IF NOT EXISTS idx_reservation_rooms_room_id
 -- WHERE reservation_rooms.room_id = $1
 -- AND reservation.check_in_date < $check_out AND reservation.check_out_date > $check_in
 -- AND reservation.reservation_status NOT IN ('Cancelled', 'CheckedOut')
--- (Index on reservation side already exists — idx_reservation_dates)
+-- (Index on reservation side already exists - idx_reservation_dates)
 
 COMMENT ON TABLE reservation_rooms IS
     'Room allocations for a reservation. rate_per_night is a historical snapshot '
-    'captured at booking time — immutable after creation. '
+    'captured at booking time - immutable after creation. '
     'All rooms must belong to reservation.branch_id (enforced by sp_create_reservation).';
 
 COMMENT ON COLUMN reservation_rooms.rate_per_night IS

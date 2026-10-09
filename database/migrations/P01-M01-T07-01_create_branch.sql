@@ -9,6 +9,6 @@ create table if not exists branch(
 
 comment on table branch is
   'Hotel branches operated by SkyNest Hotels. '
-  'Seeded with Colombo, Kandy, Galle — do not add branches without team approval.';
+  'Seeded with Colombo, Kandy, Galle - do not add branches without team approval.';
 comment on column branch.branch_id is 'Auto-generated bigint surrogate key';
 comment on column branch.location_name is 'Unique city/location name for the branch';

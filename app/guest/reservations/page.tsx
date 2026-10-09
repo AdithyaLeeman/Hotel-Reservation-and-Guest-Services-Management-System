@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * My Reservations List Page — /guest/reservations
+ * My Reservations List Page - /guest/reservations
  *
  * Owned by: Member 3 (M3) | Task: P03-M03-T16
- * Type: MOCK-FIRST — calls GET /api/guest/reservations (currently mock data).
+ * Type: MOCK-FIRST - calls GET /api/guest/reservations (currently mock data).
  *
  * Responsibilities:
  *   - Fetch all reservations for the authenticated guest on mount
@@ -15,7 +15,7 @@
  *   - "Book a Room" CTA links back to /search
  *
  * Security: guest_id is sourced server-side from the session inside
- * GET /api/guest/reservations — never passed from this component.
+ * GET /api/guest/reservations - never passed from this component.
  *
  * TODO (P06-M03-T01): Replace dev-session stub in the API with real iron-session.
  */
@@ -37,7 +37,7 @@ const BRANCHES: Record<number, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Status badge config — Luxury bespoke pills
+// Status badge config - Luxury bespoke pills
 // ---------------------------------------------------------------------------
 
 interface StatusBadgeConfig {
@@ -73,7 +73,7 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Format ISO date as "01 Oct 2026" — display only. */
+/** Format ISO date as "01 Oct 2026" - display only. */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
   const clean = iso.includes('T') ? iso.split('T')[0] : iso;
@@ -87,7 +87,7 @@ function formatDate(iso: string): string {
 }
 
 /**
- * Count nights between two ISO date strings — DISPLAY ONLY.
+ * Count nights between two ISO date strings - DISPLAY ONLY.
  *
  * Used solely for the nights badge on reservation cards (cosmetic).
  * Authoritative billing uses PostgreSQL date arithmetic in fn_calc_room_charges().
@@ -166,7 +166,7 @@ function ReservationSkeleton() {
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// Reservation card — Enlarged luxury card layout
+// Reservation card - Enlarged luxury card layout
 // ---------------------------------------------------------------------------
 
 function ReservationCard({ reservation }: { reservation: Reservation }) {
@@ -262,7 +262,7 @@ function ReservationCard({ reservation }: { reservation: Reservation }) {
           <span className="font-serif text-lg tracking-wide text-white">SkyNest {branchName}</span>
         </div>
 
-        {/* Dates itinerary panel — framed luxury box */}
+        {/* Dates itinerary panel - framed luxury box */}
         <div className="bg-[#121110]/80 border border-[#2e2a24] rounded-xs p-5 grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-[11px] text-[#a8a29e] uppercase tracking-[0.18em] font-medium">
@@ -336,7 +336,7 @@ function ReservationCard({ reservation }: { reservation: Reservation }) {
             hover:shadow-lg transition-all duration-300
           "
         >
-          View Details &rarr;
+          View Details
         </Link>
 
       </div>
@@ -469,14 +469,14 @@ type LoadState = 'loading' | 'success' | 'error';
 
 export default function MyReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  // Start as 'loading' — avoids synchronous setState in the effect on mount.
+  // Start as 'loading' - avoids synchronous setState in the effect on mount.
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
   // Incrementing retryKey re-triggers the fetch effect (only from a click handler).
   const [retryKey, setRetryKey] = useState(0);
 
   /**
-   * Called from the retry button (a user click handler) — setState here is fine.
+   * Called from the retry button (a user click handler) - setState here is fine.
    * Incrementing retryKey causes the useEffect below to re-run.
    */
   function handleRetry() {
@@ -492,10 +492,10 @@ export default function MyReservationsPage() {
       try {
         /**
          * GET /api/guest/reservations
-         * guest_id is sourced server-side from the session — not passed here.
+         * guest_id is sourced server-side from the session - not passed here.
          * Response: { data: Reservation[], meta: { requestId } }
          *
-         * All setState calls are after the first `await` — never synchronous
+         * All setState calls are after the first `await` - never synchronous
          * within the effect body, satisfying react-hooks/set-state-in-effect.
          */
         const response = await fetch('/api/guest/reservations');

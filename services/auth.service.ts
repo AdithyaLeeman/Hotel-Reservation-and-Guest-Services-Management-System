@@ -32,7 +32,7 @@ export const authService = {
    * pg DatabaseError is re-thrown to the route handler.
    *
    * @param input - Validated guest registration fields
-   * @returns { user, guest } — safe to serialize (no password_hash)
+   * @returns { user, guest } - safe to serialize (no password_hash)
    * @throws DatabaseError (SQLSTATE 23505) on duplicate username or email
    */
   registerGuest: async (input: GuestRegisterInput): Promise<RegisterGuestResult> => {
@@ -66,15 +66,15 @@ export const authService = {
    * account status, then fetches the guest profile for session population.
    *
    * @param input - Validated username + password
-   * @returns SessionData — caller must write this to iron-session and save()
-   * @throws AuthServiceError('INVALID_CREDENTIALS') — wrong username or password
-   * @throws AuthServiceError('ACCOUNT_INACTIVE')    — account suspended/inactive
+   * @returns SessionData - caller must write this to iron-session and save()
+   * @throws AuthServiceError('INVALID_CREDENTIALS') - wrong username or password
+   * @throws AuthServiceError('ACCOUNT_INACTIVE')    - account suspended/inactive
    */
   loginGuest: async (input: GuestLoginInput): Promise<SessionData> => {
     // 1. Look up the user_account (includes password_hash for verification)
     const user = await userRepository.findByUsername(input.username);
 
-    // 2. Verify password — use the same error for missing user and wrong password
+    // 2. Verify password - use the same error for missing user and wrong password
     //    to prevent username enumeration attacks
     if (!user || !(await verifyPassword(input.password, user.password_hash))) {
       throw new AuthServiceError('INVALID_CREDENTIALS', 'Invalid username or password');
@@ -111,9 +111,9 @@ export const authService = {
    * credentials, checks account status, then returns session data.
    *
    * @param input - Validated username + password
-   * @returns SessionData — caller must write to iron-session and save()
-   * @throws AuthServiceError('INVALID_CREDENTIALS') — wrong username or password
-   * @throws AuthServiceError('ACCOUNT_INACTIVE')    — account suspended/inactive
+   * @returns SessionData - caller must write to iron-session and save()
+   * @throws AuthServiceError('INVALID_CREDENTIALS') - wrong username or password
+   * @throws AuthServiceError('ACCOUNT_INACTIVE')    - account suspended/inactive
    */
   loginStaff: async (input: StaffLoginInput): Promise<SessionData> => {
     // 1. Look up user_account + employee in one JOIN query

@@ -16,7 +16,7 @@ export type UserAccountWithHash = UserAccount & { password_hash: string };
 export const userRepository = {
   /**
    * Insert a new user_account row inside an existing transaction.
-   * Called during guest registration — must be wrapped with guestRepository.insertGuest
+   * Called during guest registration - must be wrapped with guestRepository.insertGuest
    * in the same transaction so both succeed or both rollback.
    *
    * @param client - Active PoolClient (from withTransaction)
@@ -37,7 +37,7 @@ export const userRepository = {
   },
 
   /**
-   * Find a user_account by username — INCLUDES password_hash for login verification.
+   * Find a user_account by username - INCLUDES password_hash for login verification.
    * NEVER pass the returned object to the HTTP response.
    *
    * Uses pool directly (read-only; no transaction needed).
@@ -58,7 +58,7 @@ export const userRepository = {
   },
 
   /**
-   * Find a user_account by user_id — does NOT include password_hash.
+   * Find a user_account by user_id - does NOT include password_hash.
    * Safe for session population and public-facing use.
    *
    * @param userId - UUID primary key
@@ -76,7 +76,7 @@ export const userRepository = {
 
   /**
    * Find a user_account joined with employee to get branch_id.
-   * INCLUDES password_hash — only for internal staff login verification.
+   * INCLUDES password_hash - only for internal staff login verification.
    * NEVER expose to route handlers or responses.
    *
    * @param username - The staff login username

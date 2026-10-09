@@ -52,7 +52,7 @@ export async function GET(): Promise<NextResponse> {
           (SELECT COUNT(*) FROM reservation)::int  AS total_reservations,
           (SELECT COUNT(*) FROM room)::int         AS total_rooms
       `),
-      // Audit log — last 100 entries
+      // Audit log - last 100 entries
       pool.query(`
         SELECT
           audit_id::text,

@@ -11,9 +11,9 @@ export interface MonthlyRevenueRow {
   room_revenue: string;       // NUMERIC(12,2) as string
   service_revenue: string;    // NUMERIC(12,2) as string
   tax_collected: string;      // NUMERIC(12,2) as string
-  total_revenue: string;      // NUMERIC(12,2) — grand total
+  total_revenue: string;      // NUMERIC(12,2) - grand total
   total_paid: string;         // NUMERIC(12,2)
-  total_outstanding: string;  // NUMERIC(12,2) — authoritative
+  total_outstanding: string;  // NUMERIC(12,2) - authoritative
 }
 
 export interface RevenueReportFilters {

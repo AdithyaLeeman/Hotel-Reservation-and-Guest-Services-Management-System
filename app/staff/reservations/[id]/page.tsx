@@ -1,7 +1,7 @@
 /**
  * Page: /staff/reservations/[id]
  *
- * Staff Reservation Detail — allows Receptionist/Manager/Admin to view
+ * Staff Reservation Detail - allows Receptionist/Manager/Admin to view
  * the full details of a single reservation and perform lifecycle actions:
  *   - Check In  (Booked -> CheckedIn)
  *   - Cancel    (Booked -> Cancelled)
@@ -203,7 +203,7 @@ function NotFoundState() {
         id="not-found-back-btn"
         className="btn btn-outline"
       >
-        &larr; Back to Reservations
+        Back to Reservations
       </Link>
     </div>
   );
@@ -263,7 +263,7 @@ function ErrorState({
           id="error-back-btn"
           className="btn btn-ghost"
         >
-          &larr; Reservations
+          Reservations
         </Link>
       </div>
     </div>
@@ -658,7 +658,7 @@ export default function StaffReservationDetailPage({
               id="detail-back-link"
               className="btn btn-ghost text-sm hidden sm:inline-flex"
             >
-              &larr; Reservations
+              Reservations
             </Link>
           </header>
 
@@ -770,7 +770,7 @@ export default function StaffReservationDetailPage({
                   </dl>
                 </div>
 
-                {/* Action toolbar — hidden for terminal states */}
+                {/* Action toolbar - hidden for terminal states */}
                 {!isTerminal && (
                   <div
                     id="reservation-actions-bar"
@@ -821,7 +821,7 @@ export default function StaffReservationDetailPage({
                           className="btn btn-outline btn-sm"
                           aria-label="Add or view service usage for this reservation"
                         >
-                          Add / View Services &rarr;
+                          Add / View Services
                         </Link>
                       </>
                     )}
@@ -853,7 +853,7 @@ export default function StaffReservationDetailPage({
                 id="detail-back-link-mobile"
                 className="btn btn-ghost text-sm"
               >
-                &larr; Back to Reservations
+                Back to Reservations
               </Link>
             </div>
           )}

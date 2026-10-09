@@ -1,16 +1,16 @@
-# docs/03 — Course Concept Mapping
+# docs/03 - Course Concept Mapping
 
 _Maps every required DB mechanism to the lecture slides that cover it. Required for academic alignment._
 _When building any DB routine, cite the lecture here. Update after each task._
 
-## Lecture Reference (L01–L14)
+## Lecture Reference (L01-L14)
 
 | L# | Topic |
 |---|---|
 | L01 | Introduction to Database Systems |
-| L02 | Entity–Relationship Model (ER diagrams, cardinality) |
+| L02 | Entity-Relationship Model (ER diagrams, cardinality) |
 | L03 | Relational Model (domains, tuples, relations, relational algebra) |
-| L04 | Normalization (1NF–3NF, BCNF, functional dependencies) |
+| L04 | Normalization (1NF-3NF, BCNF, functional dependencies) |
 | L05 | SQL: DDL, DML, views, integrity constraints, transactions |
 | L06 | Database Design (mapping ER to relational) |
 | L07 | Database Application Programming (JDBC-style, security) |
@@ -30,9 +30,9 @@ _When building any DB routine, cite the lecture here. Update after each task._
 |---|---|---|---|
 | ER diagram (entities, relationships, cardinality) | L02 | `docs/05_current-erd-and-schema.md`, ERD source | Documented |
 | ER to relational mapping (junction tables, FKs) | L06 | `database/migrations/P01-P03` DDL | TODO |
-| 1NF — no repeating groups | L04 | `amenity` + `room_type_amenity` tables (normalized from SRS text field) | Designed |
-| 2NF — no partial dependencies | L04 | `reservation_rooms.rate_per_night` depends on full composite PK | Designed |
-| 3NF — no transitive dependencies | L04 | Documented in `docs/06_normalization` | TODO |
+| 1NF - no repeating groups | L04 | `amenity` + `room_type_amenity` tables (normalized from SRS text field) | Designed |
+| 2NF - no partial dependencies | L04 | `reservation_rooms.rate_per_night` depends on full composite PK | Designed |
+| 3NF - no transitive dependencies | L04 | Documented in `docs/06_normalization` | TODO |
 | BCNF analysis | L04 | `docs/06_normalization` | TODO |
 | Functional dependencies | L04 | `docs/06_normalization` | TODO |
 | SQL DDL (CREATE TABLE, constraints) | L05 | All migration files | TODO |
@@ -50,7 +50,7 @@ _When building any DB routine, cite the lecture here. Update after each task._
 | GROUP BY, HAVING | L03 | Monthly revenue report, usage breakdown | TODO |
 | INNER JOIN, LEFT OUTER JOIN | L05 | Availability query, billing views, reports | TODO |
 | Subqueries and correlated subqueries | L05 | Availability overlap check | TODO |
-| NUMERIC(p,s) — exact decimal | L03 | All money columns | TODO |
+| NUMERIC(p,s) - exact decimal | L03 | All money columns | TODO |
 | DATE, TIMESTAMP WITH TIME ZONE | L03 | check_in_date, usage_date, etc. | TODO |
 | PL/pgSQL stored functions | L08 | `fn_calc_room_charges`, `fn_calc_service_charges`, `fn_get_available_rooms` | TODO |
 | PL/pgSQL stored procedures | L08 | `sp_create_reservation`, `sp_check_in`, `sp_log_service_usage`, `sp_finalize_invoice`, `sp_post_payment`, `sp_checkout` | TODO |

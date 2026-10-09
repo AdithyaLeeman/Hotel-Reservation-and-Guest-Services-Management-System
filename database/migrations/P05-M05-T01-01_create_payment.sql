@@ -1,8 +1,8 @@
 -- =============================================================================
 -- Migration: P05-M05-T01-01_create_payment.sql
 -- Owner:     Member 5 (Kabilraj K., 240304C)
--- Phase:     P5 — Payments, Checkout, and Reports
--- Depends:   P04-M05-T02 (billing_summary) — must be executed first
+-- Phase:     P5 - Payments, Checkout, and Reports
+-- Depends:   P04-M05-T02 (billing_summary) - must be executed first
 --            P01-M01-T08 (employee), P01-M01-T06 (user_account)
 -- Execute:   After SP4.5 DB steps are DONE
 -- Lecture:   L05 (DDL, constraints), L08 (idempotency via UNIQUE)
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS payment (
     -- Business rule BR-12: duplicate transaction_reference must be rejected
     CONSTRAINT uq_payment_transaction_reference UNIQUE (transaction_reference),
 
-    -- Foreign keys (all RESTRICT — payment rows must not be orphaned)
+    -- Foreign keys (all RESTRICT - payment rows must not be orphaned)
 
     -- FK to billing_summary (invoice this payment is against)
     CONSTRAINT fk_payment_invoice
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS payment (
         REFERENCES employee(employee_id)
         ON DELETE RESTRICT,
 
-    -- FK to user_account (the user who made the payment — guest or staff acting on behalf)
+    -- FK to user_account (the user who made the payment - guest or staff acting on behalf)
     CONSTRAINT fk_payment_user
         FOREIGN KEY (paid_by_user_id)
         REFERENCES user_account(user_id)
@@ -62,7 +62,7 @@ CREATE INDEX IF NOT EXISTS idx_payment_invoice_id
 CREATE INDEX IF NOT EXISTS idx_payment_payment_date
     ON payment(payment_date DESC);
 
--- Index: filter by processor (staff audit — "all payments processed by employee X")
+-- Index: filter by processor (staff audit - "all payments processed by employee X")
 CREATE INDEX IF NOT EXISTS idx_payment_employee_id
     ON payment(processed_by_employee_id)
     WHERE processed_by_employee_id IS NOT NULL;
@@ -70,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_payment_employee_id
 COMMENT ON TABLE payment IS
     'Individual payment records posted against a billing_summary invoice. '
     'A reservation may receive multiple partial payments. '
-    'sp_post_payment() is the authoritative write path — never INSERT directly. '
+    'sp_post_payment() is the authoritative write path - never INSERT directly. '
     'Outstanding balance is computed by vw_invoice_totals, never stored here.';
 
 COMMENT ON COLUMN payment.amount_paid IS
@@ -79,7 +79,7 @@ COMMENT ON COLUMN payment.amount_paid IS
 
 COMMENT ON COLUMN payment.payment_method IS
     'Payment method string, e.g. ''Cash'', ''Credit Card'', ''Bank Transfer''. '
-    'Not an enum — method options may expand without a schema migration.';
+    'Not an enum - method options may expand without a schema migration.';
 
 COMMENT ON COLUMN payment.processed_by_employee_id IS
     'Staff member who processed the payment. NULL for online/self-service payments '

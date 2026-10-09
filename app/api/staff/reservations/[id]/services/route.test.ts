@@ -96,7 +96,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(serviceUsageService.logUsage).toHaveBeenCalledOnce();
   });
 
-  // Validation — missing service_id
+  // Validation - missing service_id
   it('returns 400 when service_id is missing', async () => {
     const res = await POST(makeRequest({ quantity: 2, usage_date: '2026-09-28' }), makeParams());
     const json = await res.json();
@@ -106,7 +106,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.fields).toHaveProperty('service_id');
   });
 
-  // Validation — quantity < 1
+  // Validation - quantity < 1
   it('returns 400 when quantity is less than 1', async () => {
     const res = await POST(makeRequest({ ...VALID_BODY, quantity: 0 }), makeParams());
     const json = await res.json();
@@ -115,7 +115,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.fields).toHaveProperty('quantity');
   });
 
-  // Validation — bad date format
+  // Validation - bad date format
   it('returns 400 when usage_date is not YYYY-MM-DD', async () => {
     const res = await POST(makeRequest({ ...VALID_BODY, usage_date: '28-09-2026' }), makeParams());
     const json = await res.json();
@@ -124,7 +124,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.fields).toHaveProperty('usage_date');
   });
 
-  // Validation — non-JSON body
+  // Validation - non-JSON body
   it('returns 400 when body is not valid JSON', async () => {
     const req = new NextRequest(
       `http://localhost/api/staff/reservations/${RESERVATION_ID}/services`,
@@ -137,7 +137,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
-  // Service error — NOT_FOUND
+  // Service error - NOT_FOUND
   it('returns 404 when service is not found', async () => {
     vi.mocked(serviceUsageService.logUsage).mockRejectedValueOnce(
       new ServiceUsageServiceError('NOT_FOUND', 'Service ID 99 not found.')
@@ -150,7 +150,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.code).toBe('NOT_FOUND');
   });
 
-  // Service error — NOT_CHECKED_IN
+  // Service error - NOT_CHECKED_IN
   it('returns 409 when reservation is not checked in', async () => {
     vi.mocked(serviceUsageService.logUsage).mockRejectedValueOnce(
       new ServiceUsageServiceError('NOT_CHECKED_IN', 'Reservation is not checked in.')
@@ -163,7 +163,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.code).toBe('INVALID_STATUS_TRANSITION');
   });
 
-  // Service error — SERVICE_INACTIVE
+  // Service error - SERVICE_INACTIVE
   it('returns 422 when service is inactive', async () => {
     vi.mocked(serviceUsageService.logUsage).mockRejectedValueOnce(
       new ServiceUsageServiceError('SERVICE_INACTIVE', 'Service is currently inactive.')
@@ -176,7 +176,7 @@ describe('POST /api/staff/reservations/[id]/services', () => {
     expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
-  // Service error — INVALID_QUANTITY
+  // Service error - INVALID_QUANTITY
   it('returns 422 when quantity is invalid per service rules', async () => {
     vi.mocked(serviceUsageService.logUsage).mockRejectedValueOnce(
       new ServiceUsageServiceError('INVALID_QUANTITY', 'Quantity must be at least 1.')

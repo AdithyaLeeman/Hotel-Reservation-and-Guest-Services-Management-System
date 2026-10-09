@@ -1,21 +1,21 @@
 /**
- * Payment Repository — calls sp_post_payment() and sp_checkout(), reads payment table.
+ * Payment Repository - calls sp_post_payment() and sp_checkout(), reads payment table.
  *
  * DB-first rule (AGENTS.md §5):
  *   - sp_post_payment() handles idempotency + balance check inside PostgreSQL
  *   - sp_checkout() enforces outstanding_balance = 0 guard inside PostgreSQL
  *   - TypeScript NEVER performs financial arithmetic
  *
- * P06-M05-T01 — Wire payment to real DB with test mock store support.
+ * P06-M05-T01 - Wire payment to real DB with test mock store support.
  *
  * SQLSTATE reference (docs/21_shared-contracts.md §14):
- *   22023 — payment amount ≤ 0
- *   23503 — invoice not found (FK violation)
- *   23505 — duplicate transaction_reference (unique violation)
- *   23514 — check violation (amount ≤ 0)
- *   45020 — amount exceeds outstanding balance
- *   45030 — outstanding balance > 0 (checkout blocked)
- *   45031 — reservation not in CheckedIn status
+ *   22023 - payment amount ≤ 0
+ *   23503 - invoice not found (FK violation)
+ *   23505 - duplicate transaction_reference (unique violation)
+ *   23514 - check violation (amount ≤ 0)
+ *   45020 - amount exceeds outstanding balance
+ *   45030 - outstanding balance > 0 (checkout blocked)
+ *   45031 - reservation not in CheckedIn status
  *
  * Lecture alignment: L05 (ACID / transactions), L08 (stored procedures), L11 (concurrency)
  */

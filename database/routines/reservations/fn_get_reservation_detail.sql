@@ -14,15 +14,15 @@
 --   - Branch location name
 --
 -- INPUTS:
---   p_reservation_id  UUID  — the reservation to fetch
---   p_guest_id        UUID  — if NOT NULL, enforces guest ownership
---                             (pass NULL for staff access — no ownership check)
+--   p_reservation_id  UUID  - the reservation to fetch
+--   p_guest_id        UUID  - if NOT NULL, enforces guest ownership
+--                             (pass NULL for staff access - no ownership check)
 --
 -- OUTPUT: SETOF reservation_detail_row (composite type defined below)
 --
 -- SECURITY:
 --   When p_guest_id is provided, function raises 'P0002' (no_data_found)
---   if the reservation does not belong to that guest — same error as "not found"
+--   if the reservation does not belong to that guest - same error as "not found"
 --   to avoid information leakage.
 -- =============================================================================
 
@@ -35,7 +35,7 @@
 --   DROP TYPE IF EXISTS reservation_detail_row CASCADE;
 -- Then re-run this file. Alternatively, create a new numbered migration file
 -- (e.g. P03-M03-T04-02_alter_reservation_types.sql) that drops and recreates.
--- Do NOT just edit this file in place and re-run — the DO block will no-op.
+-- Do NOT just edit this file in place and re-run - the DO block will no-op.
 DO $$ BEGIN
     CREATE TYPE reservation_room_row AS (
         room_id         BIGINT,
@@ -99,7 +99,7 @@ BEGIN
 
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        -- Either not found or wrong guest — same response to prevent info leak
+        -- Either not found or wrong guest - same response to prevent info leak
         RAISE EXCEPTION 'Reservation % not found', p_reservation_id
             USING ERRCODE = 'P0002';
 END;

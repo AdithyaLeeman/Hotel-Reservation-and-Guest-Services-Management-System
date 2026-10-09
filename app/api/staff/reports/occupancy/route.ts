@@ -82,16 +82,16 @@ function isIsoDate(s: string): boolean {
  * Access: Manager | Admin only.
  *
  * Query params:
- *   branchId    — integer, filter to one branch
- *   fromDate    — YYYY-MM-DD, inclusive lower bound on period_date
- *   toDate      — YYYY-MM-DD, inclusive upper bound on period_date
- *   roomStatus  — 'Available' | 'Occupied' | 'Maintenance'
+ *   branchId    - integer, filter to one branch
+ *   fromDate    - YYYY-MM-DD, inclusive lower bound on period_date
+ *   toDate      - YYYY-MM-DD, inclusive upper bound on period_date
+ *   roomStatus  - 'Available' | 'Occupied' | 'Maintenance'
  *
  * Response 200:
  *   { data: OccupancyReportRow[], meta: { requestId, count } }
  *
  * Task: P05-M02-T02
- * Owner: M2 — Karunarathna W.P. 240331F
+ * Owner: M2 - Karunarathna W.P. 240331F
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
@@ -101,7 +101,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Not authenticated.');
     }
 
-    // 2. RBAC — Manager / Admin only
+    // 2. RBAC - Manager / Admin only
     if (!isReportRole(session.role)) {
       return err(
         403,

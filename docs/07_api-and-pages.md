@@ -1,4 +1,4 @@
-# docs/07 — API and Pages
+# docs/07 - API and Pages
 
 _All route handlers and pages. Detailed contracts in `docs/21_shared-contracts.md`._
 

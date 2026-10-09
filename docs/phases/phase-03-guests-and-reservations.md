@@ -1,17 +1,17 @@
-# Phase 3 — Guests and Reservations
+# Phase 3 - Guests and Reservations
 
 ## Integration Owner: Member 3 (M3)
 ## Dependency (DB layer): SP1.2 (guest/branch/employee tables) + SP2.1 (room table) executed
 ## Parallel start: SP3.3, SP3.4, SP3.5 begin Day 1 with mock data
 
 ## Parallelism Strategy
-- **SP3.1** — `reservation` + `reservation_rooms` DDL. FK dependencies: guest, branch, employee, room. Write + run after SP1.2 + SP2.1 are merged.
-- **SP3.2** — DB procedures. Write SQL any time; execute after SP3.1 is executed. `sp_create_reservation` needs `fn_get_available_rooms` from SP2.2.
-- **SP3.3 / SP3.4 / SP3.5** — All API routes and UI pages. Develop against mock returns from Day 1.
+- **SP3.1** - `reservation` + `reservation_rooms` DDL. FK dependencies: guest, branch, employee, room. Write + run after SP1.2 + SP2.1 are merged.
+- **SP3.2** - DB procedures. Write SQL any time; execute after SP3.1 is executed. `sp_create_reservation` needs `fn_get_available_rooms` from SP2.2.
+- **SP3.3 / SP3.4 / SP3.5** - All API routes and UI pages. Develop against mock returns from Day 1.
 
 ## Subphases
 
-### SP3.1 — Reservation Schema _(DB serial, after SP1.2 + SP2.1 executed)_
+### SP3.1 - Reservation Schema _(DB serial, after SP1.2 + SP2.1 executed)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -22,7 +22,7 @@
 
 ---
 
-### SP3.2 — Reservation DB _(DB serial, after SP3.1)_
+### SP3.2 - Reservation DB _(DB serial, after SP3.1)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -44,23 +44,23 @@ COMMIT -- or ROLLBACK + RAISE EXCEPTION on any failure
 
 ---
 
-### SP3.3 — Guest Booking API _(mock-first — start Day 1)_
+### SP3.3 - Guest Booking API _(mock-first - start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
-| P03-M03-T07 | Reservation repository — create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
-| P03-M03-T08 | Reservation repository — list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
-| P03-M03-T09 | Reservation repository — get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
-| P03-M03-T10 | Reservation service — orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` |
-| P03-M03-T11 | POST `/api/guest/reservations` — create booking | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` |
-| P03-M03-T12 | GET `/api/guest/reservations` — my reservations list | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` |
-| P03-M03-T13 | GET `/api/guest/reservations/[id]` — reservation detail | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/route.ts` |
+| P03-M03-T07 | Reservation repository - create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
+| P03-M03-T08 | Reservation repository - list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
+| P03-M03-T09 | Reservation repository - get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` |
+| P03-M03-T10 | Reservation service - orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` |
+| P03-M03-T11 | POST `/api/guest/reservations` - create booking | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` |
+| P03-M03-T12 | GET `/api/guest/reservations` - my reservations list | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` |
+| P03-M03-T13 | GET `/api/guest/reservations/[id]` - reservation detail | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/route.ts` |
 
 Security rule: `guest_id` is always read from session, never from request body.
 
 ---
 
-### SP3.4 — Guest Booking UI _(mock-first — start Day 1)_
+### SP3.4 - Guest Booking UI _(mock-first - start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
@@ -71,19 +71,19 @@ Security rule: `guest_id` is always read from session, never from request body.
 
 ---
 
-### SP3.5 — Staff Reservation _(mock-first — start Day 1)_
+### SP3.5 - Staff Reservation _(mock-first - start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
-| P03-M03-T18 | POST `/api/staff/reservations` — create reservation (staff) | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` |
-| P03-M03-T19 | GET `/api/staff/reservations` — list with filters | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` |
+| P03-M03-T18 | POST `/api/staff/reservations` - create reservation (staff) | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` |
+| P03-M03-T19 | GET `/api/staff/reservations` - list with filters | 🟡 MOCK-FIRST | `app/api/staff/reservations/route.ts` |
 | P03-M03-T20 | PATCH `/api/staff/reservations/[id]/cancel` | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/cancel/route.ts` |
 | P03-M03-T21 | Staff reservations list page | 🟡 MOCK-FIRST | `app/staff/reservations/page.tsx` |
 | P03-M03-T22 | Staff reservation detail page | 🟡 MOCK-FIRST | `app/staff/reservations/[id]/page.tsx` |
 
 ---
 
-### SP3.6 — Tests _(serial, after SP3.1 / SP3.2 executed)_
+### SP3.6 - Tests _(serial, after SP3.1 / SP3.2 executed)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
@@ -93,10 +93,10 @@ Security rule: `guest_id` is always read from session, never from request body.
 ## Key DB Deliverables
 - `reservation` table (FK to guest, branch, employee)
 - `reservation_rooms` table (FK to reservation, room)
-- `sp_create_reservation()` — atomic, overlap-safe, branch-scoped
-- `fn_get_reservation_detail()` — full join for UI display
-- `sp_cancel_reservation()` — lifecycle state guard
-- `vw_active_reservations` — filtered view for dashboard
+- `sp_create_reservation()` - atomic, overlap-safe, branch-scoped
+- `fn_get_reservation_detail()` - full join for UI display
+- `sp_cancel_reservation()` - lifecycle state guard
+- `vw_active_reservations` - filtered view for dashboard
 
 ## Completion Criteria
 - Booking atomically creates reservation + reservation_rooms

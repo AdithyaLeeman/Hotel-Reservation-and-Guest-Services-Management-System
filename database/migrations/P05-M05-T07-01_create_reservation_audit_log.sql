@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS reservation_audit_log (
     -- Primary key
     CONSTRAINT pk_reservation_audit_log PRIMARY KEY (audit_id),
 
-    -- Foreign keys (RESTRICT — audit rows must not be orphaned)
+    -- Foreign keys (RESTRICT - audit rows must not be orphaned)
     CONSTRAINT fk_audit_log_reservation
         FOREIGN KEY (reservation_id) REFERENCES reservation(reservation_id) ON DELETE RESTRICT,
 
@@ -34,7 +34,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_reservation_id
 CREATE INDEX IF NOT EXISTS idx_audit_log_changed_at
     ON reservation_audit_log (changed_at DESC);
 
--- Index: filter by actor (admin audit — "all changes made by employee X")
+-- Index: filter by actor (admin audit - "all changes made by employee X")
 CREATE INDEX IF NOT EXISTS idx_audit_log_employee_id
     ON reservation_audit_log (employee_id)
     WHERE employee_id IS NOT NULL;

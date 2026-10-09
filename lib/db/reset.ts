@@ -1,5 +1,5 @@
 /**
- * DB reset script — P06-M01-T02
+ * DB reset script - P06-M01-T02
  *
  * Drops and recreates the database from empty, then runs migrations, applies
  * all routines/views/triggers/indexes in correct dependency order, and finally
@@ -8,8 +8,8 @@
  * Run with: npm run db:reset
  *
  * Requires in .env.local:
- *   POSTGRES_ADMIN_URL — superuser connection string (NOT to hrgsms DB itself)
- *   DATABASE_URL       — application connection string (to hrgsms DB)
+ *   POSTGRES_ADMIN_URL - superuser connection string (NOT to hrgsms DB itself)
+ *   DATABASE_URL       - application connection string (to hrgsms DB)
  *
  * WARNING: This destroys ALL data. Development use only.
  *
@@ -46,7 +46,7 @@ async function applyDirectory(
       .map((e) => e.name)
       .sort();
   } catch {
-    console.log(`[reset]   No files found in ${label} — skipping.`);
+    console.log(`[reset]   No files found in ${label} - skipping.`);
     return;
   }
 
@@ -69,7 +69,7 @@ async function applyDirectoryRecursive(
   try {
     entries = await readdir(dirPath, { withFileTypes: true });
   } catch {
-    console.log(`[reset]   No directory ${label} — skipping.`);
+    console.log(`[reset]   No directory ${label} - skipping.`);
     return;
   }
 
@@ -127,7 +127,7 @@ async function resetDatabase(): Promise<void> {
   // -------------------------------------------------------------------------
   // Step 1: Drop and recreate the database via admin connection
   // -------------------------------------------------------------------------
-  console.log('\n[reset] Step 1 — Drop and recreate database...');
+  console.log('\n[reset] Step 1 - Drop and recreate database...');
   const adminClient = new Client({ connectionString: adminUrl });
   await adminClient.connect();
 
@@ -149,7 +149,7 @@ async function resetDatabase(): Promise<void> {
   // -------------------------------------------------------------------------
   // Step 2: Run migrations (tables, enums, constraints, indexes in migrations/)
   // -------------------------------------------------------------------------
-  console.log('\n[reset] Step 2 — Running migrations (npm run migrate)...');
+  console.log('\n[reset] Step 2 - Running migrations (npm run migrate)...');
   execSync('npm run migrate', { stdio: 'inherit', cwd: PROJECT_ROOT });
 
   // -------------------------------------------------------------------------
@@ -158,19 +158,19 @@ async function resetDatabase(): Promise<void> {
   //
   //         Dependency order (must match FK and routine call graph):
   //           3a. billing-inputs (fn_calc_room_charges, fn_calc_service_charges,
-  //               sp_log_service_usage) — no view deps
-  //           3b. availability (fn_get_available_rooms) — depends on reservation_rooms
+  //               sp_log_service_usage) - no view deps
+  //           3b. availability (fn_get_available_rooms) - depends on reservation_rooms
   //           3c. reservations (sp_create_reservation, fn_get_reservation_detail,
-  //               sp_cancel_reservation) — depends on availability fn
-  //           3d. checkin (sp_check_in) — depends on reservation tables
-  //           3e. billing (sp_finalize_invoice) — depends on billing-inputs fns
-  //           3f. payments (sp_post_payment) — depends on billing_summary
-  //           3g. checkout (sp_checkout) — depends on payment + billing
-  //           3h. views — depend on all tables + routines above
-  //           3i. triggers — depend on tables + audit log
-  //           3j. indexes — standalone, no deps beyond tables
+  //               sp_cancel_reservation) - depends on availability fn
+  //           3d. checkin (sp_check_in) - depends on reservation tables
+  //           3e. billing (sp_finalize_invoice) - depends on billing-inputs fns
+  //           3f. payments (sp_post_payment) - depends on billing_summary
+  //           3g. checkout (sp_checkout) - depends on payment + billing
+  //           3h. views - depend on all tables + routines above
+  //           3i. triggers - depend on tables + audit log
+  //           3j. indexes - standalone, no deps beyond tables
   // -------------------------------------------------------------------------
-  console.log('\n[reset] Step 3 — Applying routines, views, triggers, and indexes...');
+  console.log('\n[reset] Step 3 - Applying routines, views, triggers, and indexes...');
 
   const appClient = new Client({ connectionString: appUrl });
   await appClient.connect();
@@ -191,13 +191,13 @@ async function resetDatabase(): Promise<void> {
     await applyDirectory(appClient, join(routinesDir, subdir), `routines/${subdir}`);
   }
 
-  // Views must be applied in dependency order — vw_invoice_totals has no view
+  // Views must be applied in dependency order - vw_invoice_totals has no view
   // dependencies and must come before vw_guest_billing_summary and vw_monthly_revenue
   // which both SELECT from it.
   const orderedViews = [
     'vw_active_reservations.sql',
     'vw_audit_log.sql',
-    'vw_invoice_totals.sql',           // no view deps — base view for billing
+    'vw_invoice_totals.sql',           // no view deps - base view for billing
     'vw_guest_billing_summary.sql',    // depends on vw_invoice_totals
     'vw_monthly_revenue.sql',          // depends on vw_invoice_totals
     'vw_room_occupancy.sql',
@@ -215,7 +215,7 @@ async function resetDatabase(): Promise<void> {
   console.log('[reset]   Triggers:');
   await applyDirectory(appClient, join(PROJECT_ROOT, 'database', 'triggers'), 'triggers');
 
-  // idx_reservation_rooms_room_dates.sql is a psql \ir redirect file — not valid SQL.
+  // idx_reservation_rooms_room_dates.sql is a psql \ir redirect file - not valid SQL.
   // It simply re-includes idx_reservation_rooms_dates.sql which is already applied above.
   // We apply only real SQL index files here.
   const orderedIndexes = [
@@ -234,7 +234,7 @@ async function resetDatabase(): Promise<void> {
   // -------------------------------------------------------------------------
   // Step 4: Run seeds
   // -------------------------------------------------------------------------
-  console.log('\n[reset] Step 4 — Running seeds (npm run seed)...');
+  console.log('\n[reset] Step 4 - Running seeds (npm run seed)...');
   execSync('npm run seed', { stdio: 'inherit', cwd: PROJECT_ROOT });
 
   console.log('\n[reset] ✓ Clean rebuild complete. Database is ready.');

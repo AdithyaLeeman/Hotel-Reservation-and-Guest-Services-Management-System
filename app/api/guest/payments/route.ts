@@ -107,7 +107,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         transaction_reference: input.transaction_reference ?? null,
       },
       session.userId,
-      null, // employeeId — null for guest self-pay; staff payments use P05-M05-T11
+      null, // employeeId - null for guest self-pay; staff payments use P05-M05-T11
     );
 
     return ok(payment, 201);

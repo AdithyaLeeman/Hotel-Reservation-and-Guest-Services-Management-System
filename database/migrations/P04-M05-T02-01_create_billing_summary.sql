@@ -31,14 +31,14 @@ CREATE INDEX IF NOT EXISTS idx_billing_summary_reservation_id
 CREATE INDEX IF NOT EXISTS idx_billing_summary_invoice_date
     ON billing_summary(invoice_date DESC);
 
--- Index: filter by payment_status (Unpaid / PartiallyPaid / Paid — used in billing reports)
+-- Index: filter by payment_status (Unpaid / PartiallyPaid / Paid - used in billing reports)
 CREATE INDEX IF NOT EXISTS idx_billing_summary_payment_status
     ON billing_summary(payment_status);
 
 COMMENT ON TABLE billing_summary IS
     'One stored invoice record per reservation. '
     'Created by sp_finalize_invoice() which snapshots the active tax rate. '
-    'Monetary totals are NOT stored here — they are computed by vw_invoice_totals '
+    'Monetary totals are NOT stored here - they are computed by vw_invoice_totals '
     'using fn_calc_room_charges(), fn_calc_service_charges(), and SUM(payment.amount_paid). '
     'Decision D006: billing_summary is a stored table; vw_invoice_totals computes running totals.';
 

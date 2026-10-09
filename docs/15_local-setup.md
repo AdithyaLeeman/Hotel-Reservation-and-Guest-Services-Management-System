@@ -1,4 +1,4 @@
-# docs/15 — Local Setup
+# docs/15 - Local Setup
 
 ## Prerequisites
 - Node.js 20+ (LTS)

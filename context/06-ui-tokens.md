@@ -1,22 +1,22 @@
-# context/06 — UI Tokens
+# context/06 - UI Tokens
 
 _Single source of truth for design token names and values._
 _Updated: P01-M01-T22 DONE. Actual CSS variables now live in `app/globals.css`._
 
 ## Status
-Phase 1 — Tokens implemented in `app/globals.css` via Tailwind v4 `@theme inline`.
+Phase 1 - Tokens implemented in `app/globals.css` via Tailwind v4 `@theme inline`.
 Root layout with Inter + JetBrains Mono via `next/font/google` implemented in `app/layout.tsx`.
 
 ## Color Palette (Implemented)
 
 ```css
-/* ── Brand / Primary — Deep Teal ── */
+/* ── Brand / Primary - Deep Teal ── */
 --color-primary:        hsl(196 80% 30%)   /* #0d6e84 */
 --color-primary-hover:  hsl(196 80% 25%)
 --color-primary-muted:  hsl(196 40% 92%)
 --color-primary-fg:     hsl(0 0% 100%)     /* text on primary bg */
 
-/* ── Accent — Warm Gold (luxury hotel) ── */
+/* ── Accent - Warm Gold (luxury hotel) ── */
 --color-accent:         hsl(40 80% 50%)    /* #d4910a */
 --color-accent-hover:   hsl(40 80% 43%)
 --color-accent-muted:   hsl(40 60% 95%)
@@ -60,20 +60,24 @@ Root layout with Inter + JetBrains Mono via `next/font/google` implemented in `a
 
 ### Dark Mode
 Tokens above are overridden in:
-- `@media (prefers-color-scheme: dark)` — OS-level automatic
-- `[data-theme="dark"]` — manual toggle (staff portal preference in `localStorage['skynest-theme']`)
-- `[data-theme="light"]` — force light (overrides OS dark)
+- `@media (prefers-color-scheme: dark)` - OS-level automatic
+- `[data-theme="dark"]` - manual toggle (staff portal preference in `localStorage['skynest-theme']`)
+- `[data-theme="light"]` - force light (overrides OS dark)
 - FOUC prevention: inline `<script>` in root `<head>` reads `localStorage` before paint.
 
 ## Typography (Implemented)
 
 ```css
---font-sans:  'Inter', ui-sans-serif, system-ui, sans-serif
---font-mono:  'JetBrains Mono', ui-monospace, monospace
+--font-sans:     var(--font-lato), 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+--font-serif:    var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+--font-heading:  var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+--font-body:     var(--font-lato), 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+--font-mono:     var(--font-mono), 'JetBrains Mono', ui-monospace, monospace
 ```
 
-- Loaded via `next/font/google` in `app/layout.tsx` (preloaded, no layout shift).
-- CSS variables `--font-sans` / `--font-mono` injected as `--font-sans` / `--font-mono` in `@theme`.
+- Typography matched to `burjkhalifa.ae` official web system: **Inter** for headings, display titles, buttons, and navigation; **Lato** for body, descriptions, inputs, tables, and UI text.
+- Loaded via `next/font/google` in `app/layout.tsx` (preloaded, no layout shift) + Google Fonts fallback `<link>` in root `<head>`.
+- CSS variables injected via Tailwind v4 `@theme inline` in `app/globals.css`.
 
 ## Border Radius (Implemented)
 
@@ -131,12 +135,12 @@ _Updated by P01-M01-T22 (globals.css) and P01-M01-T23 (layout.tsx)._
 These are the intended token names. CSS variable values will be defined in `app/globals.css`.
 
 ```css
-/* Base palette — to be finalized in Phase 1 */
---color-primary:        /* Main brand color — planned: deep blue/teal */
+/* Base palette - to be finalized in Phase 1 */
+--color-primary:        /* Main brand color - planned: deep blue/teal */
 --color-primary-hover:  /* Hover state */
 --color-primary-muted:  /* Subtle tint */
 
---color-accent:         /* Accent — planned: gold/amber for luxury hotel feel */
+--color-accent:         /* Accent - planned: gold/amber for luxury hotel feel */
 --color-accent-hover:
 
 --color-surface:        /* Card/panel background */
@@ -153,10 +157,10 @@ These are the intended token names. CSS variable values will be defined in `app/
 --color-border:         /* Default border */
 --color-border-strong:  /* Emphasized border */
 
---color-success:        /* Green — checked out, paid */
---color-warning:        /* Amber — partial payment, maintenance */
---color-error:          /* Red — validation error, cancelled */
---color-info:           /* Blue — informational */
+--color-success:        /* Green - checked out, paid */
+--color-warning:        /* Amber - partial payment, maintenance */
+--color-error:          /* Red - validation error, cancelled */
+--color-info:           /* Blue - informational */
 
 /* Status badge colors */
 --color-status-booked:
@@ -168,8 +172,8 @@ These are the intended token names. CSS variable values will be defined in `app/
 ## Typography (Planned)
 
 ```css
---font-sans:    /* Primary — planned: 'Inter', sans-serif (Google Fonts) */
---font-mono:    /* Code/data — planned: 'JetBrains Mono', monospace */
+--font-sans:    /* Primary - planned: 'Inter', sans-serif (Google Fonts) */
+--font-mono:    /* Code/data - planned: 'JetBrains Mono', monospace */
 
 --text-xs:      /* 0.75rem */
 --text-sm:      /* 0.875rem */

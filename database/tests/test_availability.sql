@@ -1,6 +1,6 @@
 -- ============================================================================
 -- Test Suite: test_availability.sql
--- Subphase:   SP2.5 — Tests
+-- Subphase:   SP2.5 - Tests
 -- Task:       P02-M02-T17
 -- Member:     Member 2 (Room Inventory and Availability)
 -- Purpose:    Comprehensive test script for fn_get_available_rooms() function.
@@ -128,7 +128,7 @@ BEGIN
   RAISE NOTICE 'Test 1 PASSED: Overlapping active reservations and maintenance excluded correctly.';
 
   -- -------------------------------------------------------------------------
-  -- TEST CASE 2: Boundary check — check_in = existing check_out (2026-11-05 to 2026-11-08)
+  -- TEST CASE 2: Boundary check - check_in = existing check_out (2026-11-05 to 2026-11-08)
   -- Expected: Room C is AVAILABLE because previous guest departs on 2026-11-05
   -- -------------------------------------------------------------------------
   PERFORM 1 FROM fn_get_available_rooms(v_test_branch_id, '2026-11-05'::DATE, '2026-11-08'::DATE)
@@ -138,7 +138,7 @@ BEGIN
   RAISE NOTICE 'Test 2 PASSED: Departure day boundary availability confirmed.';
 
   -- -------------------------------------------------------------------------
-  -- TEST CASE 3: Boundary check — check_out = existing check_in (2026-10-28 to 2026-11-01)
+  -- TEST CASE 3: Boundary check - check_out = existing check_in (2026-10-28 to 2026-11-01)
   -- Expected: Room C is AVAILABLE because guest checks out before existing check-in
   -- -------------------------------------------------------------------------
   PERFORM 1 FROM fn_get_available_rooms(v_test_branch_id, '2026-10-28'::DATE, '2026-11-01'::DATE)
@@ -148,7 +148,7 @@ BEGIN
   RAISE NOTICE 'Test 3 PASSED: Arrival day boundary availability confirmed.';
 
   -- -------------------------------------------------------------------------
-  -- TEST CASE 4: Date validation — check_out <= check_in must raise exception 22023
+  -- TEST CASE 4: Date validation - check_out <= check_in must raise exception 22023
   -- -------------------------------------------------------------------------
   BEGIN
     PERFORM * FROM fn_get_available_rooms(v_test_branch_id, '2026-11-05'::DATE, '2026-11-05'::DATE);

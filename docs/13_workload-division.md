@@ -1,14 +1,14 @@
-# docs/13 — Workload Division
+# docs/13 - Workload Division
 
-## Group 39 — Members and Contributions
+## Group 39 - Members and Contributions
 
 | Member | SRS Reference | Primary Slice | Phases |
 |---|---|---|---|
-| M1 — Leeman K.A.R. | 240386C | Auth, RBAC, foundation, shared infrastructure | P0, P1 |
-| M2 — Karunarathna W.P. | 240331F | Room inventory, availability, room management | P1, P2, P5 (report UI) |
-| M3 — Hiripitiya S.K. | 240238C | Guest portal, reservations, online booking | P3, P5 (report) |
-| M4 — Bandaranayaka I.B.W.D. | 240061C | Service catalogue, check-in, service usage | P4, P5 (report UI) |
-| M5 — Kabilraj K. | 240304C | Billing, payments, checkout, reports | P4 (billing), P5 |
+| M1 - Leeman K.A.R. | 240386C | Auth, RBAC, foundation, shared infrastructure | P0, P1 |
+| M2 - Karunarathna W.P. | 240331F | Room inventory, availability, room management | P1, P2, P5 (report UI) |
+| M3 - Hiripitiya S.K. | 240238C | Guest portal, reservations, online booking | P3, P5 (report) |
+| M4 - Bandaranayaka I.B.W.D. | 240061C | Service catalogue, check-in, service usage | P4, P5 (report UI) |
+| M5 - Kabilraj K. | 240304C | Billing, payments, checkout, reports | P4 (billing), P5 |
 
 ## Division Rationale
 

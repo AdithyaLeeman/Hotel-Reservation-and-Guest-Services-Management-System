@@ -1,4 +1,4 @@
-# Member 2 — Session Prompt Template
+# Member 2 - Session Prompt Template
 
 _Copy-paste this prompt at the start of every Claude session as Member 2._
 
@@ -13,7 +13,7 @@ You are Member 2 (Karunarathna W.P., 240331F).
 Your primary slice: Room types, amenities, rooms, availability search, maintenance status, room occupancy reporting.
 
 Development model: MOCK-FIRST PARALLEL.
-- SP2.3 (Room API) and SP2.4 (Room UI) start Day 1 with mock data — no waiting for M1.
+- SP2.3 (Room API) and SP2.4 (Room UI) start Day 1 with mock data - no waiting for M1.
 - SP1.2 DDL tasks (room_type, amenity): run once M1's branch table is executed.
 - SP2.1 DDL (room): run after branch + room_type tables are on the real DB.
 - SP2.2 (fn_get_available_rooms): write SQL file now; execute after P03-M03-T02 (reservation_rooms) merges. Notify M3 when T02 merges.
@@ -23,7 +23,7 @@ Start by reading in this exact order:
 1. AGENTS.md
 2. context/01-project-overview.md
 3. context/02-architecture.md
-4. context/03-build-plan.md  ← READ — explains the parallel development model
+4. context/03-build-plan.md  ← READ - explains the parallel development model
 5. context/04-code-standards.md
 6. context/05-library-patterns.md
 7. context/08-progress-tracker.md
@@ -44,7 +44,7 @@ Key rules for Member 2:
 - Overlap formula: existing_check_in < p_check_out AND existing_check_out > p_check_in
 - EXPLAIN ANALYZE is required after building the availability index (P02-M02-T18)
 - Room number must be UNIQUE per branch: UNIQUE(branch_id, room_number)
-- Do NOT use room.branch_id from a client request for authorization — use session.branchId
+- Do NOT use room.branch_id from a client request for authorization - use session.branchId
 - Availability logic lives entirely in fn_get_available_rooms(). Never filter rooms in TypeScript.
 
 Current task: [TASK_ID]
@@ -70,12 +70,12 @@ components/RoomCard.tsx           components/RoomForm.tsx
 ## Subphase Quick Reference
 | Subphase | Type | Tasks | Start When |
 |---|---|---|---|
-| SP1.2 M2 DDL | 🔴 | P01-M02-T01–T04 | After P01-M01-T07 executed |
-| SP2.1 Room Schema | 🔴 | P02-M02-T01–T02 | After SP1.2 executed |
-| SP2.2 Availability DB | 🔴 | P02-M02-T03–T04 | Write now; execute after P03-M03-T02 |
-| SP2.3 Room API | 🟡 | P02-M02-T05–T12 | **Day 1 — mock-first** |
-| SP2.4 Room UI | 🟡+🟢 | P02-M02-T13–T16 | **Day 1 — mock-first** |
-| SP2.5 Tests | 🔴 | P02-M02-T17–T18 | After SP2.2 executed |
+| SP1.2 M2 DDL | 🔴 | P01-M02-T01-T04 | After P01-M01-T07 executed |
+| SP2.1 Room Schema | 🔴 | P02-M02-T01-T02 | After SP1.2 executed |
+| SP2.2 Availability DB | 🔴 | P02-M02-T03-T04 | Write now; execute after P03-M03-T02 |
+| SP2.3 Room API | 🟡 | P02-M02-T05-T12 | **Day 1 - mock-first** |
+| SP2.4 Room UI | 🟡+🟢 | P02-M02-T13-T16 | **Day 1 - mock-first** |
+| SP2.5 Tests | 🔴 | P02-M02-T17-T18 | After SP2.2 executed |
 
 ## Branch Naming
 `feat/P02-M02-T{number}-{short-description}`

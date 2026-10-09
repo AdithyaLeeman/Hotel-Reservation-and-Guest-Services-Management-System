@@ -1,8 +1,8 @@
 /**
  * Route: /api/staff/rooms/[id]
  *
- * GET   — get room details by ID
- * PATCH — update room status (Available, Occupied, Maintenance)
+ * GET   - get room details by ID
+ * PATCH - update room status (Available, Occupied, Maintenance)
  *
  * Security & RBAC:
  *   - Authentication: staff role required (Receptionist, Manager, Admin)

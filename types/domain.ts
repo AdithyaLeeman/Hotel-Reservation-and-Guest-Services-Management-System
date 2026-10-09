@@ -1,5 +1,5 @@
 /**
- * Domain model types — TypeScript representations of DB row shapes.
+ * Domain model types - TypeScript representations of DB row shapes.
  *
  * Convention:
  * - Types here match DB column names (snake_case mapped from pg result rows)
@@ -31,7 +31,7 @@ export interface UserAccount {
   username: string;
   role: UserRole;
   status: AccountStatus;
-  // password_hash is never returned from queries — excluded here
+  // password_hash is never returned from queries - excluded here
 }
 
 export interface Guest {
@@ -100,7 +100,7 @@ export interface Reservation {
 export interface ReservationRoom {
   reservation_id: string;
   room_id: number;
-  rate_per_night: string; // NUMERIC(12,2) — historical snapshot
+  rate_per_night: string; // NUMERIC(12,2) - historical snapshot
 }
 
 // --- Services ---
@@ -119,7 +119,7 @@ export interface ServiceUsage {
   service_id: number;
   usage_date: string;
   quantity: number;
-  charged_price: string; // NUMERIC(12,2) — price snapshot, immutable
+  charged_price: string; // NUMERIC(12,2) - price snapshot, immutable
   logged_by_employee_id: number;
   request_channel: string | null;
 }
@@ -138,15 +138,15 @@ export interface BillingSummary {
   reservation_id: string;
   invoice_date: string;
   tax_id: number;
-  tax_percentage_applied: string; // NUMERIC(5,2) — snapshot
+  tax_percentage_applied: string; // NUMERIC(5,2) - snapshot
   payment_status: PaymentStatus;
 }
 
 /**
  * The authoritative billing view result.
- * All values come from vw_invoice_totals — NEVER recomputed in TypeScript.
+ * All values come from vw_invoice_totals - NEVER recomputed in TypeScript.
  *
- * See docs/08_business-rules-and-enforcement.md — Calculation Placement Matrix.
+ * See docs/08_business-rules-and-enforcement.md - Calculation Placement Matrix.
  */
 export interface InvoiceTotals {
   invoice_id: string;
@@ -156,7 +156,7 @@ export interface InvoiceTotals {
   service_charges: string;     // fn_calc_service_charges() result
   grand_total: string;         // room + tax + service
   total_paid: string;          // SUM(payment.amount_paid)
-  outstanding_balance: string; // grand_total - total_paid — NEVER computed in TS
+  outstanding_balance: string; // grand_total - total_paid - NEVER computed in TS
   payment_status?: string;     // billing_summary.payment_status (Unpaid | Partial | Paid)
 }
 

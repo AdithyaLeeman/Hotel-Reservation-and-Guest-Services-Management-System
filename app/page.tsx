@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Public Hotel Landing Page — SkyNest Hotels & Resorts
+ * Public Hotel Landing Page - SkyNest Hotels & Resorts
  *
  * Designed in the Royella luxury 5-star hotel editorial aesthetic.
  * All original links and features are preserved:
@@ -176,7 +176,7 @@ export default function HomePage() {
           </div>
 
           {/* Main Editorial Headline */}
-          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-[0.03em] max-w-5xl leading-[1.08] mb-6 drop-shadow-md">
+          <h1 className="font-luxury-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-[0.03em] max-w-5xl leading-[1.08] mb-6 drop-shadow-md">
             THE BEST LUXURY HOTEL <br className="hidden sm:block" />
             IN SRI LANKA
           </h1>
@@ -397,7 +397,7 @@ export default function HomePage() {
                   href={`/search?branchId=1&checkIn=${checkIn}&checkOut=${checkOut}`}
                   className="mt-4 text-xs uppercase tracking-[0.15em] text-[#c5a880] font-semibold hover:underline inline-flex items-center gap-1"
                 >
-                  Explore Rooms →
+                  Explore Rooms
                 </Link>
               </div>
             </div>
@@ -417,7 +417,7 @@ export default function HomePage() {
                   href={`/search?branchId=2&checkIn=${checkIn}&checkOut=${checkOut}`}
                   className="mt-4 text-xs uppercase tracking-[0.15em] text-[#c5a880] font-semibold hover:underline inline-flex items-center gap-1"
                 >
-                  Explore Rooms →
+                  Explore Rooms
                 </Link>
               </div>
             </div>
@@ -437,7 +437,7 @@ export default function HomePage() {
                   href={`/search?branchId=3&checkIn=${checkIn}&checkOut=${checkOut}`}
                   className="mt-4 text-xs uppercase tracking-[0.15em] text-[#c5a880] font-semibold hover:underline inline-flex items-center gap-1"
                 >
-                  Explore Rooms →
+                  Explore Rooms
                 </Link>
               </div>
             </div>
@@ -516,7 +516,6 @@ export default function HomePage() {
               <li>
                 <Link href="/staff/login" className="hover:text-[#c5a880] transition-colors flex items-center gap-1">
                   <span>Staff Portal</span>
-                  <span>→</span>
                 </Link>
               </li>
               <li className="text-white/40 text-[11px] pt-1">

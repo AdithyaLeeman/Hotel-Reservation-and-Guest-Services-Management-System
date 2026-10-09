@@ -44,7 +44,7 @@ function successResponse() {
 
 /* ─── Tests ──────────────────────────────────────────────────────────────────── */
 
-describe('StaffLoginPage — rendering', () => {
+describe('StaffLoginPage - rendering', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -91,7 +91,7 @@ describe('StaffLoginPage — rendering', () => {
   });
 });
 
-describe('StaffLoginPage — client validation', () => {
+describe('StaffLoginPage - client validation', () => {
   beforeEach(() => mockFetch.mockClear());
 
   it('shows required-field errors when form is submitted empty', async () => {
@@ -129,7 +129,7 @@ describe('StaffLoginPage — client validation', () => {
   });
 });
 
-describe('StaffLoginPage — password reveal toggle', () => {
+describe('StaffLoginPage - password reveal toggle', () => {
   it('toggles password input type between password and text', () => {
     render(<StaffLoginPage />);
     const passwordInput = screen.getByLabelText(/^password/i) as HTMLInputElement;
@@ -141,7 +141,7 @@ describe('StaffLoginPage — password reveal toggle', () => {
   });
 });
 
-describe('StaffLoginPage — successful submission', () => {
+describe('StaffLoginPage - successful submission', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -201,7 +201,7 @@ describe('StaffLoginPage — successful submission', () => {
   });
 });
 
-describe('StaffLoginPage — server error handling', () => {
+describe('StaffLoginPage - server error handling', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -293,14 +293,14 @@ describe('StaffLoginPage — server error handling', () => {
   });
 });
 
-describe('StaffLoginPage — submit button state', () => {
+describe('StaffLoginPage - submit button state', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockGet.mockReturnValue(null);
   });
 
   it('is disabled and shows loading text while submitting', async () => {
-    // Promise that never resolves — keeps the component mid-flight
+    // Promise that never resolves - keeps the component mid-flight
     mockFetch.mockReturnValueOnce(new Promise(() => { }));
     render(<StaffLoginPage />);
     fillForm();

@@ -1,16 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, Lato, JetBrains_Mono, Cormorant_Garamond } from 'next/font/google';
 import Script from 'next/script';
 
 import './globals.css';
 
-
+/* ─── Burj Khalifa Typography: Inter (Headings & UI) + Lato (Body & Copy) ─── */
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-sans',
+  variable: '--font-inter',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
 });
 
+const lato = Lato({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-lato',
+  weight: ['100', '300', '400', '700', '900'],
+});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -19,16 +26,24 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500'],
 });
 
+/* ─── Heritage Luxury Serif: Cormorant Garamond ─── */
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
 /* ─── Metadata ──────────────────────────────────────────────────────────────── */
 
 export const metadata: Metadata = {
 
   title: {
-    template: '%s — SkyNest Hotels',
+    template: '%s - SkyNest Hotels',
     default: 'SkyNest Hotels | Book Your Perfect Stay',
   },
   description:
-    'SkyNest Hotels — Discover comfort and elegance at our Colombo, Kandy, and Galle properties. Reserve your room online in minutes.',
+    'SkyNest Hotels - Discover comfort and elegance at our Colombo, Kandy, and Galle properties. Reserve your room online in minutes.',
   keywords: [
     'hotel',
     'Sri Lanka',
@@ -81,18 +96,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${lato.variable} ${jetbrainsMono.variable} ${cormorantGaramond.variable}`}
       suppressHydrationWarning
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@100;200;300;400;500;600;700;800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700&display=swap"
           rel="stylesheet"
         />
         {/*
-         * Theme initialization — runs before paint to prevent FOUC.
+         * Theme initialization - runs before paint to prevent FOUC.
          * Reads localStorage['skynest-theme'] and sets data-theme on <html>.
          * This is intentionally inline and does not depend on any bundle.
          *
@@ -119,7 +134,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         {/*
          * children is the page or nested layout rendered by Next.js.
          * Navigation (GuestNav / StaffNav) is injected by segment layouts,
-         * not here — this keeps the root layout free of auth coupling.
+         * not here - this keeps the root layout free of auth coupling.
          */}
         {children}
 

@@ -1,13 +1,13 @@
-# docs/12 — Testing and Acceptance
+# docs/12 - Testing and Acceptance
 
 ## Testing Layers
 
 | Layer | Where | What |
 |---|---|---|
-| DB schema tests | `database/tests/` — SQL scripts | Constraints, FDs, enums, FK violations |
-| DB function/procedure tests | `database/tests/` — SQL scripts | Happy paths, error paths, edge cases, SQLSTATE |
-| API integration tests | `tests/` — Vitest | Route handler behavior, auth enforcement, error codes |
-| Concurrency tests | `tests/` — parallel requests | Double-booking prevention |
+| DB schema tests | `database/tests/` - SQL scripts | Constraints, FDs, enums, FK violations |
+| DB function/procedure tests | `database/tests/` - SQL scripts | Happy paths, error paths, edge cases, SQLSTATE |
+| API integration tests | `tests/` - Vitest | Route handler behavior, auth enforcement, error codes |
+| Concurrency tests | `tests/` - parallel requests | Double-booking prevention |
 | Security tests | `tests/` | SQL injection, auth bypass, IDOR, role escalation |
 | E2E tests | Manual (Phase 6) | Full workflow verification |
 
@@ -24,7 +24,7 @@
 - [ ] `vw_invoice_totals.outstanding_balance` matches expected in Scenario 3 (docs/10)
 - [ ] TypeScript backend does NOT compute any of these values independently
 
-### Concurrency Test (P03-M03-T12 — REQUIRED)
+### Concurrency Test (P03-M03-T12 - REQUIRED)
 ```
 1. Begin two concurrent requests to create a reservation for room_id=1, same dates
 2. Both hit the route handler simultaneously
@@ -33,7 +33,7 @@
 5. Document which technique (SELECT FOR UPDATE) prevented the race
 ```
 
-### Transaction Rollback Test (P06-ALL-T08 — REQUIRED)
+### Transaction Rollback Test (P06-ALL-T08 - REQUIRED)
 ```
 1. Start sp_create_reservation()
 2. Inject a failure after the reservation INSERT but before reservation_rooms INSERT
@@ -41,11 +41,11 @@
 4. Verify: ROLLBACK was triggered
 ```
 
-### Security Tests (P06-ALL-T06 — REQUIRED)
+### Security Tests (P06-ALL-T06 - REQUIRED)
 ```
 SQL Injection:
 1. Send reservation_id = "'; DROP TABLE reservation; --" in API path
-2. Expect: 404 or 400 — never a 500 from SQL execution of injected code
+2. Expect: 404 or 400 - never a 500 from SQL execution of injected code
 3. Verify: parameterized queries prevent execution
 
 Auth Bypass:
@@ -58,7 +58,7 @@ IDOR:
 2. Expect: 403 (not 200 or 404)
 ```
 
-### Ownership Enforcement Test (P03-M03-T11 — REQUIRED)
+### Ownership Enforcement Test (P03-M03-T11 - REQUIRED)
 - Guest A cannot view, modify, or pay against Guest B's reservation
 - Verified at DB query level (session.guestId in predicate)
 
@@ -67,7 +67,7 @@ IDOR:
 - After full payment → sp_checkout() succeeds → HTTP 200
 
 ## Test Data
-Use the seed data from `docs/10_seed-data-and-expected-results.md` (Scenario 1–5).
+Use the seed data from `docs/10_seed-data-and-expected-results.md` (Scenario 1-5).
 
 ## Definition of Done (Per Task)
 1. Happy/error/auth tests pass

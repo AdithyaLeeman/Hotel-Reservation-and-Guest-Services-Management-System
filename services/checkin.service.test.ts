@@ -1,5 +1,5 @@
 /**
- * Check-in Service Tests — P06-M04-T01 (real DB wire-up)
+ * Check-in Service Tests - P06-M04-T01 (real DB wire-up)
  * Mocks the pool so tests stay fast and DB-independent.
  * All original assertions are preserved.
  *
@@ -18,7 +18,7 @@ interface MockReservationRow {
   reservation_status: ReservationStatus;
 }
 
-// Mutable seed state — managed by helpers below
+// Mutable seed state - managed by helpers below
 let seedRows: Record<string, MockReservationRow> = {};
 
 function resetSeed(): void {
@@ -40,7 +40,7 @@ const { mockPoolQuery, mockClientQuery, mockClientRelease } = vi.hoisted(() => (
 }));
 
 // ---------------------------------------------------------------------------
-// Mock @/lib/db/pool — the service and repository both import this
+// Mock @/lib/db/pool - the service and repository both import this
 // ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {
@@ -62,7 +62,7 @@ import { checkinService, CheckinServiceError } from './checkin.service';
 function configurePoolMocks(): void {
   resetSeed();
 
-  // pool.query — used for the branch-scope pre-check SELECT
+  // pool.query - used for the branch-scope pre-check SELECT
   mockPoolQuery.mockImplementation(
     (sql: string, params: unknown[]) => {
       const id = (params as string[])[0] as string;
@@ -74,7 +74,7 @@ function configurePoolMocks(): void {
     }
   );
 
-  // client.query — used for BEGIN, CALL sp_check_in(), COMMIT, ROLLBACK
+  // client.query - used for BEGIN, CALL sp_check_in(), COMMIT, ROLLBACK
   mockClientQuery.mockImplementation((sql: string, params?: unknown[]) => {
     if (sql.trim().startsWith('BEGIN') || sql.trim().startsWith('COMMIT')) {
       return Promise.resolve({ rows: [], rowCount: 0 });
@@ -115,7 +115,7 @@ describe('Check-in Service (Mock)', () => {
   // -------------------------------------------------------------------------
   // Happy path
   // -------------------------------------------------------------------------
-  describe('checkIn — success', () => {
+  describe('checkIn - success', () => {
     it('transitions a Booked reservation to CheckedIn', async () => {
       await expect(
         checkinService.checkIn('RES-MOCK-001', 4, 1)
@@ -146,7 +146,7 @@ describe('Check-in Service (Mock)', () => {
   // -------------------------------------------------------------------------
   // NOT_FOUND
   // -------------------------------------------------------------------------
-  describe('checkIn — NOT_FOUND', () => {
+  describe('checkIn - NOT_FOUND', () => {
     it('throws CheckinServiceError NOT_FOUND for unknown reservationId', async () => {
       await expect(
         checkinService.checkIn('RES-DOES-NOT-EXIST', 4, 1)
@@ -165,7 +165,7 @@ describe('Check-in Service (Mock)', () => {
   // -------------------------------------------------------------------------
   // NOT_BOOKED_STATUS
   // -------------------------------------------------------------------------
-  describe('checkIn — NOT_BOOKED_STATUS', () => {
+  describe('checkIn - NOT_BOOKED_STATUS', () => {
     it('throws NOT_BOOKED_STATUS when reservation is already CheckedIn', async () => {
       // RES-MOCK-003 starts in CheckedIn state
       await expect(
@@ -184,7 +184,7 @@ describe('Check-in Service (Mock)', () => {
   // -------------------------------------------------------------------------
   // BRANCH_SCOPE_VIOLATION
   // -------------------------------------------------------------------------
-  describe('checkIn — BRANCH_SCOPE_VIOLATION', () => {
+  describe('checkIn - BRANCH_SCOPE_VIOLATION', () => {
     it('throws BRANCH_SCOPE_VIOLATION when Receptionist tries to check in another branch', async () => {
       // RES-MOCK-002 is branch 1; employee is scoped to branch 2
       await expect(

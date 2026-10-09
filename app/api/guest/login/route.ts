@@ -4,7 +4,7 @@ import { GuestLoginSchema, flattenZodErrors } from '@/lib/validation/auth.schema
 import { ERROR_CODES } from '@/types/api';
 
 export async function POST(req: Request): Promise<Response> {
-  // Step 1 — Parse + validate input shape
+  // Step 1 - Parse + validate input shape
   let body: unknown;
   try {
     body = await req.json();
@@ -30,17 +30,17 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   try {
-    // Step 2 — Verify credentials + fetch guest profile
+    // Step 2 - Verify credentials + fetch guest profile
     const sessionData = await authService.loginGuest(parsed.data);
 
-    // Step 3 — Write session
+    // Step 3 - Write session
     const session = await getSession();
     session.userId = sessionData.userId;
     session.role = sessionData.role;
     session.guestId = sessionData.guestId;
     await session.save();
 
-    // Step 4 — Return safe session info (never return password_hash)
+    // Step 4 - Return safe session info (never return password_hash)
     return Response.json(
       {
         data: {

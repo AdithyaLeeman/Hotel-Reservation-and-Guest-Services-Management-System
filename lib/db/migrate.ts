@@ -3,7 +3,7 @@ import { join } from 'path';
 import { pool } from './pool';
 
 /**
- * Migration runner — P01-M01-T03
+ * Migration runner - P01-M01-T03
  *
  * Reads database/migrations/manifest.md for the authoritative apply order.
  * Tracks applied files in the schema_migrations table so runs are idempotent.
@@ -37,7 +37,7 @@ async function ensureTrackingTable(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// Parse manifest.md — return filenames in the exact order listed.
+// Parse manifest.md - return filenames in the exact order listed.
 // Lines inside the fenced code block that are not blank and not comments
 // (#) and end in .sql are treated as migration filenames.
 // ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ export function parseManifest(content: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Simple FNV-1a 32-bit checksum — catches accidental edits to applied files
+// Simple FNV-1a 32-bit checksum - catches accidental edits to applied files
 // ---------------------------------------------------------------------------
 export function checksum(content: string): string {
   let hash = 0x811c9dc5;
@@ -146,7 +146,7 @@ export async function runMigrations(): Promise<void> {
   const ordered = parseManifest(manifestContent);
 
   if (ordered.length === 0) {
-    console.log('[migrate] No migrations listed in manifest — nothing to do.');
+    console.log('[migrate] No migrations listed in manifest - nothing to do.');
     return;
   }
 
@@ -156,7 +156,7 @@ export async function runMigrations(): Promise<void> {
 
   if (pending.length === 0) {
     console.log(
-      `[migrate] All ${ordered.length} migration(s) already applied — nothing to do.`
+      `[migrate] All ${ordered.length} migration(s) already applied - nothing to do.`
     );
     return;
   }
@@ -181,7 +181,7 @@ export async function runMigrations(): Promise<void> {
   }
 
   console.log(
-    `[migrate] Done — ${pending.length} migration(s) applied successfully.`
+    `[migrate] Done - ${pending.length} migration(s) applied successfully.`
   );
 }
 

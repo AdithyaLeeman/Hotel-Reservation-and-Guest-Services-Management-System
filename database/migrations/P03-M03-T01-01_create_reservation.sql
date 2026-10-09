@@ -1,9 +1,9 @@
 -- =============================================================================
 -- Migration: P03-M03-T01-01_create_reservation.sql
 -- Owner:     Member 3 (Hiripitiya S.K., 240238C)
--- Phase:     P3 — Guests and Reservations
+-- Phase:     P3 - Guests and Reservations
 -- Depends:   P01-M01-T09 (guest), P01-M01-T07 (branch), P01-M01-T08 (employee)
---            P01-M01-T06 (user_account) — all must be executed first
+--            P01-M01-T06 (user_account) - all must be executed first
 -- Execute:   After SP1.2 + SP2.1 DB steps are DONE
 -- Lecture:   L05 (DDL, constraints), L12 (concurrency context)
 -- =============================================================================

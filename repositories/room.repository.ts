@@ -1,10 +1,10 @@
 /**
- * Room Repository — data access layer for rooms and room types.
+ * Room Repository - data access layer for rooms and room types.
  * Owned by: Member 2 (M2) | Task: P06-M02-T01
  *
- * Phase 6 SP6.1 — Mock store replaced with real parameterized pg Pool queries.
- * All SQL is parameterized (no string concatenation — AGENTS.md §8).
- * Money columns returned as strings from pg (NUMERIC(12,2) — AGENTS.md §8).
+ * Phase 6 SP6.1 - Mock store replaced with real parameterized pg Pool queries.
+ * All SQL is parameterized (no string concatenation - AGENTS.md §8).
+ * Money columns returned as strings from pg (NUMERIC(12,2) - AGENTS.md §8).
  */
 
 import { pool } from '@/lib/db/pool';
@@ -266,7 +266,7 @@ export const roomRepository = {
   /**
    * Insert a new room record.
    * PostgreSQL UNIQUE constraint on (branch_id, room_number) raises SQLSTATE 23505
-   * on duplicate — caught and re-thrown by the service layer as RoomConflictError.
+   * on duplicate - caught and re-thrown by the service layer as RoomConflictError.
    */
   insert: async (input: CreateRoomInput): Promise<Room> => {
     const result = await pool.query<{

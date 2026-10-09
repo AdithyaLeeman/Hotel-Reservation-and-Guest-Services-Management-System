@@ -1,5 +1,5 @@
 /**
- * Service Usage Service Tests — P06-M04-T01 (real DB wire-up)
+ * Service Usage Service Tests - P06-M04-T01 (real DB wire-up)
  * Mocks the repository so tests stay fast and DB-independent.
  * All original assertions are preserved.
  *
@@ -88,7 +88,7 @@ const {
 }));
 
 // ---------------------------------------------------------------------------
-// Mock the repository — service calls go through these fns
+// Mock the repository - service calls go through these fns
 // ---------------------------------------------------------------------------
 vi.mock('@/repositories/service-usage.repository', () => ({
   serviceUsageRepository: {
@@ -134,7 +134,7 @@ function configureRepoMocks(): void {
     return Promise.resolve(found ? { ...found } : null);
   });
 
-  // insertCatalogueItem — simulate UNIQUE violation for duplicates
+  // insertCatalogueItem - simulate UNIQUE violation for duplicates
   mockInsertItem.mockImplementation(
     (input: { service_name: string; current_price: string; status?: string }) => {
       const dup = SEED_CATALOGUE.find(
@@ -156,7 +156,7 @@ function configureRepoMocks(): void {
     }
   );
 
-  // callLogServiceUsage — simulate sp_log_service_usage behavior
+  // callLogServiceUsage - simulate sp_log_service_usage behavior
   mockCallLog.mockImplementation(
     (params: {
       reservation_id: string;
@@ -200,7 +200,7 @@ function configureRepoMocks(): void {
     }
   );
 
-  // listUsageByReservation — return rows for the given reservation
+  // listUsageByReservation - return rows for the given reservation
   mockListUsage.mockImplementation((reservationId: string) => {
     const rows = mockUsageRows.filter((r) => r.reservation_id === reservationId);
     return Promise.resolve(rows);
@@ -272,7 +272,7 @@ describe('Service Usage Service (Mock)', () => {
   });
 
   // -------------------------------------------------------------------------
-  // logUsage — price snapshot rule
+  // logUsage - price snapshot rule
   // -------------------------------------------------------------------------
   describe('logUsage', () => {
     it('logs usage and returns the record with charged_price snapshot', async () => {
@@ -294,7 +294,7 @@ describe('Service Usage Service (Mock)', () => {
       expect(usage.logged_by_employee_id).toBe(10);
     });
 
-    it('charged_price is snapshot — equals catalogue price at log time', async () => {
+    it('charged_price is snapshot - equals catalogue price at log time', async () => {
       // Spa Treatment is 5000.00 in seed data
       const usage = await serviceUsageService.logUsage(
         { reservation_id: 'RES-TEST-002', room_id: 1, service_id: 2, quantity: 3 },

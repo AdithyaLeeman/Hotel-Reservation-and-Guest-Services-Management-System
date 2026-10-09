@@ -1,8 +1,8 @@
-# context/02 — Architecture
+# context/02 - Architecture
 
 ## Stack
 - **Frontend/Backend**: Next.js (App Router) + TypeScript
-- **Database**: PostgreSQL v15+ — direct SQL via `pg` (node-postgres)
+- **Database**: PostgreSQL v15+ - direct SQL via `pg` (node-postgres)
 - **Auth/Session**: iron-session (encrypted HTTP-only cookies)
 - **Styling**: Tailwind CSS
 - **Validation**: Zod (request shape only; authoritative rules in DB)
@@ -51,7 +51,7 @@ Next.js App (app/)
 - Both use the same `user_account` table
 - Session stores: `userId`, `role`, `branchId` (for staff), `guestId` (for guests)
 - Role and branch scope read from session on every protected request
-- Guest ownership: session `guestId` used in all DB queries — browser `guest_id` is never trusted
+- Guest ownership: session `guestId` used in all DB queries - browser `guest_id` is never trusted
 
 ## Route Protection
 - Public: no auth required
@@ -81,11 +81,11 @@ Next.js App (app/)
 | `.agent/` | M1 (coordinates) | Project management state |
 
 ## Non-Negotiable Rules
-1. No ORM — direct parameterized SQL only
+1. No ORM - direct parameterized SQL only
 2. No browser-side database credentials or SQL
 3. `NUMERIC(12,2)` for all money values
 4. `FOREIGN KEY ... ON DELETE RESTRICT` default
 5. Every Claude agent session is isolated to one member's worktree
-6. No agent performs GitHub remote writes — manual push handoff required
+6. No agent performs GitHub remote writes - manual push handoff required
 
 See `docs/04_architecture.md` for detailed Mermaid diagrams and full specifications.

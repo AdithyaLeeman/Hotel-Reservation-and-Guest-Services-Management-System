@@ -90,7 +90,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
           id="guest-nav-logo"
           href="/"
           className="flex items-center gap-2.5 hover:opacity-90 transition-opacity duration-[var(--duration-fast)] no-underline group"
-          aria-label="SkyNest Hotels — home"
+          aria-label="SkyNest Hotels - home"
         >
           {/* Elegant gold crest icon */}
           <div className="flex items-center justify-center w-8 h-8 rounded-sm bg-[#c5a880]/15 border border-[#c5a880]/50 text-[#c5a880]">

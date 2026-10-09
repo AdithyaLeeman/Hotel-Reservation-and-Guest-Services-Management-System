@@ -1,7 +1,7 @@
-# Review — All REVIEW-Status Tasks — 2026-10-02
+# Review - All REVIEW-Status Tasks - 2026-10-02
 
 **Reviewed by**: independent senior pass (inline)
-**Scope**: 24 files — Phase 3 (M3, P03-M03-T01 to T24) + Phase 5 partial (P05-M02-T01, P05-M03-T01, P05-M03-T02)
+**Scope**: 24 files - Phase 3 (M3, P03-M03-T01 to T24) + Phase 5 partial (P05-M02-T01, P05-M03-T01, P05-M03-T02)
 **Verdict**: Changes requested
 
 ---
@@ -25,13 +25,13 @@ All 632 tests pass across 52 suites.
 in an outer BEGIN/COMMIT." The procedure body has no COMMIT call. In PostgreSQL, a PL/pgSQL
 procedure without COMMIT runs entirely inside the caller's transaction. The comment is wrong.
 Contrast with `sp_cancel_reservation.sql:26-27` which correctly says "Caller must wrap in
-BEGIN/COMMIT if needed. This procedure does NOT issue COMMIT/ROLLBACK." — the same pattern,
+BEGIN/COMMIT if needed. This procedure does NOT issue COMMIT/ROLLBACK." - the same pattern,
 opposite (correct) documentation.
 
 **Why it matters**: A Phase 6 developer following the comment verbatim may omit a transaction
 wrapper when combining this call with surrounding operations, producing partial commits. The
 real-DB repository path (commented out at line 248) uses pool.query directly without BEGIN/COMMIT,
-which works only because autocommit applies to the single CALL statement — but the comment
+which works only because autocommit applies to the single CALL statement - but the comment
 misdirects future developers about the reason.
 
 **Fix**: Replace lines 39-41 with:
@@ -39,7 +39,7 @@ misdirects future developers about the reason.
 -- TRANSACTION: This procedure does NOT issue COMMIT/ROLLBACK.
 --   Single-call pattern: pool.query() (autocommit applies to the CALL).
 --   Multi-op pattern: wrap in BEGIN/COMMIT via pool.connect().
---   Never issue COMMIT inside this procedure — SELECT FOR UPDATE holds the
+--   Never issue COMMIT inside this procedure - SELECT FOR UPDATE holds the
 --   lock until the caller's transaction ends.
 ```
 
@@ -56,7 +56,7 @@ two loops produces a different rate in `reservation_rooms.rate_per_night` than w
 validated. The redundant SELECT is also a performance cost on every room in the reservation.
 
 **Fix**: Accumulate `(room_id, rate)` pairs in an array or temp variable during the validation
-loop and iterate that in Step 3 — eliminate the second SELECT entirely.
+loop and iterate that in Step 3 - eliminate the second SELECT entirely.
 
 ### MINOR-02 · No `NODE_ENV` production guard on dev session in P3 guest routes
 
@@ -72,7 +72,7 @@ around the fallback in both files. Three files (route.ts, [id]/route.ts, staff/r
 ### MINOR-03 · `DO`-block type creation swallows schema changes, `fn_get_reservation_detail.sql:1-15`
 
 **Problem**: `reservation_detail_row` is created via `DO $$ ... EXCEPTION WHEN duplicate_object
-THEN NULL; END $$`. Re-running the file when the type definition changes silently does nothing —
+THEN NULL; END $$`. Re-running the file when the type definition changes silently does nothing -
 the old type remains. Functions depending on it then fail or use the stale definition.
 
 **Fix**: Use `DROP TYPE IF EXISTS reservation_detail_row CASCADE` before `CREATE TYPE` in the
@@ -85,7 +85,7 @@ migration, or document explicitly in the file header that type changes require a
 - `sp_create_reservation.sql:158` comment acknowledges the redundant re-fetch but does not fix it. Either fix it or add a TODO with the risk noted.
 - `vw_top_services.sql`: `RANK()` produces gaps for ties (1, 1, 3). `DENSE_RANK()` may be more intuitive for a "Top N services" UI. Author's call.
 - `test_concurrency.sql:22`: sequential-only nature is already noted. Add a one-line acceptance criterion in the task tracker clarifying this limitation so future reviewers don't mark it incomplete.
-- `app/api/staff/reservations/route.ts` (staff POST): `guest_id` in request body has UUID format validation only — no existence check in the mock path. The real DB FK constraint will enforce existence. Low risk; note for Phase 6.
+- `app/api/staff/reservations/route.ts` (staff POST): `guest_id` in request body has UUID format validation only - no existence check in the mock path. The real DB FK constraint will enforce existence. Low risk; note for Phase 6.
 
 ---
 
@@ -93,7 +93,7 @@ migration, or document explicitly in the file header that type changes require a
 
 - `sp_create_reservation` correctly scopes `SELECT FOR UPDATE OF rr` to `reservation_rooms`, the right locking target.
 - `sp_cancel_reservation` and `fn_get_reservation_detail` both use the same-error pattern for ownership-mismatch vs not-found, preventing guest-ID enumeration.
-- `fn_get_reservation_detail` uses `INTO STRICT` + `NO_DATA_FOUND` — correct and clean.
+- `fn_get_reservation_detail` uses `INTO STRICT` + `NO_DATA_FOUND` - correct and clean.
 - `vw_active_reservations` defers branch scoping to the query layer with an explicit explanatory comment.
 - Mock-first pattern is consistent and makes Phase 6 wire-up straightforward: real DB SQL is commented-in, not missing.
 - `app/api/staff/reports/top-services/route.ts` uses `resolveSession()` + `getSession()` + `NODE_ENV` guard correctly.
@@ -140,20 +140,20 @@ migration, or document explicitly in the file header that type changes require a
 
 Tasks that must stay in REVIEW:
 
-1. **P03-M03-T03** — fix MAJOR-01 (transaction comment) and MINOR-01 (rate double-fetch) in `sp_create_reservation.sql`
-2. **P03-M03-T04** — fix MINOR-03 (DO-block type handling) in `fn_get_reservation_detail.sql`
-3. **P03-M03-T11, T12, T13** — add `NODE_ENV !== 'production'` guard per MINOR-02 in the three guest route files
+1. **P03-M03-T03** - fix MAJOR-01 (transaction comment) and MINOR-01 (rate double-fetch) in `sp_create_reservation.sql`
+2. **P03-M03-T04** - fix MINOR-03 (DO-block type handling) in `fn_get_reservation_detail.sql`
+3. **P03-M03-T11, T12, T13** - add `NODE_ENV !== 'production'` guard per MINOR-02 in the three guest route files
 
-Tasks approved to close: T01, T02, T05, T06, T07, T08, T09, T10, T14–T22, T23, T24, P05-M03-T01, P05-M03-T02, P05-M02-T01 (19 tasks → DONE)
+Tasks approved to close: T01, T02, T05, T06, T07, T08, T09, T10, T14-T22, T23, T24, P05-M03-T01, P05-M03-T02, P05-M02-T01 (19 tasks → DONE)
 
 ---
 
 ## Test coverage
 
-Test signal: configured (vitest, 632 tests, 52 suites — all passing).
+Test signal: configured (vitest, 632 tests, 52 suites - all passing).
 
 Application mock logic is thoroughly covered. DB-level scripts (`test_ownership.sql`,
-`test_concurrency.sql`) are manual scripts for real-DB execution — correct for the
+`test_concurrency.sql`) are manual scripts for real-DB execution - correct for the
 academic context. Occupancy page component test is thorough. The rate phantom-read
 window in MINOR-01 is not covered by any current test (mock does not simulate concurrent
 rate changes) and will need a real-DB integration test or a code review note during

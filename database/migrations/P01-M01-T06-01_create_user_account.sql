@@ -13,8 +13,8 @@ create table if not exists user_account(
 comment on table user_account is
   'Unified authentication table for all actors (Guest, Receptionist, Manager, Admin). '
   'Role governs portal access. password_hash stores bcrypt output (cost 12+).';
-comment on column user_account.user_id is 'UUID primary key — gen_random_uuid()';
+comment on column user_account.user_id is 'UUID primary key - gen_random_uuid()';
 comment on column user_account.username is 'Unique login name; minimum 3 non-whitespace characters';
 comment on column user_account.password_hash is 'bcrypt hash (cost >= 12). Never store plaintext.';
-comment on column user_account.role is 'user_role enum — determines portal access and RBAC';
-comment on column user_account.status is 'account_status enum — Inactive/Suspended blocks login';
+comment on column user_account.role is 'user_role enum - determines portal access and RBAC';
+comment on column user_account.status is 'account_status enum - Inactive/Suspended blocks login';

@@ -1,6 +1,6 @@
 -- ============================================================================
 -- Routine:   fn_get_available_rooms
--- Subphase:  SP2.2 — Availability DB
+-- Subphase:  SP2.2 - Availability DB
 -- Task:      P02-M02-T03
 -- Member:    Member 2 (Room Inventory and Availability)
 -- Purpose:   Returns all rooms in a given branch that are available for booking

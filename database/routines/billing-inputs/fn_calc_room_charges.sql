@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Routine:   fn_calc_room_charges.sql
 -- Owner:     Member 4
--- Phase:     P4 — Stay Services and Billing
+-- Phase:     P4 - Stay Services and Billing
 -- Task:      P04-M04-T06
 -- =============================================================================
 
