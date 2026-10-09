@@ -14,14 +14,14 @@
 --     - Staff can cancel any 'Booked' reservation (pass p_guest_id = NULL)
 --
 -- INPUTS:
---   p_reservation_id  UUID    — the reservation to cancel
---   p_guest_id        UUID    — NULL = staff actor (no ownership check)
+--   p_reservation_id  UUID    - the reservation to cancel
+--   p_guest_id        UUID    - NULL = staff actor (no ownership check)
 --                               non-NULL = guest actor (ownership enforced)
---   p_cancelled_by    UUID    — user_id of actor (for audit trail)
+--   p_cancelled_by    UUID    - user_id of actor (for audit trail)
 --
 -- SQLSTATE CODES:
---   45010 — Reservation is not in 'Booked' status (cannot cancel)
---   P0002 — Reservation not found (or ownership mismatch for guests)
+--   45010 - Reservation is not in 'Booked' status (cannot cancel)
+--   P0002 - Reservation not found (or ownership mismatch for guests)
 --
 -- TRANSACTION: Caller must wrap in BEGIN/COMMIT if needed.
 --   This procedure does NOT issue COMMIT/ROLLBACK.
@@ -60,7 +60,7 @@ BEGIN
     -- Status guard: only 'Booked' reservations can be cancelled
     IF v_current_status <> 'Booked' THEN
         RAISE EXCEPTION
-            'Reservation % cannot be cancelled — current status is %',
+            'Reservation % cannot be cancelled - current status is %',
             p_reservation_id, v_current_status
             USING ERRCODE = '45010';
     END IF;

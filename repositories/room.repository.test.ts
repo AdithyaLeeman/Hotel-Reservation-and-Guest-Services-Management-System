@@ -1,5 +1,5 @@
 /**
- * Room Repository tests — P06-M02-T01 (real DB wire-up)
+ * Room Repository tests - P06-M02-T01 (real DB wire-up)
  * Mocks `pool.query` so tests stay fast and DB-independent.
  * All original assertions are preserved.
  */
@@ -53,7 +53,7 @@ function resetStore(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Mock pool — intercepts every pool.query call
+// Mock pool - intercepts every pool.query call
 // ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {

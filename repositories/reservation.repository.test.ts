@@ -1,5 +1,5 @@
 /**
- * Reservation Repository tests — P06-M03-T01 (real DB wire-up)
+ * Reservation Repository tests - P06-M03-T01 (real DB wire-up)
  * Mocks `pool.query` / `pool.connect` so tests stay fast and DB-independent.
  * All original assertions are preserved.
  */
@@ -124,7 +124,7 @@ const SEED_ACTIVE = [
 ];
 
 // ---------------------------------------------------------------------------
-// Hoisted mock fns — must be declared via vi.hoisted so they are available
+// Hoisted mock fns - must be declared via vi.hoisted so they are available
 // inside the vi.mock factory (which is hoisted above all imports)
 // ---------------------------------------------------------------------------
 const { mockClientQuery, mockClientRelease, mockPoolQuery } = vi.hoisted(() => ({
@@ -134,7 +134,7 @@ const { mockClientQuery, mockClientRelease, mockPoolQuery } = vi.hoisted(() => (
 }));
 
 // ---------------------------------------------------------------------------
-// Mock pool — intercepts every pool.query and pool.connect call
+// Mock pool - intercepts every pool.query and pool.connect call
 // ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {
@@ -351,7 +351,7 @@ describe('Reservation Repository (Mock)', () => {
   // -------------------------------------------------------------------------
   describe('callCancelReservation', () => {
     it('successfully cancels a Booked reservation', async () => {
-      // BEGIN, CALL sp_cancel_reservation, COMMIT — all succeed
+      // BEGIN, CALL sp_cancel_reservation, COMMIT - all succeed
       mockClientQuery
         .mockResolvedValueOnce({ rows: [], rowCount: 0 })  // BEGIN
         .mockResolvedValueOnce({ rows: [], rowCount: 0 })  // CALL sp_cancel_reservation
@@ -366,7 +366,7 @@ describe('Reservation Repository (Mock)', () => {
 
     it('rejects cancellation of a CheckedIn reservation with code 45010', async () => {
       const statusErr = Object.assign(
-        new Error('Reservation res-mock-002 cannot be cancelled — current status is CheckedIn'),
+        new Error('Reservation res-mock-002 cannot be cancelled - current status is CheckedIn'),
         { code: '45010' }
       );
       mockClientQuery

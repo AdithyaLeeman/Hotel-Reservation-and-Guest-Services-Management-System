@@ -1,5 +1,5 @@
 /**
- * Seed runner — applies all seed SQL files in order.
+ * Seed runner - applies all seed SQL files in order.
  * Run with: npm run seed
  *
  * TODO (P01-M01-T03 and each seed task): Populate with real seed logic.

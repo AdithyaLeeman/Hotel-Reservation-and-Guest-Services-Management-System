@@ -1,5 +1,5 @@
 /**
- * Database Pool — singleton pg Pool for the entire application.
+ * Database Pool - singleton pg Pool for the entire application.
  *
  * P01-M01-T02: Implement real pg Pool
  *
@@ -22,11 +22,11 @@ import { Pool, types } from 'pg';
 export type { PoolClient } from 'pg';
 
 // Configure node-postgres type parsers
-// OID 1082: DATE — return as clean ISO 8601 string (YYYY-MM-DD) without timezone shift (AGENTS.md & docs/21_shared-contracts.md §4)
+// OID 1082: DATE - return as clean ISO 8601 string (YYYY-MM-DD) without timezone shift (AGENTS.md & docs/21_shared-contracts.md §4)
 types.setTypeParser(1082, (val: string) => val);
 
 // ------------------------------------------------------------------
-// Singleton guard — prevents multiple Pool instances during Next.js
+// Singleton guard - prevents multiple Pool instances during Next.js
 // hot-reloads in development (each reload re-evaluates modules but
 // the `global` object persists for the lifetime of the Node process).
 // ------------------------------------------------------------------

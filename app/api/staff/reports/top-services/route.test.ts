@@ -41,7 +41,7 @@ describe('GET /api/staff/reports/top-services', () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({} as any);
 
     const originalEnv = process.env.NODE_ENV;
-    // @ts-expect-error — TS2540: process.env.NODE_ENV is readonly in strict mode;
+    // @ts-expect-error - TS2540: process.env.NODE_ENV is readonly in strict mode;
     // same suppression pattern used in app/api/staff/rooms/route.test.ts
     process.env.NODE_ENV = 'production';
 
@@ -49,7 +49,7 @@ describe('GET /api/staff/reports/top-services', () => {
     const res = await GET(req);
     const json = await res.json();
 
-    // @ts-expect-error — restore original value
+    // @ts-expect-error - restore original value
     process.env.NODE_ENV = originalEnv;
 
     expect(res.status).toBe(401);
@@ -57,7 +57,7 @@ describe('GET /api/staff/reports/top-services', () => {
   });
 
   // -------------------------------------------------------------------------
-  // RBAC — roles that must be rejected
+  // RBAC - roles that must be rejected
   // -------------------------------------------------------------------------
 
   it('returns 403 if user has Guest role', async () => {
@@ -93,7 +93,7 @@ describe('GET /api/staff/reports/top-services', () => {
   });
 
   // -------------------------------------------------------------------------
-  // RBAC — roles that must succeed
+  // RBAC - roles that must succeed
   // -------------------------------------------------------------------------
 
   it('returns 200 with data for Manager role', async () => {
@@ -208,7 +208,7 @@ describe('GET /api/staff/reports/top-services', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Error handling — simulate repository failure
+  // Error handling - simulate repository failure
   // -------------------------------------------------------------------------
 
   it('returns 500 if the repository throws an unexpected error', async () => {

@@ -1,7 +1,7 @@
 -- =============================================================================
 -- View:     vw_room_occupancy.sql
 -- Owner:    Member 5 (P05-M05-T04) / also referenced by M2 occupancy report
--- Phase:    P5 — Payments & Reports
+-- Phase:    P5 - Payments & Reports
 -- Task:     P05-M05-T04
 -- Depends:  room (P02-M02-T01), room_type (P01-M02-T01), branch (P01-M01-T07),
 --           reservation (P03-M03-T01), reservation_rooms (P03-M03-T02)

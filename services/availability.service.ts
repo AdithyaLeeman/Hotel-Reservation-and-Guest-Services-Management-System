@@ -1,5 +1,5 @@
 /**
- * Availability Service — search orchestration layer.
+ * Availability Service - search orchestration layer.
  * Owned by: Member 2 (M2) | Task: P02-M02-T08 (Mock-First)
  *
  * Responsibilities:
@@ -13,7 +13,7 @@
  *   (or its in-memory mock equivalent in the repository during parallel development).
  *
  * This layer intentionally contains NO financial calculations.
- * daily_rate is passed through from the DB row as a string — never multiplied here.
+ * daily_rate is passed through from the DB row as a string - never multiplied here.
  */
 
 import {
@@ -59,7 +59,7 @@ export interface AvailabilitySearchResult {
   /** Human-readable ISO dates echoed back for client confirmation */
   checkIn: string;
   checkOut: string;
-  /** Number of nights — informational only; authoritative value lives in DB */
+  /** Number of nights - informational only; authoritative value lives in DB */
   nightsRequested: number;
 }
 
@@ -77,7 +77,7 @@ function isValidIsoDate(value: string): boolean {
 
 /**
  * Compute the number of calendar nights between two ISO date strings.
- * Used for display only — DO NOT use this for billing calculations.
+ * Used for display only - DO NOT use this for billing calculations.
  * Authoritative nights = check_out_date - check_in_date computed in PostgreSQL.
  */
 function computeNights(checkIn: string, checkOut: string): number {
@@ -135,7 +135,7 @@ export const availabilityService = {
       );
     }
 
-    // Past date guard — compare against today in UTC to avoid timezone edge cases
+    // Past date guard - compare against today in UTC to avoid timezone edge cases
     const todayUtc = new Date().toISOString().slice(0, 10);
     if (input.checkIn < todayUtc) {
       throw new AvailabilityValidationError(

@@ -1,25 +1,25 @@
-# memory.md — HRGSMS Project State
+# memory.md - HRGSMS Project State
 
 _Updated at every session boundary. Keep concise. Do not turn into a transcript._
 
 ## Current Phase
-Phases 1 & 2 Active (Parallel Development across Phase 1–5 in progress)
+Phases 1 & 2 Active (Parallel Development across Phase 1-5 in progress)
 
 ## Current Status
 **83 of 139 tasks COMPLETE / IN REVIEW (59.7% overall project completion).** All 563 vitest tests across 49 test files are **PASSING**. TypeScript check (`tsc --noEmit`) clean with 0 errors. Documentation and progress trackers fully synchronized (2026-09-29).
 
 ## Completed Work
-- `AGENTS.md` — full 19-section development contract
-- `lib/db/` — pool.ts (singleton pg Pool), transaction.ts, migrate.ts (migration runner)
-- `database/migrations/` — 5 DDL migrations (`enums`, `user_account`, `branch`, `employee`, `guest`) + `P01-M01-T07_seed_branches.sql`
-- `database/views/` — `vw_top_services.sql` (P05-M03-T01), `vw_guest_billing_summary.sql` (P05-M05-T05), `vw_monthly_revenue.sql` (P05-M05-T06)
-- `lib/auth/` — password.ts (bcryptjs), session.ts (iron-session config/types), rbac.ts helpers
-- `lib/validation/` — auth, room, reservation, payment, report Zod validation schemas
-- `repositories/` — user, guest, room, availability, reservation, service-usage, billing, billing-report, payment repositories implemented with unit tests
-- `services/` — auth, room, availability, reservation, checkin, service-usage, billing, payment services implemented with unit tests
-- `app/api/` — GET `/api/availability`, GET/POST `/api/staff/rooms`, PATCH `/api/staff/rooms/[id]`, POST/GET `/api/guest/reservations`, POST/GET `/api/staff/reservations`, PATCH `/api/staff/reservations/[id]/cancel`, POST `/api/staff/reservations/[id]/checkin`, POST `/api/staff/reservations/[id]/services`, GET/POST `/api/staff/services`, POST `/api/guest/payments`, POST `/api/staff/reservations/[id]/checkout`, GET `/api/staff/reports/top-services`, GET `/api/staff/reports/billing`, GET `/api/staff/reports/revenue`, GET `/api/guest/reservations/[id]/invoice`
-- `app/` & `components/` — `/search` availability search page (`RoomCard.tsx`), `/staff/rooms` management page (`RoomForm.tsx`), `/staff/checkin` check-in page, `/staff/reservations/[id]/services` service usage logging page, `/staff/dashboard` staff dashboard, `/guest/login`, `/guest/register`, `/staff/login`, `/guest/reservations/new`, `/guest/book/confirm`, `/guest/reservations/[id]` detail page, `/guest/reservations/[id]/pay` bill & pay page (`PaymentConfirmation.tsx`)
-- Documentation & Trackers — `docs/14_task-tracker.md`, `context/08-progress-tracker.md` fully synchronized!
+- `AGENTS.md` - full 19-section development contract
+- `lib/db/` - pool.ts (singleton pg Pool), transaction.ts, migrate.ts (migration runner)
+- `database/migrations/` - 5 DDL migrations (`enums`, `user_account`, `branch`, `employee`, `guest`) + `P01-M01-T07_seed_branches.sql`
+- `database/views/` - `vw_top_services.sql` (P05-M03-T01), `vw_guest_billing_summary.sql` (P05-M05-T05), `vw_monthly_revenue.sql` (P05-M05-T06)
+- `lib/auth/` - password.ts (bcryptjs), session.ts (iron-session config/types), rbac.ts helpers
+- `lib/validation/` - auth, room, reservation, payment, report Zod validation schemas
+- `repositories/` - user, guest, room, availability, reservation, service-usage, billing, billing-report, payment repositories implemented with unit tests
+- `services/` - auth, room, availability, reservation, checkin, service-usage, billing, payment services implemented with unit tests
+- `app/api/` - GET `/api/availability`, GET/POST `/api/staff/rooms`, PATCH `/api/staff/rooms/[id]`, POST/GET `/api/guest/reservations`, POST/GET `/api/staff/reservations`, PATCH `/api/staff/reservations/[id]/cancel`, POST `/api/staff/reservations/[id]/checkin`, POST `/api/staff/reservations/[id]/services`, GET/POST `/api/staff/services`, POST `/api/guest/payments`, POST `/api/staff/reservations/[id]/checkout`, GET `/api/staff/reports/top-services`, GET `/api/staff/reports/billing`, GET `/api/staff/reports/revenue`, GET `/api/guest/reservations/[id]/invoice`
+- `app/` & `components/` - `/search` availability search page (`RoomCard.tsx`), `/staff/rooms` management page (`RoomForm.tsx`), `/staff/checkin` check-in page, `/staff/reservations/[id]/services` service usage logging page, `/staff/dashboard` staff dashboard, `/guest/login`, `/guest/register`, `/staff/login`, `/guest/reservations/new`, `/guest/book/confirm`, `/guest/reservations/[id]` detail page, `/guest/reservations/[id]/pay` bill & pay page (`PaymentConfirmation.tsx`)
+- Documentation & Trackers - `docs/14_task-tracker.md`, `context/08-progress-tracker.md` fully synchronized!
 
 ## Human Action Required
 ```bash
@@ -31,14 +31,14 @@ git push -u origin develop
 None. All 505 unit and integration tests passing. TypeScript compilation clean.
 
 ## Key Approved Decisions
-- ERD multi-room reservation model (reservation + reservation_rooms) — D001
-- Database-first computation rule: all authoritative calculations in PostgreSQL — D002
-- Antigravity skills used instead of JSM skills — D003
-- No cross-branch reservations — D004
-- Tax applies to room charges only (PROPOSED, confirm with lecturer) — D005
-- `billing_summary` is a stored table; `vw_invoice_totals` computes running totals — D006
+- ERD multi-room reservation model (reservation + reservation_rooms) - D001
+- Database-first computation rule: all authoritative calculations in PostgreSQL - D002
+- Antigravity skills used instead of JSM skills - D003
+- No cross-branch reservations - D004
+- Tax applies to room charges only (PROPOSED, confirm with lecturer) - D005
+- `billing_summary` is a stored table; `vw_invoice_totals` computes running totals - D006
 - Tailwind CSS v4 retained
-- No ORM — direct parameterized SQL via `pg`
+- No ORM - direct parameterized SQL via `pg`
 - Branch naming rule: Include a descriptive functionality suffix in branch names (e.g., `feat/P04-M04-T12-checkin-route-handler` instead of just `feat/P04-M04-T12`)
 
 ## Open Questions (Requiring Lecturer / Team Approval)
@@ -46,7 +46,7 @@ See `.agent/open-questions.md` and `docs/19_open-questions-and-assumptions.md`.
 Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancellation policy), OQ-10 (revenue report accrual).
 
 ## Next Task
-**M1: P01-M01-T01** — `feat/P01-M01-T01-db-pool`
+**M1: P01-M01-T01** - `feat/P01-M01-T01-db-pool`
 - Install: `pg`, `iron-session`, `bcryptjs`, `zod`, `@types/pg`, `@types/bcryptjs`, `vitest`
 - Implement real migration runner with `schema_migrations` tracking
 - Write first SQL: `P01-M01-T02-01_create_enums.sql`
@@ -59,7 +59,7 @@ Priority: OQ-08 (overlap prevention technique), OQ-04 (tax scope), OQ-05 (cancel
 - `app/api/staff/reports/occupancy/route.ts` & test (P05-M02-T02)
 - `app/staff/reports/occupancy/page.tsx` & test (P05-M02-T01)
 - `database/tests/explain_analyze_availability.sql` + docs/09 EXPLAIN ANALYZE section (P02-M02-T18)
-- **Next for M2:** Phase 6 Integration (P06-M02-T01..T03) — blocked on live DB migrations executing.
+- **Next for M2:** Phase 6 Integration (P06-M02-T01..T03) - blocked on live DB migrations executing.
 
 ## Integration Checkpoints
 - P1 integration owner: Member 1

@@ -1,10 +1,10 @@
 /**
- * Staff Administration Panel — /staff/admin
+ * Staff Administration Panel - /staff/admin
  *
  * Admin-only page for managing staff accounts, viewing branch info,
  * and system administration tasks.
  *
- * Features (v2 — interactive):
+ * Features (v2 - interactive):
  *   - Add Staff Member modal (create Receptionist / Manager)
  *   - Change Branch inline modal
  *   - Toggle account status (Active / Suspended)
@@ -508,7 +508,7 @@ export default function AdminPage() {
             </div>
             <div>
               <h1 className="font-serif text-3xl font-semibold text-[#f7f5f2] m-0 tracking-[0.02em]">Administration</h1>
-              <p style={{ color: '#a8a29e', margin: 0, fontSize: '0.875rem', marginTop: '0.2rem' }}>System-wide management — SkyNest Hotels</p>
+              <p style={{ color: '#a8a29e', margin: 0, fontSize: '0.875rem', marginTop: '0.2rem' }}>System-wide management - SkyNest Hotels</p>
             </div>
           </div>
         </div>
@@ -674,7 +674,7 @@ export default function AdminPage() {
                               s.branch_name ?? <em style={{ color: '#78716c' }}>All branches</em>
                             )}
                           </td>
-                          <td style={{ ...td, color: '#a8a29e' }}>{[s.department, s.position].filter(Boolean).join(' · ') || <em style={{ color: '#78716c' }}>—</em>}</td>
+                          <td style={{ ...td, color: '#a8a29e' }}>{[s.department, s.position].filter(Boolean).join(' · ') || <em style={{ color: '#78716c' }}>-</em>}</td>
                           <td style={td}>
                             <span style={{ ...statusBadgeStyle(s.status), borderRadius: 4, padding: '2px 8px', fontSize: '0.72rem', fontWeight: 600, display: 'inline-block' }}>
                               {s.status}
@@ -770,7 +770,7 @@ export default function AdminPage() {
                           <td style={td}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                               <span style={{ ...statusBadgeSql(a.old_status), borderRadius: 4, padding: '2px 7px', fontSize: '0.7rem', fontWeight: 600, display: 'inline-block' }}>{a.old_status}</span>
-                              <span style={{ color: '#78716c', fontSize: '0.75rem' }}>→</span>
+                              <span style={{ color: '#78716c', fontSize: '0.75rem' }}>-</span>
                               <span style={{ ...statusBadgeSql(a.new_status), borderRadius: 4, padding: '2px 7px', fontSize: '0.7rem', fontWeight: 600, display: 'inline-block' }}>{a.new_status}</span>
                             </div>
                           </td>
@@ -779,10 +779,10 @@ export default function AdminPage() {
                             <span style={{ ...roleBadgeStyle(a.actor_role), borderRadius: 3, padding: '1px 5px', fontSize: '0.68rem', fontWeight: 600, display: 'inline-block', marginTop: 2 }}>{a.actor_role}</span>
                           </td>
                           <td style={{ ...td, fontFamily: 'monospace', fontSize: '0.78rem', color: '#c5a880' }}>
-                            {a.employee_number ?? <em style={{ color: '#78716c' }}>—</em>}
+                            {a.employee_number ?? <em style={{ color: '#78716c' }}>-</em>}
                           </td>
                           <td style={{ ...td, fontSize: '0.8rem', color: '#a8a29e' }}>
-                            {a.change_reason ?? <em style={{ color: '#78716c' }}>—</em>}
+                            {a.change_reason ?? <em style={{ color: '#78716c' }}>-</em>}
                           </td>
                         </tr>
                       ))}

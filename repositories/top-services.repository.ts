@@ -1,5 +1,5 @@
 /**
- * Top-Services Repository — data access layer for vw_top_services.
+ * Top-Services Repository - data access layer for vw_top_services.
  * Owned by: Member 3 (M3) | Task: P05-M03-T02 (Mock-First)
  *
  * Parallel development mode:
@@ -17,20 +17,20 @@
 import { pool } from '@/lib/db/pool';
 
 // ---------------------------------------------------------------------------
-// Row type — mirrors vw_top_services columns exactly
+// Row type - mirrors vw_top_services columns exactly
 // ---------------------------------------------------------------------------
 
 export interface TopServiceRow {
   service_id: number;
   service_name: string;
   total_quantity: number;
-  total_revenue: string;    // NUMERIC(12,2) — SUM(quantity * charged_price)
+  total_revenue: string;    // NUMERIC(12,2) - SUM(quantity * charged_price)
   reservation_count: number;
   usage_rank: number;       // RANK() OVER (ORDER BY total_quantity DESC)
 }
 
 // ---------------------------------------------------------------------------
-// Mock data — derived from service-usage.repository.ts seed data.
+// Mock data - derived from service-usage.repository.ts seed data.
 // Mirrors what vw_top_services would return for the seed usage records.
 //
 // Additional mock rows give the report meaningful test data for rank ordering.

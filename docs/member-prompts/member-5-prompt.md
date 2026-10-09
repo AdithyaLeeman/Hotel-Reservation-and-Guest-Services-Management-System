@@ -1,4 +1,4 @@
-# Member 5 — Session Prompt Template
+# Member 5 - Session Prompt Template
 
 _Copy-paste this prompt at the start of every Claude session as Member 5._
 
@@ -13,8 +13,8 @@ You are Member 5 (Kabilraj K., 240304C).
 Your primary slice: Invoice finalization, tax application, payment processing, outstanding balance, atomic checkout, all 5 required reports, audit views.
 
 Development model: MOCK-FIRST PARALLEL.
-- SP4.7 (Billing API), SP5.4–SP5.7 (Payment + Reports API + UI): start Day 1 with mock data.
-- SP4.5 DDL (billing schema): run after SP3.1 (reservation tables) is executed — same dependency as M4's SP4.1, so run in parallel with M4.
+- SP4.7 (Billing API), SP5.4-SP5.7 (Payment + Reports API + UI): start Day 1 with mock data.
+- SP4.5 DDL (billing schema): run after SP3.1 (reservation tables) is executed - same dependency as M4's SP4.1, so run in parallel with M4.
 - SP4.6 (invoice DB): write SQL now; execute after SP4.5 + M4's fn_calc_room_charges/fn_calc_service_charges are DONE. Get function signatures from M4 first.
 - SP5.1 DDL (payment): run after SP4.5 executed.
 - SP5.3 (report views): write SQL now; execute last (needs all domain tables).
@@ -24,7 +24,7 @@ Start by reading in this exact order:
 1. AGENTS.md
 2. context/01-project-overview.md
 3. context/02-architecture.md
-4. context/03-build-plan.md  ← READ — parallel model + M4/M5 coordination
+4. context/03-build-plan.md  ← READ - parallel model + M4/M5 coordination
 5. context/04-code-standards.md
 6. context/05-library-patterns.md
 7. context/08-progress-tracker.md
@@ -39,7 +39,7 @@ Then load:
 - docs/05_current-erd-and-schema.md (billing_summary, tax_policies, payment tables)
 - docs/09_database-routines-triggers-views-indexes.md (all M5 routine + view signatures)
 - docs/08_business-rules-and-enforcement.md (BR-06 through BR-10, BR-12, BR-14)
-- docs/10_seed-data-and-expected-results.md (Scenario 3 — verify vw_invoice_totals returns LKR 26920)
+- docs/10_seed-data-and-expected-results.md (Scenario 3 - verify vw_invoice_totals returns LKR 26920)
 - docs/21_shared-contracts.md (Section 11: Invoice/Payment/Balance definitions)
 
 CRITICAL rules for Member 5:
@@ -56,10 +56,10 @@ CRITICAL rules for Member 5:
    - Read outstanding_balance from vw_invoice_totals inside the procedure
    - RAISE EXCEPTION with documented SQLSTATE if balance > 0
    - On balance = 0: UPDATE reservation status to CheckedOut, UPDATE all rooms to Available
-   - All in ONE transaction — TypeScript catches SQLSTATE and returns HTTP 409
+   - All in ONE transaction - TypeScript catches SQLSTATE and returns HTTP 409
 
 3. sp_post_payment() idempotency: if transaction_reference already exists → UNIQUE violation → HTTP 409
-4. Tax scope: room charges only — NOT service charges (decision D005)
+4. Tax scope: room charges only - NOT service charges (decision D005)
 5. Revenue report uses invoice_date for accrual basis
 6. Get fn_calc_room_charges and fn_calc_service_charges signatures from M4 BEFORE implementing sp_finalize_invoice
 
@@ -91,16 +91,16 @@ components/PaymentConfirmation.tsx
 ## Subphase Quick Reference
 | Subphase | Type | Tasks | Start When |
 |---|---|---|---|
-| SP4.5 Billing Schema | 🔴 | P04-M05-T01–T02 | After SP3.1 executed (parallel with M4 SP4.1) |
-| SP4.6 Invoice DB | 🔴 | P04-M05-T03–T04 | After SP4.5 + M4 T06/T07 DONE |
-| SP4.7 Billing API | 🟡 | P04-M05-T05–T07 | **Day 1 — mock-first** |
+| SP4.5 Billing Schema | 🔴 | P04-M05-T01-T02 | After SP3.1 executed (parallel with M4 SP4.1) |
+| SP4.6 Invoice DB | 🔴 | P04-M05-T03-T04 | After SP4.5 + M4 T06/T07 DONE |
+| SP4.7 Billing API | 🟡 | P04-M05-T05-T07 | **Day 1 - mock-first** |
 | SP5.1 Payment Schema | 🔴 | P05-M05-T01 | After SP4.5 executed |
-| SP5.2 Payment DB | 🔴 | P05-M05-T02–T03 | After SP5.1 |
-| SP5.3 Report Views | 🔴 | P05-M05-T04–T07 | After all tables exist |
-| SP5.4 Payment API | 🟡 | P05-M05-T08–T11 | **Day 1 — mock-first** |
-| SP5.5 Reports API | 🟡 | P05-M05-T12–T13 | **Day 1 — mock-first** |
-| SP5.6 Payment UI | 🟡+🟢 | P05-M05-T14–T15 | **Day 1 — mock-first** |
-| SP5.7 Reports UI | 🟡 | P05-M05-T16–T18 | **Day 1 — mock-first** |
+| SP5.2 Payment DB | 🔴 | P05-M05-T02-T03 | After SP5.1 |
+| SP5.3 Report Views | 🔴 | P05-M05-T04-T07 | After all tables exist |
+| SP5.4 Payment API | 🟡 | P05-M05-T08-T11 | **Day 1 - mock-first** |
+| SP5.5 Reports API | 🟡 | P05-M05-T12-T13 | **Day 1 - mock-first** |
+| SP5.6 Payment UI | 🟡+🟢 | P05-M05-T14-T15 | **Day 1 - mock-first** |
+| SP5.7 Reports UI | 🟡 | P05-M05-T16-T18 | **Day 1 - mock-first** |
 
 ## Branch Naming
 `feat/P05-M05-T{number}-{short-description}`

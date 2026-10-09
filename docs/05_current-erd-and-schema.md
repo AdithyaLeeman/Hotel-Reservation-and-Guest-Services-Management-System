@@ -1,4 +1,4 @@
-# docs/05 — Current ERD and Schema
+# docs/05 - Current ERD and Schema
 
 > **Source note:** Transcribed from `project-sources/ER_Diagram- Group 39.md`. Original PDF not available for visual verification. Cardinalities described based on FK relationships. Flag any visual ambiguity.
 
@@ -77,7 +77,7 @@ SkyNest hotel branches.
 | `branch_id` | `bigint` | PK, GENERATED ALWAYS AS IDENTITY | |
 | `location_name` | `varchar(100)` | NOT NULL, UNIQUE | e.g., 'Colombo' |
 
-**Seed data:** 3 branches — Colombo, Kandy, Galle.
+**Seed data:** 3 branches - Colombo, Kandy, Galle.
 
 ---
 
@@ -128,7 +128,7 @@ Individual hotel rooms.
 | `type_id` | `bigint` | NOT NULL, FK → room_type | |
 | `status` | `room_status` | NOT NULL, DEFAULT 'Available' | |
 
-**Candidate keys:** `(branch_id, room_number)` — UNIQUE per branch
+**Candidate keys:** `(branch_id, room_number)` - UNIQUE per branch
 **Invariants:** Room number must be unique within a branch.
 
 ---
@@ -227,7 +227,7 @@ Stored invoice per reservation. Created/finalized by `sp_finalize_invoice()`.
 | `tax_percentage_applied` | `NUMERIC(5,2)` | NOT NULL | Snapshot at invoice time |
 | `payment_status` | `payment_status` | NOT NULL, DEFAULT 'Unpaid' | |
 
-**Note:** Monetary totals are NOT stored here — they are computed by `vw_invoice_totals`. `tax_percentage_applied` is the snapshot for historical accuracy.
+**Note:** Monetary totals are NOT stored here - they are computed by `vw_invoice_totals`. `tax_percentage_applied` is the snapshot for historical accuracy.
 
 ---
 
@@ -245,7 +245,7 @@ Individual payment records against an invoice.
 | `paid_by_user_id` | `uuid` | NOT NULL, FK → user_account | |
 | `transaction_reference` | `varchar(100)` | UNIQUE | Idempotency key |
 
-**Invariants:** `transaction_reference` unique — prevents duplicate payment processing.
+**Invariants:** `transaction_reference` unique - prevents duplicate payment processing.
 
 ---
 

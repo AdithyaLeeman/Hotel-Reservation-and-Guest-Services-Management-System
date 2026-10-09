@@ -1,5 +1,5 @@
 /**
- * Billing Service — creates invoices and retrieves billing totals.
+ * Billing Service - creates invoices and retrieves billing totals.
  *
  * DB-first rule (AGENTS.md §5):
  *   - sp_finalize_invoice() creates billing_summary with tax snapshot
@@ -7,9 +7,9 @@
  *     services, outstanding_balance)
  *   - This service NEVER computes grand_total or outstanding_balance in TypeScript
  *
- * P06-M05-T01 — Wire billing to real DB
+ * P06-M05-T01 - Wire billing to real DB
  *
- * See docs/08_business-rules-and-enforcement.md — Calculation Placement Matrix.
+ * See docs/08_business-rules-and-enforcement.md - Calculation Placement Matrix.
  *
  * Owned by: Member 5 (M5)
  */
@@ -22,7 +22,7 @@ export const billingService = {
    * Create (or retrieve) the billing_summary invoice for a reservation.
    *
    * Delegates to billingRepository.callFinalizeInvoice() which calls
-   * sp_finalize_invoice(). IDEMPOTENT — safe to call multiple times.
+   * sp_finalize_invoice(). IDEMPOTENT - safe to call multiple times.
    *
    * @param reservationId  UUID of the reservation
    * @returns              The invoice_id UUID
@@ -38,7 +38,7 @@ export const billingService = {
    * Retrieve all billing totals for a reservation from vw_invoice_totals.
    *
    * Returns null when no invoice has been finalized yet for this reservation.
-   * outstanding_balance is authoritative from PostgreSQL — NEVER recompute in TypeScript.
+   * outstanding_balance is authoritative from PostgreSQL - NEVER recompute in TypeScript.
    *
    * @param reservationId  UUID of the reservation
    * @returns              InvoiceTotals or null if not yet invoiced

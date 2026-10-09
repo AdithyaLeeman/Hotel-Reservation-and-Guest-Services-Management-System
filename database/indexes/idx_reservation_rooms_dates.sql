@@ -1,6 +1,6 @@
 -- ============================================================================
 -- Index:     idx_reservation_rooms_dates
--- Subphase:  SP2.2 — Availability DB
+-- Subphase:  SP2.2 - Availability DB
 -- Task:      P02-M02-T04
 -- Member:    Member 2 (Room Inventory and Availability)
 -- Purpose:   Composite and supporting indexes to optimize availability search

@@ -145,13 +145,13 @@ function ActionCard({ action }: { action: QuickAction }) {
 /* ─── Page (Server Component) ─────────────────────────────────────────────── */
 
 export const metadata = {
-  title: 'Dashboard — SkyNest Hotels Staff Portal',
+  title: 'Dashboard - SkyNest Hotels Staff Portal',
   description:
     "SkyNest Hotels staff dashboard. View today's arrivals, departures, occupancy, and quick-access operations.",
 };
 
 export default async function StaffDashboardPage() {
-  // Server-side session — never trust browser-supplied identity (AGENTS.md §10)
+  // Server-side session - never trust browser-supplied identity (AGENTS.md §10)
   const session = await getSession();
 
   if (!session.userId || !session.role) {
@@ -318,19 +318,19 @@ export default async function StaffDashboardPage() {
             day: 'numeric',
           });
 
-      let description = `${act.guestFullName} — Status: ${act.newStatus} (${act.branchLocationName})`;
+      let description = `${act.guestFullName} - Status: ${act.newStatus} (${act.branchLocationName})`;
       let badgeLabel = act.newStatus;
       if (act.newStatus === 'CheckedIn') {
-        description = `Guest checked in — ${act.guestFullName} (${act.branchLocationName})`;
+        description = `Guest checked in - ${act.guestFullName} (${act.branchLocationName})`;
         badgeLabel = 'Checked In';
       } else if (act.newStatus === 'CheckedOut') {
-        description = `Guest checked out — ${act.guestFullName} (${act.branchLocationName})`;
+        description = `Guest checked out - ${act.guestFullName} (${act.branchLocationName})`;
         badgeLabel = 'Checked Out';
       } else if (act.newStatus === 'Booked') {
-        description = `New reservation booked — ${act.guestFullName} (${act.branchLocationName})`;
+        description = `New reservation booked - ${act.guestFullName} (${act.branchLocationName})`;
         badgeLabel = 'Booked';
       } else if (act.newStatus === 'Cancelled') {
-        description = `Reservation cancelled — ${act.guestFullName} (${act.branchLocationName})`;
+        description = `Reservation cancelled - ${act.guestFullName} (${act.branchLocationName})`;
         badgeLabel = 'Cancelled';
       }
 
@@ -360,7 +360,7 @@ export default async function StaffDashboardPage() {
 
   return (
     <>
-      <title>Dashboard — SkyNest Hotels Staff Portal</title>
+      <title>Dashboard - SkyNest Hotels Staff Portal</title>
 
       {/* Accessible status for test/environment runners */}
       {process.env.NODE_ENV === 'test' && (
@@ -386,8 +386,8 @@ export default async function StaffDashboardPage() {
               </h1>
               <p className="text-sm text-[var(--color-text-muted)] mt-1">
                 {branchName
-                  ? `Branch: ${branchName} — `
-                  : 'All branches — '}
+                  ? `Branch: ${branchName} - `
+                  : 'All branches - '}
                 {new Date().toLocaleDateString('en-LK', {
                   weekday: 'long',
                   year: 'numeric',
@@ -439,7 +439,7 @@ export default async function StaffDashboardPage() {
 
           {/* ── Two-column lower section ── */}
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Recent Activity (2/3 width — Live from vw_audit_log) */}
+            {/* Recent Activity (2/3 width - Live from vw_audit_log) */}
             <section
               aria-labelledby="activity-heading"
               className="lg:col-span-2"
@@ -536,7 +536,7 @@ export default async function StaffDashboardPage() {
                 <div className="divider" />
 
                 <p className="text-xs text-[var(--color-text-subtle)] leading-relaxed">
-                  SkyNest HRGSMS v1.0 — Live PostgreSQL Database.
+                  SkyNest HRGSMS v1.0 - Live PostgreSQL Database.
                   {' '}
                   <span className="font-medium text-[var(--color-text-muted)]">
                     Role: {staffRole}
@@ -552,11 +552,11 @@ export default async function StaffDashboardPage() {
           id="staff-dashboard-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels — Staff Portal · All access is logged and monitored
+          SkyNest Hotels - Staff Portal · All access is logged and monitored
         </footer>
       </div>
 
-      {/* Badge colour tokens — inline so no extra CSS file needed */}
+      {/* Badge colour tokens - inline so no extra CSS file needed */}
       <style>{`
         .badge-booked      { background: rgba(197, 168, 128, 0.15); color: #c5a880; border: 1px solid rgba(197, 168, 128, 0.4); }
         .badge-checked-in  { background: rgba(197, 168, 128, 0.22); color: #f5e6d3; border: 1px solid rgba(197, 168, 128, 0.45); }

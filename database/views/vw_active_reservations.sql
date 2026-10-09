@@ -13,7 +13,7 @@
 --
 -- SECURITY:
 --   Branch-level filtering (WHERE branch_id = $1) is applied at the query level
---   in the repository layer — not in this view — to keep the view general-purpose.
+--   in the repository layer - not in this view - to keep the view general-purpose.
 --   Receptionist branch scoping is enforced in route handlers via requireBranchScope().
 --
 -- COLUMNS:

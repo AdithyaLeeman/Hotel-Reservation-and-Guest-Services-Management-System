@@ -1,10 +1,10 @@
-# docs/21 — Shared Contracts
+# docs/21 - Shared Contracts
 
 _Controlled cross-slice contracts that all parallel tasks depend on._
 _Changes to any ACCEPTED section require a documented decision, affected-task review, and coordinated plan._
 _Owner: M1. Published at Phase 1 start._
 
-> **STATUS: ACCEPTED** — All sections below are locked for Phase 1–3 parallel development.
+> **STATUS: ACCEPTED** - All sections below are locked for Phase 1-3 parallel development.
 > Do not change any ACCEPTED section without raising a contract-change entry in Section 14
 > and notifying the affected members listed under each section.
 
@@ -81,18 +81,18 @@ All monetary values in PostgreSQL use `NUMERIC(12,2)`. Never use `FLOAT` or `DOU
 All monetary values in TypeScript:
 - Are received from `pg` as **strings** (pg driver serialises NUMERIC as string).
 - Stay as `string` in domain types and API responses.
-- Are never subjected to arithmetic in TypeScript — all calculations run in PostgreSQL.
+- Are never subjected to arithmetic in TypeScript - all calculations run in PostgreSQL.
 - May be converted with `parseFloat()` **for display only** (e.g., rendering a formatted amount in a React component). That display value must never be sent back to the server as authoritative.
 
 ```typescript
-// Correct — received from pg, stored as string
+// Correct - received from pg, stored as string
 const rate: string = row.rate_per_night; // e.g. "10000.00"
 
-// Correct — display only
+// Correct - display only
 const display = parseFloat(rate).toLocaleString('en-LK', { style: 'currency', currency: 'LKR' });
 
-// WRONG — arithmetic in TypeScript
-const total = parseFloat(rate) * nights; // BUG — use DB fn_calc_room_charges() instead
+// WRONG - arithmetic in TypeScript
+const total = parseFloat(rate) * nights; // BUG - use DB fn_calc_room_charges() instead
 ```
 
 **Status:** ACCEPTED | **Owner:** M1 | **Affects:** M1, M2, M3, M4, M5
@@ -123,7 +123,7 @@ const total = parseFloat(rate) * nights; // BUG — use DB fn_calc_room_charges(
 ## 5. Enum Names and Values
 
 All enums must match the ERD and `types/enums.ts` exactly.
-Never use raw string literals for enum values in business logic — always import from `@/types/enums`.
+Never use raw string literals for enum values in business logic - always import from `@/types/enums`.
 
 ```typescript
 import type { RoomStatus, ReservationStatus, UserRole } from '@/types/enums';
@@ -140,8 +140,8 @@ import type { RoomStatus, ReservationStatus, UserRole } from '@/types/enums';
 | `PaymentStatus` | `'Unpaid' \| 'PartiallyPaid' \| 'Paid'` | `payment_status` |
 
 Utility types also available in `@/types/enums`:
-- `StaffRole` = `Exclude<UserRole, 'Guest'>` — for staff-only gate checks
-- `ManagerRole` = `'Manager' | 'Admin'` — for report/admin access checks
+- `StaffRole` = `Exclude<UserRole, 'Guest'>` - for staff-only gate checks
+- `ManagerRole` = `'Manager' | 'Admin'` - for report/admin access checks
 
 **Status:** ACCEPTED | **Owner:** M1 | **Affects:** All members
 
@@ -189,12 +189,12 @@ return NextResponse.json<ApiError>({
 | 200 | Success (GET, PUT, PATCH) |
 | 201 | Created (POST) |
 | 204 | No content (DELETE) |
-| 400 | Validation error — always include `fields` map |
+| 400 | Validation error - always include `fields` map |
 | 401 | Not authenticated |
-| 403 | Not authorised — wrong role or branch |
+| 403 | Not authorised - wrong role or branch |
 | 404 | Not found |
-| 409 | Conflict — double booking, unpaid checkout |
-| 500 | Internal server error — never expose DB internals in the message |
+| 409 | Conflict - double booking, unpaid checkout |
+| 500 | Internal server error - never expose DB internals in the message |
 
 **Status:** ACCEPTED | **Owner:** M1 | **Affects:** All members
 
@@ -207,9 +207,9 @@ return NextResponse.json<ApiError>({
 export interface SessionData {
   userId: string;       // user_account.user_id (UUID)
   role: UserRole;       // 'Guest' | 'Receptionist' | 'Manager' | 'Admin'
-  guestId?: string;     // guest.guest_id — present when role = 'Guest'
-  employeeId?: number;  // employee.employee_id — present for staff roles
-  branchId?: number;    // employee's branch — present for Receptionist (scoped)
+  guestId?: string;     // guest.guest_id - present when role = 'Guest'
+  employeeId?: number;  // employee.employee_id - present for staff roles
+  branchId?: number;    // employee's branch - present for Receptionist (scoped)
                         // undefined for Manager / Admin (all-branch access)
 }
 ```
@@ -238,12 +238,12 @@ export async function GET(req: Request) {
 
 | Role | Branch Scope Rule |
 |---|---|
-| `Guest` | No branch scope — queries filter by reservation ownership (`guest_id`) |
-| `Receptionist` | Scoped to `session.branchId` only — cannot see or modify other branches |
-| `Manager` | Can query any branch — `branchId` in session may be set or undefined |
+| `Guest` | No branch scope - queries filter by reservation ownership (`guest_id`) |
+| `Receptionist` | Scoped to `session.branchId` only - cannot see or modify other branches |
+| `Manager` | Can query any branch - `branchId` in session may be set or undefined |
 | `Admin` | Can query any branch |
 
-- Branch scope is enforced in **DB query predicates** (a `WHERE branch_id = $1` clause) AND in **route handler authorisation** — not only by hiding UI navigation.
+- Branch scope is enforced in **DB query predicates** (a `WHERE branch_id = $1` clause) AND in **route handler authorisation** - not only by hiding UI navigation.
 - A Receptionist must never access reservations, rooms, or reports for another branch, even with a direct API call.
 
 ```typescript
@@ -304,7 +304,7 @@ const reservation = await withTransaction(async (client) => {
 
 Rules:
 - Pass `client` from `withTransaction` into any repository method that must participate in the same transaction.
-- Never call `pool.connect()` directly in service or repository code for transactional operations — use `withTransaction`.
+- Never call `pool.connect()` directly in service or repository code for transactional operations - use `withTransaction`.
 - Stored procedures that handle their own atomicity (e.g., `sp_create_reservation`) must still be called inside `withTransaction` so the caller can roll back if post-call assertions fail.
 
 **Status:** ACCEPTED | **Owner:** M1 | **Affects:** M1, M3, M4, M5
@@ -315,7 +315,7 @@ Rules:
 
 - Filename format: `P{phase}-M{member}-T{task}-{nn}_{description}.sql`
 - Applied in manifest order (see `database/migrations/manifest.md`)
-- Applied migrations are immutable — corrections use new migration files, never edits
+- Applied migrations are immutable - corrections use new migration files, never edits
 - Every migration must be idempotent where possible (`CREATE TABLE IF NOT EXISTS`, `DO $$ IF NOT EXISTS ... END $$`)
 - Database must rebuild from empty by running migrations in manifest order
 - Migration runner: `npm run migrate` (calls `lib/db/migrate.ts`)
@@ -339,7 +339,7 @@ These definitions are authoritative. All values in this table come from PostgreS
 | Discount amount | `room_charge × discount_percentage / 100` (0 if no discount) | `vw_invoice_totals` |
 | Grand total | `room_charge + tax_amount + service_charge - discount_amount` | `vw_invoice_totals` |
 | Total paid | `SUM(amount_paid)` from `payment` records for the invoice | `vw_invoice_totals` |
-| Outstanding balance | `grand_total - total_paid` | `vw_invoice_totals` — **NEVER computed in TypeScript** |
+| Outstanding balance | `grand_total - total_paid` | `vw_invoice_totals` - **NEVER computed in TypeScript** |
 | Monthly revenue | Grand total of finalised invoices grouped by `invoice_date` month + branch | `vw_monthly_revenue` |
 
 TypeScript representation: use `InvoiceTotals` from `@/types/domain`. All fields are `string` (NUMERIC from pg).
@@ -348,7 +348,7 @@ TypeScript representation: use `InvoiceTotals` from `@/types/domain`. All fields
 
 ---
 
-## 12. RBAC — Route Handler Authorisation Pattern
+## 12. RBAC - Route Handler Authorisation Pattern
 
 Every route handler must follow this sequence. Skip no step.
 
@@ -368,21 +368,21 @@ import { z } from 'zod';
 import { ERROR_CODES } from '@/types/api';
 
 export async function POST(req: Request) {
-  // Step 1 — Auth
+  // Step 1 - Auth
   const session = await getSession();
   if (!session) {
     return Response.json({ error: { code: ERROR_CODES.NOT_AUTHENTICATED, message: 'Not authenticated' } }, { status: 401 });
   }
 
-  // Step 2 — Role check
+  // Step 2 - Role check
   if (!['Receptionist', 'Manager', 'Admin'].includes(session.role)) {
     return Response.json({ error: { code: ERROR_CODES.INSUFFICIENT_ROLE, message: 'Staff access required' } }, { status: 403 });
   }
 
-  // Step 3 — Branch scope (Receptionist only)
-  // (call assertBranchScope helper when built — see lib/auth/rbac.ts)
+  // Step 3 - Branch scope (Receptionist only)
+  // (call assertBranchScope helper when built - see lib/auth/rbac.ts)
 
-  // Step 4 — Input validation
+  // Step 4 - Input validation
   const body = await req.json();
   const result = schema.safeParse(body);
   if (!result.success) {
@@ -391,10 +391,10 @@ export async function POST(req: Request) {
     }, { status: 400 });
   }
 
-  // Step 5 — Business logic
+  // Step 5 - Business logic
   const data = await someService.doSomething(result.data, session);
 
-  // Step 6 — Response
+  // Step 6 - Response
   return Response.json({ data, meta: { requestId: crypto.randomUUID() } }, { status: 200 });
 }
 ```
@@ -405,7 +405,7 @@ export async function POST(req: Request) {
 
 ## 13. Mock-First Repository Swap Contract
 
-During parallel development (Phase 1–5), repositories operate on in-memory mock stores.
+During parallel development (Phase 1-5), repositories operate on in-memory mock stores.
 When SP1.2 / SP2.1 migrations are executed on the real database, each mock is swapped to real pg queries.
 
 **Rules for mock repositories:**
@@ -414,7 +414,7 @@ When SP1.2 / SP2.1 migrations are executed on the real database, each mock is sw
 2. Mock stores must be initialised to the canonical seed data (15 rooms, 3 branches, 3 room types, etc.).
 3. Every mock repository must export a `_resetMockStore()` method for test suite `beforeEach` resets.
 4. Mock constraint enforcement must match DB constraints (UNIQUE violations throw; FK violations throw; NOT NULL enforced).
-5. Mock implementations must NOT use `pg`, `pool`, or `withTransaction` — they operate purely in memory.
+5. Mock implementations must NOT use `pg`, `pool`, or `withTransaction` - they operate purely in memory.
 
 **Swap trigger:** a migration has been applied and the schema is confirmed live for that member's domain.
 
@@ -472,4 +472,4 @@ import { SQLSTATE } from '@/types/enums';
 | Date | Contract | Change | Approved By | Affected Tasks |
 |---|---|---|---|---|
 | Phase 0 | All | Initial draft | M1 | All P1+ tasks |
-| Phase 1 / 2026-09-19 | All | Published — all sections promoted to ACCEPTED; sections 12–14 added (RBAC pattern, mock swap contract, SQLSTATE map) | M1 (P01-M01-T04) | All P1+ tasks |
+| Phase 1 / 2026-09-19 | All | Published - all sections promoted to ACCEPTED; sections 12-14 added (RBAC pattern, mock swap contract, SQLSTATE map) | M1 (P01-M01-T04) | All P1+ tasks |

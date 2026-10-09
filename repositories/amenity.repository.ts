@@ -1,5 +1,5 @@
 /**
- * Amenity Repository — data access layer for room amenities.
+ * Amenity Repository - data access layer for room amenities.
  * Queries the PostgreSQL amenity table using pg Pool.
  */
 

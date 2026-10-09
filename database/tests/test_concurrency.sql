@@ -156,5 +156,5 @@ BEGIN
 
     -- Rollback all test state
     ROLLBACK;
-    RAISE NOTICE '=== test_concurrency.sql complete — all test state rolled back ===';
+    RAISE NOTICE '=== test_concurrency.sql complete - all test state rolled back ===';
 END $$;

@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Public Availability Search Page — /search
+ * Public Availability Search Page - /search
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T13
- * Type: 🟡 MOCK-FIRST — consumes GET /api/availability (currently mock data).
+ * Type: 🟡 MOCK-FIRST - consumes GET /api/availability (currently mock data).
  *
  * Responsibilities:
  *   - Let guests select branch, check-in date, check-out date
@@ -85,7 +85,7 @@ function tomorrowIso(): string {
 }
 
 // ---------------------------------------------------------------------------
-// Client-side validation (shape only — semantic validation is in the API)
+// Client-side validation (shape only - semantic validation is in the API)
 // ---------------------------------------------------------------------------
 
 function validateForm(form: SearchFormState): FormErrors {
@@ -550,7 +550,7 @@ export default function SearchPage() {
                 </h2>
               </div>
               <p className="text-xs uppercase tracking-wider text-[#78716c] dark:text-[#a8a29e]">
-                {selectedBranch?.name} Property · {result.checkIn} → {result.checkOut} ({nightsLabel})
+                {selectedBranch?.name} Property · {result.checkIn} - {result.checkOut} ({nightsLabel})
               </p>
             </div>
           )}

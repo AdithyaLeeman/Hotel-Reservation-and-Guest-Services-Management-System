@@ -780,7 +780,7 @@ See Figure 6.1 in Section 6, Other Requirements, for the entity relationship ove
 the Branch, Room_Type, Room, Guest, Booking, Payment, Service_Catalogue, and
 Service_Usage entities.
 B.2 Entity Relationship Diagram
-Figure B.1 — Entity Relationship Diagram
+Figure B.1 - Entity Relationship Diagram
 
 ---
 

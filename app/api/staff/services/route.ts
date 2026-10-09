@@ -1,26 +1,26 @@
 /**
  * Route: GET /api/staff/services  +  POST /api/staff/services
  *
- * GET  — Returns all Active service catalogue items (any staff role).
- * POST — Adds a new item to the service catalogue (Manager / Admin only).
+ * GET  - Returns all Active service catalogue items (any staff role).
+ * POST - Adds a new item to the service catalogue (Manager / Admin only).
  *
  * Security:
  *   GET  : Receptionist | Manager | Admin
  *   POST : Manager | Admin ONLY  (REQ-4.7.1, SRS Section 5.3)
- *   No branch scoping — the catalogue is hotel-wide.
+ *   No branch scoping - the catalogue is hotel-wide.
  *
  * HTTP responses (GET):
- *   200  — array of catalogue items (may be empty)
- *   401  — not authenticated
- *   500  — unexpected error
+ *   200  - array of catalogue items (may be empty)
+ *   401  - not authenticated
+ *   500  - unexpected error
  *
  * HTTP responses (POST):
- *   201  — catalogue item created
- *   400  — validation error
- *   401  — not authenticated
- *   403  — insufficient role (Receptionist)
- *   409  — service name already exists
- *   500  — unexpected error
+ *   201  - catalogue item created
+ *   400  - validation error
+ *   401  - not authenticated
+ *   403  - insufficient role (Receptionist)
+ *   409  - service name already exists
+ *   500  - unexpected error
  *
  * Mock swap plan (Phase 6 / P06-M04-T01):
  *   GET  listCatalogue()      -> SELECT * FROM service_catalogue WHERE status='Active' ORDER BY service_name
@@ -40,7 +40,7 @@ import {
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// TODO Phase 6: remove dev fallback — require real iron-session cookie
+// TODO Phase 6: remove dev fallback - require real iron-session cookie
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-005',

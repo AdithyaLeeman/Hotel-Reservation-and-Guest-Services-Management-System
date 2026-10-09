@@ -24,7 +24,7 @@ function mockGuestSession(guestId = 'guest-mock-001', userId = 'user-mock-guest-
   } as any);
 }
 
-describe('GET /api/guest/reservations/[id]/invoice — P04-M05-T07', () => {
+describe('GET /api/guest/reservations/[id]/invoice - P04-M05-T07', () => {
   beforeEach(() => {
     paymentRepository._resetMockStore();
     vi.clearAllMocks();

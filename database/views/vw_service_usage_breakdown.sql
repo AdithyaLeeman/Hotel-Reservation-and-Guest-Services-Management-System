@@ -1,7 +1,7 @@
 -- =============================================================================
 -- View:      vw_service_usage_breakdown.sql
 -- Owner:     Member 4 (Bandaranayaka I.B.W.D., 240061C)
--- Phase:     P4 — Stay Services and Billing
+-- Phase:     P4 - Stay Services and Billing
 -- Task:      P04-M04-T08
 -- Depends:   SP4.1 executed (service_catalogue, service_usage tables exist)
 --            SP3.1 executed (reservation table exists)
@@ -15,14 +15,14 @@
 --     - reservation context  (branch_id, check-in/out dates)
 --     - room number           (from room table)
 --     - service name          (from service_catalogue)
---     - line total            (quantity * charged_price — price snapshot, NOT
+--     - line total            (quantity * charged_price - price snapshot, NOT
 --                              the current catalogue price)
 --     - the employee who logged the usage
 --
 --   Used by:
---     - fn_calc_service_charges()          — aggregate total per reservation
---     - Staff service-usage report page    — app/staff/reports/service-usage
---     - Billing invoice detail             — Phase 6 wire-up
+--     - fn_calc_service_charges()          - aggregate total per reservation
+--     - Staff service-usage report page    - app/staff/reports/service-usage
+--     - Billing invoice detail             - Phase 6 wire-up
 --
 -- RULE: charged_price is the snapshot captured at logging time by
 --       sp_log_service_usage(); this view never recalculates from
@@ -71,6 +71,6 @@ JOIN employee             e  ON e.employee_id      = su.logged_by_employee_id;
 
 COMMENT ON VIEW vw_service_usage_breakdown IS
     'Per-row service usage breakdown for a reservation. '
-    'line_total = quantity * charged_price (price snapshot — never recalculated). '
+    'line_total = quantity * charged_price (price snapshot - never recalculated). '
     'Joins: service_usage → reservation, room, service_catalogue, employee. '
     'Used by fn_calc_service_charges() and billing/audit reports.';

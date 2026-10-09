@@ -1,4 +1,4 @@
-# Member 3 — Session Prompt Template
+# Member 3 - Session Prompt Template
 
 _Copy-paste this prompt at the start of every Claude session as Member 3._
 
@@ -24,7 +24,7 @@ Start by reading in this exact order:
 1. AGENTS.md
 2. context/01-project-overview.md
 3. context/02-architecture.md
-4. context/03-build-plan.md  ← READ — explains parallel development model
+4. context/03-build-plan.md  ← READ - explains parallel development model
 5. context/04-code-standards.md
 6. context/05-library-patterns.md
 7. context/08-progress-tracker.md
@@ -47,10 +47,10 @@ CRITICAL rules for Member 3:
    - Use SELECT ... FOR UPDATE before checking overlaps (concurrency lock)
    - Validate all rooms belong to the reservation's branch_id
    - Snapshot rate_per_night from room_type.daily_rate at booking time (store in reservation_rooms)
-   - COMMIT / ROLLBACK atomically — no partial state
-2. Guest ownership: ALWAYS derive guest_id from session.guestId — NEVER from URL/body
+   - COMMIT / ROLLBACK atomically - no partial state
+2. Guest ownership: ALWAYS derive guest_id from session.guestId - NEVER from URL/body
 3. Use the ERD multi-room reservation model (reservation + reservation_rooms junction)
-4. Availability check and overlap prevention live entirely in sp_create_reservation() — not TypeScript
+4. Availability check and overlap prevention live entirely in sp_create_reservation() - not TypeScript
 
 After P03-M03-T02 (reservation_rooms DDL) merges: notify M2 so they can execute fn_get_available_rooms (SP2.2-T03).
 
@@ -77,12 +77,12 @@ database/tests/test_ownership.sql database/tests/test_concurrency.sql
 ## Subphase Quick Reference
 | Subphase | Type | Tasks | Start When |
 |---|---|---|---|
-| SP3.1 Reservation Schema | 🔴 | T01–T02 | After SP1.2 + SP2.1 executed |
-| SP3.2 Reservation DB | 🔴 | T03–T06 | After SP3.1 |
-| SP3.3 Guest Booking API | 🟡 | T07–T13 | **Day 1 — mock-first** |
-| SP3.4 Guest Booking UI | 🟡 | T14–T17 | **Day 1 — mock-first** |
-| SP3.5 Staff Reservation | 🟡 | T18–T22 | **Day 1 — mock-first** |
-| SP3.6 Tests | 🔴 | T23–T24 | After SP3.1/SP3.2 |
+| SP3.1 Reservation Schema | 🔴 | T01-T02 | After SP1.2 + SP2.1 executed |
+| SP3.2 Reservation DB | 🔴 | T03-T06 | After SP3.1 |
+| SP3.3 Guest Booking API | 🟡 | T07-T13 | **Day 1 - mock-first** |
+| SP3.4 Guest Booking UI | 🟡 | T14-T17 | **Day 1 - mock-first** |
+| SP3.5 Staff Reservation | 🟡 | T18-T22 | **Day 1 - mock-first** |
+| SP3.6 Tests | 🔴 | T23-T24 | After SP3.1/SP3.2 |
 
 ## Branch Naming
 `feat/P03-M03-T{number}-{short-description}`

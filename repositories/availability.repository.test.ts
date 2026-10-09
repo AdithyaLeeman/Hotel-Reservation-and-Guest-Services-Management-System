@@ -1,5 +1,5 @@
 /**
- * Tests for Availability Repository — P06-M02-T01 (real DB wire-up)
+ * Tests for Availability Repository - P06-M02-T01 (real DB wire-up)
  * Mocks `pool.query` so tests stay fast and DB-independent.
  * All original assertions are preserved.
  */
@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { AvailableRoom } from './availability.repository';
 
-// Mock pool — intercepts every pool.query call
+// Mock pool - intercepts every pool.query call
 vi.mock('@/lib/db/pool', () => ({
   pool: {
     query: vi.fn(),
@@ -48,7 +48,7 @@ describe('Availability Repository', () => {
     vi.clearAllMocks();
   });
 
-  describe('getAvailableRooms — Kandy branch (no reservations)', () => {
+  describe('getAvailableRooms - Kandy branch (no reservations)', () => {
     it('returns all 5 rooms for Kandy when no reservations exist', async () => {
       mockQuery(KANDY_ROOMS);
       const rooms = await availabilityRepository.getAvailableRooms(
@@ -74,7 +74,7 @@ describe('Availability Repository', () => {
     });
   });
 
-  describe('getAvailableRooms — Colombo branch filters', () => {
+  describe('getAvailableRooms - Colombo branch filters', () => {
     it('excludes Maintenance rooms (room 3)', async () => {
       mockQuery(COLOMBO_ROOMS_WITHOUT_MAINTENANCE);
       const rooms = await availabilityRepository.getAvailableRooms(

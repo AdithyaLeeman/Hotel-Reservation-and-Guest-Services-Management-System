@@ -16,7 +16,7 @@ function makeReq(searchParams = ''): NextRequest {
   return new NextRequest(url);
 }
 
-describe('GET /api/staff/reports/occupancy — P05-M02-T02', () => {
+describe('GET /api/staff/reports/occupancy - P05-M02-T02', () => {
   beforeEach(() => {
     occupancyReportRepository._resetMockStore();
     vi.clearAllMocks();
@@ -28,13 +28,13 @@ describe('GET /api/staff/reports/occupancy — P05-M02-T02', () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({} as any);
 
       const originalEnv = process.env.NODE_ENV;
-      // @ts-expect-error — process.env.NODE_ENV is readonly in strict mode
+      // @ts-expect-error - process.env.NODE_ENV is readonly in strict mode
       process.env.NODE_ENV = 'production';
 
       const res = await GET(makeReq());
       const json = await res.json();
 
-      // @ts-expect-error — restore
+      // @ts-expect-error - restore
       process.env.NODE_ENV = originalEnv;
 
       expect(res.status).toBe(401);
@@ -42,8 +42,8 @@ describe('GET /api/staff/reports/occupancy — P05-M02-T02', () => {
     });
   });
 
-  // ─── RBAC — Rejected roles ───────────────────────────────────────────────
-  describe('RBAC — Rejected Roles', () => {
+  // ─── RBAC - Rejected roles ───────────────────────────────────────────────
+  describe('RBAC - Rejected Roles', () => {
     it('returns 403 for Guest role', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
         userId: 'guest-uuid-1',
@@ -74,8 +74,8 @@ describe('GET /api/staff/reports/occupancy — P05-M02-T02', () => {
     });
   });
 
-  // ─── RBAC — Allowed roles ────────────────────────────────────────────────
-  describe('RBAC — Allowed Roles', () => {
+  // ─── RBAC - Allowed roles ────────────────────────────────────────────────
+  describe('RBAC - Allowed Roles', () => {
     it('returns 200 for Manager role', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
         userId: 'staff-uuid-2',

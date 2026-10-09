@@ -1,4 +1,4 @@
-# docs/10 — Seed Data and Expected Results
+# docs/10 - Seed Data and Expected Results
 
 ## Seed Strategy
 Seed data is applied in order after migrations. Files in `database/seeds/`. Each file is named with the task that created it.
@@ -33,7 +33,7 @@ Seed data is applied in order after migrations. Files in `database/seeds/`. Each
 - Double: Wi-Fi, Air Conditioning, Mini Bar
 - Suite: Wi-Fi, Air Conditioning, Mini Bar, Ocean View, Jacuzzi
 
-### Rooms — 15 rooms across 3 branches (P02-M02-T02)
+### Rooms - 15 rooms across 3 branches (P02-M02-T02)
 
 | room_id | room_number | branch_id | type_id | status |
 |---|---|---|---|---|
@@ -83,10 +83,10 @@ A system admin user must be seeded for the first login. Credentials provided sep
 - All 5 Colombo rooms start as Available → all 5 returned
 
 ### Scenario 2: Reservation + Overlap Prevention
-- Create reservation for room 1 (Colombo Single), 2025-12-01–2025-12-03
+- Create reservation for room 1 (Colombo Single), 2025-12-01-2025-12-03
 - Attempt second reservation for same room, same dates → must fail
-- Attempt for overlapping dates (2025-12-02–2025-12-04) → must fail
-- Attempt for non-overlapping dates (2025-12-04–2025-12-06) → must succeed
+- Attempt for overlapping dates (2025-12-02-2025-12-04) → must fail
+- Attempt for non-overlapping dates (2025-12-04-2025-12-06) → must succeed
 
 ### Scenario 3: Billing Verification
 - Reservation: room 3 (Double, LKR 8000/night) × 3 nights = LKR 24000 room charge

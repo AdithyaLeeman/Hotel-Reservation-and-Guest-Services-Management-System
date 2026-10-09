@@ -11,12 +11,12 @@
  *   - Manager / Admin: can check in any reservation
  *
  * HTTP responses:
- *   200  — check-in succeeded
- *   401  — not authenticated
- *   403  — wrong role or branch scope violation
- *   404  — reservation not found
- *   409  — reservation is not in 'Booked' status (INVALID_STATUS_TRANSITION)
- *   500  — unexpected error
+ *   200  - check-in succeeded
+ *   401  - not authenticated
+ *   403  - wrong role or branch scope violation
+ *   404  - reservation not found
+ *   409  - reservation is not in 'Booked' status (INVALID_STATUS_TRANSITION)
+ *   500  - unexpected error
  *
  * Owned by: Member 4 (M4) | Task: P04-M04-T12 (Mock-First)
  * Lecture alignment: L08 (transactions), L09 (stored procedures, atomicity)
@@ -28,7 +28,7 @@ import { checkinService, CheckinServiceError } from '@/services/checkin.service'
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// TODO Phase 6: remove dev fallback — require real iron-session cookie
+// TODO Phase 6: remove dev fallback - require real iron-session cookie
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-004',

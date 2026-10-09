@@ -29,7 +29,7 @@ async function applyDirectory(
       .map((e) => e.name)
       .sort();
   } catch {
-    console.log(`[routines]   No files found in ${label} — skipping.`);
+    console.log(`[routines]   No files found in ${label} - skipping.`);
     return;
   }
 

@@ -1,7 +1,7 @@
 /**
  * Page: /staff/checkin
  *
- * Staff Check-In page — allows Receptionist/Manager/Admin to search for a
+ * Staff Check-In page - allows Receptionist/Manager/Admin to search for a
  * reservation by ID, view its details, and trigger the check-in action which
  * calls POST /api/staff/reservations/[id]/checkin.
  *
@@ -16,7 +16,7 @@
  *   The check-in action calls POST /api/staff/reservations/[id]/checkin (T12).
  *
  * Mock swap plan (Phase 6 / P06-M04-T01):
- *   No changes to this page — it already calls the real API routes. The routes
+ *   No changes to this page - it already calls the real API routes. The routes
  *   themselves swap their mock repositories for real DB calls in Phase 6.
  *
  * Owned by: Member 4 (M4) | Task: P04-M04-T16 (Mock-First)
@@ -303,7 +303,7 @@ export default function StaffCheckinPage() {
       } catch {
         setState({
           stage: 'error',
-          message: 'Network error — unable to reach the server. Please try again.',
+          message: 'Network error - unable to reach the server. Please try again.',
         });
       }
     });
@@ -317,7 +317,7 @@ export default function StaffCheckinPage() {
 
   return (
     <>
-      <title>Check-In Guest — SkyNest Hotels Staff Portal</title>
+      <title>Check-In Guest - SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
         <main
@@ -340,7 +340,7 @@ export default function StaffCheckinPage() {
               id="checkin-back-link"
               className="btn btn-ghost text-sm hidden sm:inline-flex"
             >
-              ← Dashboard
+              Dashboard
             </Link>
           </header>
 
@@ -449,7 +449,7 @@ export default function StaffCheckinPage() {
               </div>
             )}
 
-            {/* Found — show card */}
+            {/* Found - show card */}
             {state.stage === 'found' && (
               <ReservationCard
                 reservation={state.reservation}
@@ -520,7 +520,7 @@ export default function StaffCheckinPage() {
           id="staff-checkin-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels — Staff Portal · All access is logged and monitored
+          SkyNest Hotels - Staff Portal · All access is logged and monitored
         </footer>
       </div>
 

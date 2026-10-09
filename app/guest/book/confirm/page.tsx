@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Booking Confirmation Page — /guest/book/confirm?id={reservation_id}
+ * Booking Confirmation Page - /guest/book/confirm?id={reservation_id}
  *
  * Owned by: Member 3 (M3) | Task: P03-M03-T15
- * Type: MOCK-FIRST — no API call needed; reservation_id comes from T14's POST response.
+ * Type: MOCK-FIRST - no API call needed; reservation_id comes from T14's POST response.
  *
  * Responsibilities:
  *   - Read reservation_id from the URL query param `id` (set by T14 on success)
@@ -65,7 +65,7 @@ function MissingIdBanner() {
         </h2>
         <p className="mt-2 text-neutral-500 dark:text-neutral-400 max-w-sm">
           This page requires a valid booking reference. You may have arrived here
-          directly — please use the search page to make a new reservation.
+          directly - please use the search page to make a new reservation.
         </p>
       </div>
 
@@ -100,7 +100,7 @@ function MissingIdBanner() {
 }
 
 // ---------------------------------------------------------------------------
-// Page component (inner — must be wrapped in Suspense because it uses
+// Page component (inner - must be wrapped in Suspense because it uses
 // useSearchParams, per Next.js App Router requirements)
 // ---------------------------------------------------------------------------
 
@@ -459,7 +459,7 @@ function BookingConfirmContent() {
 }
 
 // ---------------------------------------------------------------------------
-// Default export — wraps the client component in Suspense so Next.js can
+// Default export - wraps the client component in Suspense so Next.js can
 // prerender the shell and avoid the missing-suspense-with-csr-bailout error.
 // ---------------------------------------------------------------------------
 

@@ -33,7 +33,7 @@ BEGIN
       FROM reservation r WHERE r.guest_id = v_guest_a_id AND r.reservation_status = 'Booked' LIMIT 1;
 
     IF v_res_a_id IS NULL THEN
-        RAISE NOTICE 'TEST 1 SKIPPED: No booked reservation found for guest A — seed data needed';
+        RAISE NOTICE 'TEST 1 SKIPPED: No booked reservation found for guest A - seed data needed';
         RETURN;
     END IF;
 
@@ -64,7 +64,7 @@ BEGIN
       FROM reservation r WHERE r.guest_id = v_guest_b_id LIMIT 1;
 
     IF v_res_b_id IS NULL THEN
-        RAISE NOTICE 'TEST 2 SKIPPED: Guest B has no reservations — seed data needed';
+        RAISE NOTICE 'TEST 2 SKIPPED: Guest B has no reservations - seed data needed';
         RETURN;
     END IF;
 

@@ -1,7 +1,7 @@
 /**
  * Page: /staff/reports/occupancy
  *
- * Room Occupancy Report Page — provides hotel management with detailed
+ * Room Occupancy Report Page - provides hotel management with detailed
  * room occupancy metrics, night counts, occupancy rates, and revenue across
  * all hotel branches and rooms.
  *
@@ -21,7 +21,7 @@
  * Layout note:
  *   <StaffNav /> is rendered by `app/staff/layout.tsx`.
  *
- * Owned by: Member 2 (M2) — Karunarathna W.P. 240331F
+ * Owned by: Member 2 (M2) - Karunarathna W.P. 240331F
  * Task: P05-M02-T01
  * Lecture alignment: L05 (views & derived reporting), L03 (aggregations), L07 (RBAC)
  */
@@ -249,7 +249,7 @@ export default function OccupancyReportPage() {
         if (!cancelled) {
           setState({
             stage: 'error',
-            message: 'Network error — unable to connect to the reporting service.',
+            message: 'Network error - unable to connect to the reporting service.',
           });
         }
       }
@@ -418,7 +418,7 @@ export default function OccupancyReportPage() {
               className="btn btn-ghost btn-sm"
               id="back-to-dashboard-btn"
             >
-              ← Dashboard
+              Dashboard
             </Link>
           </div>
         </header>
@@ -432,7 +432,7 @@ export default function OccupancyReportPage() {
               Rooms Monitored
             </span>
             <div className="mt-2 text-2xl font-bold text-[var(--color-text)]">
-              {state.stage === 'loading' ? '—' : kpiSummary.totalRooms}
+              {state.stage === 'loading' ? '-' : kpiSummary.totalRooms}
             </div>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">
               Active inventory in view
@@ -444,7 +444,7 @@ export default function OccupancyReportPage() {
               Nights Occupied
             </span>
             <div className="mt-2 text-2xl font-bold text-[var(--color-primary)]">
-              {state.stage === 'loading' ? '—' : kpiSummary.totalNights}
+              {state.stage === 'loading' ? '-' : kpiSummary.totalNights}
             </div>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">
               Total room nights booked
@@ -457,7 +457,7 @@ export default function OccupancyReportPage() {
             </span>
             <div className="mt-2 text-2xl font-bold text-[var(--color-accent)]">
               {state.stage === 'loading'
-                ? '—'
+                ? '-'
                 : `${kpiSummary.averageOccupancyRate.toFixed(1)}%`}
             </div>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">
@@ -471,7 +471,7 @@ export default function OccupancyReportPage() {
             </span>
             <div className="mt-2 text-2xl font-bold text-[var(--color-text)]">
               {state.stage === 'loading'
-                ? '—'
+                ? '-'
                 : formatLKR(kpiSummary.totalRevenue)}
             </div>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">

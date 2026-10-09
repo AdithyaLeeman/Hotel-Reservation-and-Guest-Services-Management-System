@@ -330,7 +330,7 @@ export default function ReportsDashboardPage() {
         }
       })
       .catch(() => {
-        // Network error in dev / mock-first — show dashboard
+        // Network error in dev / mock-first - show dashboard
         setStage('ready');
       });
   }, []);
@@ -445,7 +445,7 @@ export default function ReportsDashboardPage() {
               </svg>
             </div>
             <div className="rd-strip__label">
-              <h3>SkyNest Hotels — All Branches</h3>
+              <h3>SkyNest Hotels - All Branches</h3>
               <p>Performance summary from PostgreSQL analytical views</p>
             </div>
           </div>
@@ -494,9 +494,6 @@ export default function ReportsDashboardPage() {
                     <div className="rc__kpi-label">{card.kpiLabel}</div>
                     <div className="rc__kpi-value">{card.kpiValue}</div>
                   </div>
-                  <svg className="rc__arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
                 </div>
               </Link>
             ))}

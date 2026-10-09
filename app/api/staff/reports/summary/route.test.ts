@@ -20,13 +20,13 @@ describe('GET /api/staff/reports/summary', () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({} as any);
 
       const originalEnv = process.env.NODE_ENV;
-      // @ts-expect-error — TS2540: process.env.NODE_ENV is readonly in strict mode
+      // @ts-expect-error - TS2540: process.env.NODE_ENV is readonly in strict mode
       process.env.NODE_ENV = 'production';
 
       const res = await GET();
       const json = await res.json();
 
-      // @ts-expect-error — restore original value
+      // @ts-expect-error - restore original value
       process.env.NODE_ENV = originalEnv;
 
       expect(res.status).toBe(401);
@@ -34,7 +34,7 @@ describe('GET /api/staff/reports/summary', () => {
     });
   });
 
-  describe('RBAC — Rejected Roles', () => {
+  describe('RBAC - Rejected Roles', () => {
     it('returns 403 if user has Guest role', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
         userId: 'guest-uuid-1',
@@ -64,7 +64,7 @@ describe('GET /api/staff/reports/summary', () => {
     });
   });
 
-  describe('RBAC — Authorized Roles & Data Return', () => {
+  describe('RBAC - Authorized Roles & Data Return', () => {
     it('returns 200 with summary data for Manager role', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
         userId: 'staff-uuid-mgr',

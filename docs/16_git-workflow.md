@@ -1,4 +1,4 @@
-# docs/16 — Git Workflow
+# docs/16 - Git Workflow
 
 ## Branch Strategy
 
@@ -54,7 +54,7 @@ git commit -m "P01-M01-T01: Set up pg Pool and migration runner"
 
 Commit message format: `{TASK_ID}: {short description}`
 
-## Manual Push Handoff (REQUIRED — Agents Do Not Push)
+## Manual Push Handoff (REQUIRED - Agents Do Not Push)
 
 When work is ready, Claude prepares a handoff like this:
 
@@ -97,7 +97,7 @@ If two members independently created migrations with overlapping sequence number
 ## Merge Order
 
 PRs merge into `develop`. Never merge directly to `main`.
-`main` is updated from `develop` only at documented integration checkpoints (CP1–CP6).
+`main` is updated from `develop` only at documented integration checkpoints (CP1-CP6).
 Integration owner confirms merge order matches migration dependency order.
 
 ## ABSOLUTE BAN: NO AGENT PUSHES

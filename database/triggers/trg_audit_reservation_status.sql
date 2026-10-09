@@ -78,5 +78,5 @@ COMMENT ON TRIGGER trg_audit_reservation_status ON reservation IS
 
 COMMENT ON FUNCTION fn_trg_audit_reservation_status() IS
     'Trigger function backing trg_audit_reservation_status. '
-    'SECURITY DEFINER — runs as owner to guarantee INSERT access to '
+    'SECURITY DEFINER - runs as owner to guarantee INSERT access to '
     'reservation_audit_log regardless of calling role.';

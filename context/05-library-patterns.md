@@ -1,4 +1,4 @@
-# context/05 — Library Patterns
+# context/05 - Library Patterns
 
 ## Approved Libraries
 
@@ -91,7 +91,7 @@ const CreateReservationSchema = z.object({
 });
 ```
 
-### Testing (TBD — to confirm with team)
+### Testing (TBD - to confirm with team)
 
 | Package | Candidate | Purpose |
 |---|---|---|
