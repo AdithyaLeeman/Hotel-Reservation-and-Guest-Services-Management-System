@@ -1,7 +1,7 @@
 /**
  * Password hashing utilities using bcryptjs.
  *
- * Cost factor: 12 (AGENTS.md Section 10 - minimum 12).
+ * Cost factor: 12 (AGENTS.md Section 10 — minimum 12).
  * Never log, return, or store password hashes in plaintext.
  *
  * Task: P01-M01-T10

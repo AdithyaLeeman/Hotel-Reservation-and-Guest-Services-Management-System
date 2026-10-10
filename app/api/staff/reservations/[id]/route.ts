@@ -1,12 +1,12 @@
 /**
  * Route: /api/staff/reservations/[id]
  *
- * GET - get full detail for any reservation (staff access, no guest ownership check)
+ * GET — get full detail for any reservation (staff access, no guest ownership check)
  *
  * Security:
  *   - Requires a staff role (Receptionist / Manager / Admin)
  *   - Receptionist: enforces branch scope (reservation must belong to their branch)
- *   - No guest ownership restriction - staff can view any reservation
+ *   - No guest ownership restriction — staff can view any reservation
  *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
  *
  * Owned by: Member 3 (M3) | Task: P03-M03-T22
@@ -20,7 +20,7 @@ import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB - fallback when cookies are not present in dev mode
+// DEV SESSION STUB — fallback when cookies are not present in dev mode
 // ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
@@ -77,7 +77,7 @@ interface RouteContext {
 }
 
 // ---------------------------------------------------------------------------
-// GET /api/staff/reservations/[id] - full reservation detail (staff)
+// GET /api/staff/reservations/[id] — full reservation detail (staff)
 // ---------------------------------------------------------------------------
 
 export async function GET(
@@ -93,7 +93,7 @@ export async function GET(
   const { id: reservationId } = await context.params;
 
   try {
-    // Pass null for guestId - staff access has no ownership restriction
+    // Pass null for guestId — staff access has no ownership restriction
     const detail = await reservationService.getReservationDetail(reservationId, null);
 
     if (!detail) {

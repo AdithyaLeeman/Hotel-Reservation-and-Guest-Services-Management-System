@@ -1,4 +1,4 @@
-# docs/04 - Architecture (Detailed)
+# docs/04 — Architecture (Detailed)
 
 ## System Overview
 

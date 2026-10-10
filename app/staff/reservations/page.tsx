@@ -1,7 +1,7 @@
 /**
  * Page: /staff/reservations
  *
- * Staff Reservations List - allows Receptionist / Manager / Admin to view
+ * Staff Reservations List — allows Receptionist / Manager / Admin to view
  * all active (Booked + CheckedIn) reservations, filter by status / search by
  * guest name or reservation ID, and navigate to per-reservation actions.
  *
@@ -18,10 +18,10 @@
  *   are executed on the live DB and the route's USE_MOCK flag is set to false.
  *
  * Mock swap plan (Phase 6 / P06-M03-T01):
- *   No changes to this page - the API route swaps its mock in Phase 6.
+ *   No changes to this page — the API route swaps its mock in Phase 6.
  *
  * Layout note:
- *   <StaffNav /> is rendered by app/staff/layout.tsx - do NOT add it here.
+ *   <StaffNav /> is rendered by app/staff/layout.tsx — do NOT add it here.
  *
  * Owned by: Member 3 (M3) | Task: P03-M03-T21 (Mock-First)
  * Lecture alignment: L06 (REST), L07 (RBAC, branch scoping)
@@ -169,7 +169,7 @@ function ErrorState({
   );
 }
 
-/** Empty state - no rows after filtering. */
+/** Empty state — no rows after filtering. */
 function EmptyState({ hasFilters }: { hasFilters: boolean }) {
   return (
     <div
@@ -373,7 +373,7 @@ export default function StaffReservationsPage() {
         if (!cancelled) {
           setFetchState({
             stage:   'error',
-            message: 'Network error - unable to reach the server. Please try again.',
+            message: 'Network error — unable to reach the server. Please try again.',
           });
         }
       }
@@ -408,7 +408,7 @@ export default function StaffReservationsPage() {
     let rows = fetchState.rows;
 
     if (filters.branchId) {
-      // branch_id comes back as a string from pg - compare as strings
+      // branch_id comes back as a string from pg — compare as strings
       rows = rows.filter((r) => String(r.branch_id) === filters.branchId);
     }
 
@@ -436,7 +436,7 @@ export default function StaffReservationsPage() {
   /* ── Render ── */
   return (
     <>
-      <title>Reservations - SkyNest Hotels Staff Portal</title>
+      <title>Reservations — SkyNest Hotels Staff Portal</title>
 
       <div
         className="min-h-screen flex flex-col bg-[var(--color-bg)]"
@@ -462,7 +462,7 @@ export default function StaffReservationsPage() {
               id="reservations-back-link"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#3b3631] hover:border-[#c5a880] text-xs uppercase tracking-wider text-[#c5a880] hover:text-[#e0c49c] rounded-md transition-colors"
             >
-              Dashboard
+              ← Dashboard
             </Link>
           </header>
 
@@ -626,7 +626,7 @@ export default function StaffReservationsPage() {
           id="staff-reservations-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels - Staff Portal · All access is logged and monitored
+          SkyNest Hotels — Staff Portal · All access is logged and monitored
         </footer>
       </div>
     </>

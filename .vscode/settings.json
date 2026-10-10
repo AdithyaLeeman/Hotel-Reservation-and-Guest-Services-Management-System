@@ -11,7 +11,7 @@
   // Recommended TypeScript version: use the workspace's own tsc rather than VS Code's built-in.
   "typescript.tsdk": "node_modules/typescript/lib",
 
-  // Tailwind IntelliSense (if the extension is installed) - point it at globals.css.
+  // Tailwind IntelliSense (if the extension is installed) — point it at globals.css.
   "tailwindCSS.experimental.configFile": {
     "app/globals.css": "**"
   }

@@ -1,5 +1,5 @@
 /**
- * Clean database to Admin only - resets all guests, staff, bookings, and payments,
+ * Clean database to Admin only — resets all guests, staff, bookings, and payments,
  * keeping only the administrator user account and reference master data intact.
  *
  * Run with: npm run db:clean-admin

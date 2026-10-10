@@ -1,3 +1,4 @@
+// Guest reservation detail
 'use client';
 
 /**

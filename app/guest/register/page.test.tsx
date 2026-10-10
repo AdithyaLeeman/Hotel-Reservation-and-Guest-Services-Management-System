@@ -44,7 +44,7 @@ function successResponse() {
 
 /* ─── Tests ──────────────────────────────────────────────────────────────────── */
 
-describe('GuestRegisterPage - rendering', () => {
+describe('GuestRegisterPage — rendering', () => {
   beforeEach(() => { mockFetch.mockClear(); mockPush.mockClear(); mockRefresh.mockClear(); });
 
   it('renders the page heading', () => {
@@ -77,7 +77,7 @@ describe('GuestRegisterPage - rendering', () => {
   });
 });
 
-describe('GuestRegisterPage - client validation', () => {
+describe('GuestRegisterPage — client validation', () => {
   beforeEach(() => mockFetch.mockClear());
 
   it('shows required-field errors on submit with empty form', async () => {
@@ -121,7 +121,7 @@ describe('GuestRegisterPage - client validation', () => {
   });
 });
 
-describe('GuestRegisterPage - password reveal toggle', () => {
+describe('GuestRegisterPage — password reveal toggle', () => {
   it('toggles password input type between password and text', () => {
     render(<GuestRegisterPage />);
     const passwordInput = screen.getByLabelText(/^password/i) as HTMLInputElement;
@@ -133,7 +133,7 @@ describe('GuestRegisterPage - password reveal toggle', () => {
   });
 });
 
-describe('GuestRegisterPage - successful submission', () => {
+describe('GuestRegisterPage — successful submission', () => {
   beforeEach(() => { mockFetch.mockClear(); mockPush.mockClear(); mockRefresh.mockClear(); });
 
   it('calls POST /api/guest/register with correct payload', async () => {
@@ -166,7 +166,7 @@ describe('GuestRegisterPage - successful submission', () => {
   });
 });
 
-describe('GuestRegisterPage - server error handling', () => {
+describe('GuestRegisterPage — server error handling', () => {
   beforeEach(() => { mockFetch.mockClear(); mockPush.mockClear(); });
 
   it('shows a global error for 409 conflict (duplicate account)', async () => {
@@ -219,7 +219,7 @@ describe('GuestRegisterPage - server error handling', () => {
   });
 });
 
-describe('GuestRegisterPage - submit button state', () => {
+describe('GuestRegisterPage — submit button state', () => {
   it('is disabled and shows loading text while submitting', async () => {
     // Never resolves so we can inspect mid-flight state
     mockFetch.mockReturnValueOnce(new Promise(() => { }));

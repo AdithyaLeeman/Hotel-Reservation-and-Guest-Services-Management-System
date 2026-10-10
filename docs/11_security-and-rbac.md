@@ -1,4 +1,4 @@
-# docs/11 - Security and RBAC
+# docs/11 — Security and RBAC
 
 ## Role Definitions (ERD `user_role` enum)
 
@@ -15,13 +15,13 @@
 |---|---|---|---|---|---|
 | View hotel info | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Search availability | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Guest self-register | ✅ | - | - | - | - |
-| Guest login/logout | ✅ | ✅ | - | - | - |
-| Staff login/logout | - | - | ✅ | ✅ | ✅ |
-| Create own reservation | ❌ | ✅ | - | - | - |
-| View own reservations | ❌ | ✅ | - | - | - |
-| View own bill | ❌ | ✅ | - | - | - |
-| Make own payment | ❌ | ✅ | - | - | - |
+| Guest self-register | ✅ | — | — | — | — |
+| Guest login/logout | ✅ | ✅ | — | — | — |
+| Staff login/logout | — | — | ✅ | ✅ | ✅ |
+| Create own reservation | ❌ | ✅ | — | — | — |
+| View own reservations | ❌ | ✅ | — | — | — |
+| View own bill | ❌ | ✅ | — | — | — |
+| Make own payment | ❌ | ✅ | — | — | — |
 | Create reservation (staff) | ❌ | ❌ | ✅ (own branch) | ✅ | ✅ |
 | View all reservations | ❌ | ❌ | ✅ (own branch) | ✅ | ✅ |
 | Check-in guest | ❌ | ❌ | ✅ (own branch) | ✅ | ✅ |
@@ -53,7 +53,7 @@
 
 - One `user_account` table for all roles
 - Separate login endpoints: `/api/guest/login`, `/api/staff/login`
-- Staff login endpoint checks `role NOT IN ('Guest')` - guests cannot login via staff endpoint
+- Staff login endpoint checks `role NOT IN ('Guest')` — guests cannot login via staff endpoint
 - Sessions: iron-session (AES-256-CBC encrypted, HTTP-only cookies, `Secure` in production)
 - Session stores: `{ userId, role, guestId?, employeeId?, branchId? }` (see `docs/21_shared-contracts.md`)
 - Never trust client-supplied role or ID for authorization

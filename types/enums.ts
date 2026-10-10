@@ -5,7 +5,7 @@
  * database/migrations/P01-M01-T02-01_create_enums.sql
  *
  * See docs/21_shared-contracts.md Section 5 for the enum contract.
- * Never use raw string literals for these values in business logic - import from here.
+ * Never use raw string literals for these values in business logic — import from here.
  *
  * Lecture alignment: L05 (user-defined types, enum constraints)
  */
@@ -29,7 +29,7 @@ export type ServiceCatalogueStatus = 'Active' | 'Inactive';
 export type PaymentStatus = 'Unpaid' | 'PartiallyPaid' | 'Paid';
 
 /**
- * Staff roles - subset of UserRole for type narrowing in RBAC checks.
+ * Staff roles — subset of UserRole for type narrowing in RBAC checks.
  */
 export type StaffRole = Exclude<UserRole, 'Guest'>;
 
@@ -38,7 +38,7 @@ export function isStaffRole(role: string | undefined): role is StaffRole {
 }
 
 /**
- * Manager-and-above roles - for report and admin access checks.
+ * Manager-and-above roles — for report and admin access checks.
  */
 export type ManagerRole = 'Manager' | 'Admin';
 

@@ -8,7 +8,7 @@
  *   - Mock global.fetch to control GET /api/staff/reports/occupancy responses.
  *   - Verify KPI cards, filters, table rendering, sorting, empty state, and error handling.
  *
- * Owned by: Member 2 (M2) - Karunarathna W.P. 240331F
+ * Owned by: Member 2 (M2) — Karunarathna W.P. 240331F
  * Task: P05-M02-T01
  */
 

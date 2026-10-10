@@ -1,23 +1,23 @@
-# docs/14 - Task Tracker
+# docs/14 — Task Tracker
 
 _All tasks use ID format: `P{phase}-M{member}-T{task_number}`_
 _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DONE`_
 
 ## Parallelism Key
-- 🔴 **SERIAL** - DB migration; must run after its FK dependencies are executed on the real DB
-- 🟡 **MOCK-FIRST** - can start Day 1 using mock returns; swap to real DB when dependencies land
-- 🟢 **PARALLEL** - no DB dependency; can start immediately
+- 🔴 **SERIAL** — DB migration; must run after its FK dependencies are executed on the real DB
+- 🟡 **MOCK-FIRST** — can start Day 1 using mock returns; swap to real DB when dependencies land
+- 🟢 **PARALLEL** — no DB dependency; can start immediately
 
 > **Rule:** Every 🟡 task starts with mock data. When the DB dependency task moves to DONE, the member replaces mock data with real SQL calls and marks the task REVIEW.
 
 ---
 
-## Phase 1 - Foundation, Security, and Master Data
+## Phase 1 — Foundation, Security, and Master Data
 **Integration Owner:** M1
 
 ---
 
-### SP1.1 - DB Infrastructure _(M1 only - everyone else unblocked once this is DONE)_
+### SP1.1 — DB Infrastructure _(M1 only — everyone else unblocked once this is DONE)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -30,7 +30,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP1.2 - Core Schema DDL _(M1 + M2 in parallel after SP1.1)_
+### SP1.2 — Core Schema DDL _(M1 + M2 in parallel after SP1.1)_
 
 | Task ID | Member | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|---|
@@ -46,12 +46,12 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP1.3 - Auth System _(M1, after SP1.2; others write mock auth in parallel)_
+### SP1.3 — Auth System _(M1, after SP1.2; others write mock auth in parallel)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P01-M01-T10 | bcrypt password hashing utility | 🟢 PARALLEL | `lib/auth/password.ts` | - | DONE |
-| P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | - | DONE |
+| P01-M01-T10 | bcrypt password hashing utility | 🟢 PARALLEL | `lib/auth/password.ts` | — | DONE |
+| P01-M01-T11 | iron-session config + session types | 🟢 PARALLEL | `lib/auth/session.ts`, `types/session.ts` | — | DONE |
 | P01-M01-T12 | User repository (find by email/username) | 🟡 MOCK-FIRST | `repositories/user.repository.ts` | SP1.2 DB executed | DONE |
 | P01-M01-T13 | Auth service (register + login logic) | 🟡 MOCK-FIRST | `services/auth.service.ts` | T12 | DONE |
 | P01-M01-T14 | Guest registration API route | 🟡 MOCK-FIRST | `app/api/guest/register/route.ts` | T13 | DONE |
@@ -61,15 +61,15 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 | P01-M01-T18 | Staff logout API route | 🟢 PARALLEL | `app/api/staff/logout/route.ts` | T11 | DONE |
 | P01-M01-T19 | RBAC helpers (requireRole, requireBranchScope) | 🟢 PARALLEL | `lib/auth/rbac.ts` | T11 | DONE |
 | P01-M01-T20 | Next.js middleware for route protection | 🟢 PARALLEL | `middleware.ts` | T19 | DONE |
-| P01-M01-T21 | Zod auth validation schemas | 🟢 PARALLEL | `lib/validation/auth.schema.ts` | - | DONE |
+| P01-M01-T21 | Zod auth validation schemas | 🟢 PARALLEL | `lib/validation/auth.schema.ts` | — | DONE |
 
 ---
 
-### SP1.4 - UI Shell _(M1; others can write page stubs in parallel)_
+### SP1.4 — UI Shell _(M1; others can write page stubs in parallel)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
-| P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | - | DONE |
+| P01-M01-T22 | Global CSS design tokens + Tailwind config | 🟢 PARALLEL | `app/globals.css` | — | DONE |
 | P01-M01-T23 | Root layout + metadata | 🟢 PARALLEL | `app/layout.tsx` | T22 | DONE |
 | P01-M01-T24 | GuestNav component | 🟢 PARALLEL | `components/GuestNav.tsx` | T22 | DONE |
 | P01-M01-T25 | StaffNav component | 🟢 PARALLEL | `components/StaffNav.tsx`, `components/StaffNavClient.tsx`, `components/StaffNavClient.test.tsx` | T22 | DONE |
@@ -87,13 +87,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-## Phase 2 - Room Inventory and Availability
+## Phase 2 — Room Inventory and Availability
 **Integration Owner:** M2
 **Parallel from Day 1:** SP2.3 and SP2.4 use mock data and can start once shared contracts (SP1.1-T04) are published.
 
 ---
 
-### SP2.1 - Room Schema _(M2, DB serial after SP1.2 DB executed)_
+### SP2.1 — Room Schema _(M2, DB serial after SP1.2 DB executed)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -102,7 +102,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP2.2 - Availability DB _(M2, DB serial - needs room + reservation tables)_
+### SP2.2 — Availability DB _(M2, DB serial — needs room + reservation tables)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -113,14 +113,14 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP2.3 - Room API _(M2, mock-first - start Day 1)_
+### SP2.3 — Room API _(M2, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P02-M02-T05 | Room repository - CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | DONE |
-| P02-M02-T06 | Room service - business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | DONE |
+| P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` | DONE |
+| P02-M02-T06 | Room service — business logic layer | 🟡 MOCK-FIRST | `services/room.service.ts` | DONE |
 | P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` | DONE |
-| P02-M02-T08 | Availability service - search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | DONE |
+| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` | DONE |
 | P02-M02-T09 | GET `/api/availability` route handler (public) | 🟡 MOCK-FIRST | `app/api/availability/route.ts` | DONE |
 | P02-M02-T10 | GET `/api/staff/rooms` route handler (list) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | DONE |
 | P02-M02-T11 | POST `/api/staff/rooms` route handler (create) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` | DONE |
@@ -128,7 +128,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP2.4 - Room UI _(M2, mock-first - start Day 1)_
+### SP2.4 — Room UI _(M2, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -139,7 +139,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP2.5 - Tests (M2)
+### SP2.5 — Tests (M2)
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -154,13 +154,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-## Phase 3 - Guests and Reservations
+## Phase 3 — Guests and Reservations
 **Integration Owner:** M3
 **Parallel from Day 1:** SP3.3, SP3.4, SP3.5 use mock data and start immediately.
 
 ---
 
-### SP3.1 - Reservation Schema _(M3, DB serial after SP1.2 + SP2.1 DB executed)_
+### SP3.1 — Reservation Schema _(M3, DB serial after SP1.2 + SP2.1 DB executed)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -169,7 +169,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP3.2 - Reservation DB _(M3, DB serial after SP3.1)_
+### SP3.2 — Reservation DB _(M3, DB serial after SP3.1)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -180,21 +180,21 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP3.3 - Guest Booking API _(M3, mock-first - start Day 1)_
+### SP3.3 — Guest Booking API _(M3, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
-| P03-M03-T07 | Reservation repository - create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
-| P03-M03-T08 | Reservation repository - list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
-| P03-M03-T09 | Reservation repository - get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
-| P03-M03-T10 | Reservation service - orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` | DONE |
+| P03-M03-T07 | Reservation repository — create (calls sp) | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
+| P03-M03-T08 | Reservation repository — list by guest | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
+| P03-M03-T09 | Reservation repository — get detail by ID | 🟡 MOCK-FIRST | `repositories/reservation.repository.ts` | DONE |
+| P03-M03-T10 | Reservation service — orchestration layer | 🟡 MOCK-FIRST | `services/reservation.service.ts` | DONE |
 | P03-M03-T11 | POST `/api/guest/reservations` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | DONE |
 | P03-M03-T12 | GET `/api/guest/reservations` route handler (list) | 🟡 MOCK-FIRST | `app/api/guest/reservations/route.ts` | DONE |
 | P03-M03-T13 | GET `/api/guest/reservations/[id]` route handler | 🟡 MOCK-FIRST | `app/api/guest/reservations/[id]/route.ts` | DONE |
 
 ---
 
-### SP3.4 - Guest Booking UI _(M3, mock-first - start Day 1)_
+### SP3.4 — Guest Booking UI _(M3, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -205,7 +205,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP3.5 - Staff Reservation _(M3, mock-first - start Day 1)_
+### SP3.5 — Staff Reservation _(M3, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -217,7 +217,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP3.6 - Tests (M3)
+### SP3.6 — Tests (M3)
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -232,13 +232,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-## Phase 4 - Stay Services and Billing
+## Phase 4 — Stay Services and Billing
 **Integration Owners:** M4 (services) + M5 (billing, runs in parallel)
 **Parallel:** SP4.3, SP4.4, SP4.7 are mock-first from Day 1.
 
 ---
 
-### SP4.1 - Service Schema _(M4, DB serial after SP3.1 DB executed)_
+### SP4.1 — Service Schema _(M4, DB serial after SP3.1 DB executed)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -248,7 +248,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.2 - Service DB _(M4, DB serial after SP4.1)_
+### SP4.2 — Service DB _(M4, DB serial after SP4.1)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -260,7 +260,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.3 - Service API _(M4, mock-first - start Day 1)_
+### SP4.3 — Service API _(M4, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -274,7 +274,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.4 - Service UI _(M4, mock-first - start Day 1)_
+### SP4.4 — Service UI _(M4, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -283,7 +283,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.5 - Billing Schema _(M5, DB serial after SP3.1 - parallel with M4 SP4.1+)_
+### SP4.5 — Billing Schema _(M5, DB serial after SP3.1 — parallel with M4 SP4.1+)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -292,7 +292,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.6 - Invoice DB _(M5, DB serial after SP4.5 + SP4.2 M4 functions ready)_
+### SP4.6 — Invoice DB _(M5, DB serial after SP4.5 + SP4.2 M4 functions ready)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -301,7 +301,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP4.7 - Billing API _(M5, mock-first - start Day 1)_
+### SP4.7 — Billing API _(M5, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -317,13 +317,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-## Phase 5 - Payments, Checkout, and Reports
+## Phase 5 — Payments, Checkout, and Reports
 **Integration Owner:** M5 (M2, M3, M4 contribute report tasks)
-**Parallel:** SP5.4-SP5.7 are mock-first from Day 1.
+**Parallel:** SP5.4–SP5.7 are mock-first from Day 1.
 
 ---
 
-### SP5.1 - Payment Schema _(M5, DB serial after SP4.5 DB executed)_
+### SP5.1 — Payment Schema _(M5, DB serial after SP4.5 DB executed)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -331,7 +331,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.2 - Payment DB _(M5, DB serial after SP5.1)_
+### SP5.2 — Payment DB _(M5, DB serial after SP5.1)_
 
 | Task ID | Title | Type | Files | Depends On | Status |
 |---|---|---|---|---|---|
@@ -340,7 +340,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.3 - Report Views _(M5 + M2 + M3, DB serial after SP3-SP4 complete)_
+### SP5.3 — Report Views _(M5 + M2 + M3, DB serial after SP3-SP4 complete)_
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
@@ -352,7 +352,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.4 - Payment API _(M5, mock-first - start Day 1)_
+### SP5.4 — Payment API _(M5, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -363,7 +363,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.5 - Reports API _(M5 + M2 + M3, mock-first - start Day 1)_
+### SP5.5 — Reports API _(M5 + M2 + M3, mock-first — start Day 1)_
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
@@ -374,7 +374,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.6 - Payment UI _(M5, mock-first - start Day 1)_
+### SP5.6 — Payment UI _(M5, mock-first — start Day 1)_
 
 | Task ID | Title | Type | Files | Status |
 |---|---|---|---|---|
@@ -383,7 +383,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP5.7 - Reports UI _(M2 + M4 + M5, mock-first - start Day 1)_
+### SP5.7 — Reports UI _(M2 + M4 + M5, mock-first — start Day 1)_
 
 | Task ID | Member | Title | Type | Files | Status |
 |---|---|---|---|---|---|
@@ -401,13 +401,13 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-## Phase 6 - Integration, Testing, and Deployment Prep
+## Phase 6 — Integration, Testing, and Deployment Prep
 **Coordinator:** M1
-**Dependency:** All P1-P5 tasks in REVIEW or DONE
+**Dependency:** All P1–P5 tasks in REVIEW or DONE
 
 ---
 
-### SP6.1 - Mock→Real DB Wire-up _(all members)_
+### SP6.1 — Mock→Real DB Wire-up _(all members)_
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
@@ -420,7 +420,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP6.2 - E2E Flows _(all members verify their slice)_
+### SP6.2 — E2E Flows _(all members verify their slice)_
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
@@ -432,7 +432,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP6.3 - Security and Concurrency _(M1 + M3 + M5)_
+### SP6.3 — Security and Concurrency _(M1 + M3 + M5)_
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
@@ -444,7 +444,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP6.4 - Performance _(M2 + M5)_
+### SP6.4 — Performance _(M2 + M5)_
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
@@ -453,7 +453,7 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 ---
 
-### SP6.5 - Final Polish _(M1 coordinates)_
+### SP6.5 — Final Polish _(M1 coordinates)_
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
@@ -475,10 +475,10 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Phase | Subphases | Total Tasks | Serial (DB) | Mock-First | Parallel |
 |---|---|---|---|---|---|
-| P1 | SP1.1-SP1.4 | 29 | 9 | 12 | 8 |
-| P2 | SP2.1-SP2.5 | 18 | 5 | 10 | 3 |
-| P3 | SP3.1-SP3.6 | 24 | 8 | 14 | 2 |
-| P4 | SP4.1-SP4.7 | 27 | 11 | 12 | 4 |
-| P5 | SP5.1-SP5.7 | 22 | 7 | 13 | 2 |
-| P6 | SP6.1-SP6.5 | 19 | 2 | 0 | 17 |
+| P1 | SP1.1–SP1.4 | 29 | 9 | 12 | 8 |
+| P2 | SP2.1–SP2.5 | 18 | 5 | 10 | 3 |
+| P3 | SP3.1–SP3.6 | 24 | 8 | 14 | 2 |
+| P4 | SP4.1–SP4.7 | 27 | 11 | 12 | 4 |
+| P5 | SP5.1–SP5.7 | 22 | 7 | 13 | 2 |
+| P6 | SP6.1–SP6.5 | 19 | 2 | 0 | 17 |
 | **Total** | **25 subphases** | **139 tasks** | **42** | **61** | **36** |

@@ -16,7 +16,7 @@ const MOCK_PAYMENT: Payment = {
   transaction_reference: 'TXN-SKYN-998822',
 };
 
-describe('PaymentConfirmation Component - P05-M05-T15', () => {
+describe('PaymentConfirmation Component — P05-M05-T15', () => {
   it('renders payment details correctly', () => {
     render(
       <PaymentConfirmation

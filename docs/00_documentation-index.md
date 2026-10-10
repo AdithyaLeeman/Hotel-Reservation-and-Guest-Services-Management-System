@@ -1,4 +1,4 @@
-# docs/00 - Documentation Index
+# docs/00 — Documentation Index
 
 ## Purpose
 This document lists every project document, its authority, mandatory reading order, and where to find requirements, decisions, status, and handoffs.

@@ -7,7 +7,7 @@
  * success (data rendering), client-side filters/search, empty state, and
  * error/retry.
  *
- * Environment: jsdom - enforced via @vitest-environment docblock because the
+ * Environment: jsdom — enforced via @vitest-environment docblock because the
  * environmentMatchGlobs entry in vitest.config.mjs does not activate the jsdom
  * pool for app/**\/*.component.test.tsx in vitest v5 (pre-existing config issue;
  * same behaviour affects app/staff/checkin/page.test.tsx).
@@ -158,7 +158,7 @@ describe('/staff/reservations page', () => {
     expect(screen.getByText('Amal Perera')).toBeTruthy();
     expect(screen.getByText('Nimal Silva')).toBeTruthy();
 
-    // Stats strip - scope to the stats section to avoid ambiguity with table
+    // Stats strip — scope to the stats section to avoid ambiguity with table
     // badges and filter dropdown options that also contain "Booked" text.
     const statsSection = screen.getByLabelText(/reservation statistics/i);
     expect(within(statsSection).getByText('2')).toBeTruthy(); // total count

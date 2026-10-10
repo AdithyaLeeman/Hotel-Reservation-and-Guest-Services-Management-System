@@ -1,10 +1,10 @@
 /**
- * Billing Repository - calls sp_finalize_invoice() and reads vw_invoice_totals.
+ * Billing Repository — calls sp_finalize_invoice() and reads vw_invoice_totals.
  *
  * DB-first rule: ALL financial totals come from vw_invoice_totals.
  * This repository never computes any monetary value.
  *
- * Owned by: Member 5 (M5) | P06-M05-T01 - Wire billing to real DB
+ * Owned by: Member 5 (M5) | P06-M05-T01 — Wire billing to real DB
  *
  * Lecture alignment:
  *   L05 (transactions / ACID), L08 (stored procedures),
@@ -19,14 +19,14 @@ export const billingRepository = {
   /**
    * Call sp_finalize_invoice() to create (or retrieve) a billing_summary row.
    *
-   * IDEMPOTENT - safe to call multiple times for the same reservation.
+   * IDEMPOTENT — safe to call multiple times for the same reservation.
    * The procedure returns the existing invoice_id if one already exists,
    * so the caller never needs to check first.
    *
    * SQLSTATE mapping (from sp_finalize_invoice):
-   *   45040 - reservation not found
-   *   45041 - reservation is Cancelled
-   *   45042 - no active tax policy found
+   *   45040 — reservation not found
+   *   45041 — reservation is Cancelled
+   *   45042 — no active tax policy found
    *
    * @param reservationId  UUID of the reservation to invoice
    * @returns              The invoice_id UUID (new or existing)

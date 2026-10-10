@@ -1,4 +1,4 @@
-# Phase 5 - Payments, Checkout, and Reports
+# Phase 5 — Payments, Checkout, and Reports
 
 ## Integration Owner: Member 5 (M5)
 ## Contributing: M2 (occupancy UI), M3 (top-services), M4 (service usage UI)
@@ -6,13 +6,13 @@
 ## Parallel start: SP5.4, SP5.5, SP5.6, SP5.7 begin Day 1 with mock data
 
 ## Parallelism Strategy
-- **SP5.1 / SP5.2** - `payment` DDL + procedures. DB serial, run after SP4.5 executed.
-- **SP5.3** - Report views. DB serial, need SP3-SP4 tables. Write SQL anytime; execute last.
-- **SP5.4 / SP5.5 / SP5.6 / SP5.7** - All APIs and UI pages. Mock-first from Day 1. M2, M3, M4 work on their report pages simultaneously.
+- **SP5.1 / SP5.2** — `payment` DDL + procedures. DB serial, run after SP4.5 executed.
+- **SP5.3** — Report views. DB serial, need SP3–SP4 tables. Write SQL anytime; execute last.
+- **SP5.4 / SP5.5 / SP5.6 / SP5.7** — All APIs and UI pages. Mock-first from Day 1. M2, M3, M4 work on their report pages simultaneously.
 
 ## Subphases
 
-### SP5.1 - Payment Schema _(M5, DB serial after SP4.5 executed)_
+### SP5.1 — Payment Schema _(M5, DB serial after SP4.5 executed)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -20,7 +20,7 @@
 
 ---
 
-### SP5.2 - Payment DB _(M5, DB serial after SP5.1)_
+### SP5.2 — Payment DB _(M5, DB serial after SP5.1)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -29,7 +29,7 @@
 
 ---
 
-### SP5.3 - Report Views _(M5 + M2 + M3, DB serial after SP3-SP4 complete)_
+### SP5.3 — Report Views _(M5 + M2 + M3, DB serial after SP3–SP4 complete)_
 
 | Task | Member | Title | Type | Files |
 |---|---|---|---|---|
@@ -41,18 +41,18 @@
 
 ---
 
-### SP5.4 - Payment API _(M5, mock-first - start Day 1)_
+### SP5.4 — Payment API _(M5, mock-first — start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
 | P05-M05-T08 | Payment repository | 🟡 MOCK-FIRST | `repositories/payment.repository.ts` |
 | P05-M05-T09 | Payment service layer | 🟡 MOCK-FIRST | `services/payment.service.ts` |
-| P05-M05-T10 | POST `/api/guest/payments` - submit payment | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` |
+| P05-M05-T10 | POST `/api/guest/payments` — submit payment | 🟡 MOCK-FIRST | `app/api/guest/payments/route.ts` |
 | P05-M05-T11 | POST `/api/staff/reservations/[id]/checkout` | 🟡 MOCK-FIRST | `app/api/staff/reservations/[id]/checkout/route.ts` |
 
 ---
 
-### SP5.5 - Reports API _(M5 + M2 + M3, mock-first - all start Day 1)_
+### SP5.5 — Reports API _(M5 + M2 + M3, mock-first — all start Day 1)_
 
 | Task | Member | Title | Type | Files |
 |---|---|---|---|---|
@@ -63,7 +63,7 @@
 
 ---
 
-### SP5.6 - Payment UI _(M5, mock-first - start Day 1)_
+### SP5.6 — Payment UI _(M5, mock-first — start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
@@ -72,7 +72,7 @@
 
 ---
 
-### SP5.7 - Reports UI _(M2 + M4 + M5, mock-first - all start Day 1)_
+### SP5.7 — Reports UI _(M2 + M4 + M5, mock-first — all start Day 1)_
 
 | Task | Member | Title | Type | Files |
 |---|---|---|---|---|
@@ -84,8 +84,8 @@
 
 ## Key DB Deliverables
 - `payment` table (FK to billing_summary)
-- `sp_post_payment()` - idempotent, records each payment atomically
-- `sp_checkout()` - balance = 0 guard; sets rooms to Available on success
+- `sp_post_payment()` — idempotent, records each payment atomically
+- `sp_checkout()` — balance = 0 guard; sets rooms to Available on success
 - 5 report views: occupancy, guest billing, monthly revenue, top services, audit log
 
 ## Completion Criteria

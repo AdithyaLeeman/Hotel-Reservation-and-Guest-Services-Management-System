@@ -30,7 +30,7 @@ interface ApiErrorResponse {
 /* ─── Client-side validation ─────────────────────────────────────────────────── */
 
 /**
- * Lightweight UX-only validation - mirrors StaffLoginSchema.
+ * Lightweight UX-only validation — mirrors StaffLoginSchema.
  * The server always re-validates authoritatively.
  */
 function validateForm(values: StaffLoginFormState): FieldErrors {
@@ -133,7 +133,7 @@ function StaffLoginForm() {
         return;
       }
 
-      // Success - session written by server. Redirect.
+      // Success — session written by server. Redirect.
       const returnTo = searchParams.get('redirect');
       router.push(returnTo && returnTo.startsWith('/') ? returnTo : '/staff/dashboard');
       router.refresh();
@@ -159,7 +159,7 @@ function StaffLoginForm() {
   return (
     <>
       {/* ── SEO ── */}
-      <title>Staff Login - SkyNest Hotels</title>
+      <title>Staff Login — SkyNest Hotels</title>
 
       <main
         className="
@@ -393,7 +393,7 @@ function StaffLoginForm() {
   );
 }
 
-/* ─── Page export - wraps form in Suspense for useSearchParams ───────────────── */
+/* ─── Page export — wraps form in Suspense for useSearchParams ───────────────── */
 
 export default function StaffLoginPage() {
   return (

@@ -1,4 +1,4 @@
-# docs/01 - Project Description
+# docs/01 — Project Description
 
 ## Scope
 Hotel Reservation and Guest Services Management System (HRGSMS) for SkyNest Hotels. Replaces an outdated desktop booking system that caused overbookings, billing delays, and manual errors across three branches: Colombo, Kandy, and Galle.
@@ -7,7 +7,7 @@ Hotel Reservation and Guest Services Management System (HRGSMS) for SkyNest Hote
 
 | Actor | ERD Role | Self-Register | Access |
 |---|---|---|---|
-| Public visitor | - | No login required | `/`, `/search` |
+| Public visitor | — | No login required | `/`, `/search` |
 | Guest | `Guest` | Yes (self-register) | `/guest/*` |
 | Receptionist | `Receptionist` | No (admin-created) | `/staff/*` (own branch) |
 | Manager | `Manager` | No (admin-created) | `/staff/*` (all branches) |

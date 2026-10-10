@@ -1,5 +1,5 @@
 /**
- * GuestNav - Navigation bar for guest-facing pages.
+ * GuestNav — Navigation bar for guest-facing pages.
  *
  * Owned by: Member 1 (M1) | Task: P01-M01-T24
  * Design tokens: context/06-ui-tokens.md / app/globals.css
@@ -9,7 +9,7 @@
  *  - This is a React Server Component that reads the session server-side.
  *  - `isLoggedIn` and `guestName` are derived from the server session and
  *    passed into the GuestNavClient (Client Component) for interactive behavior.
- *  - Session fields are NEVER trusted from the browser - AGENTS.md § 10.
+ *  - Session fields are NEVER trusted from the browser — AGENTS.md § 10.
  *
  * Links shown:
  *  - Always: SkyNest logo, Search Rooms

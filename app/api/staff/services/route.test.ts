@@ -142,7 +142,7 @@ describe('POST /api/staff/services', () => {
     );
   });
 
-  // Validation - missing service_name
+  // Validation — missing service_name
   it('returns 400 when service_name is missing', async () => {
     const res  = await POST(makePostRequest({ current_price: 500 }));
     const json = await res.json();
@@ -152,7 +152,7 @@ describe('POST /api/staff/services', () => {
     expect(json.error.fields).toHaveProperty('service_name');
   });
 
-  // Validation - negative current_price
+  // Validation — negative current_price
   it('returns 400 when current_price is negative', async () => {
     const res  = await POST(makePostRequest({ service_name: 'X', current_price: -1 }));
     const json = await res.json();
@@ -161,7 +161,7 @@ describe('POST /api/staff/services', () => {
     expect(json.error.fields).toHaveProperty('current_price');
   });
 
-  // Validation - non-JSON body
+  // Validation — non-JSON body
   it('returns 400 when body is not valid JSON', async () => {
     const req = new NextRequest('http://localhost/api/staff/services', {
       method:  'POST',
@@ -175,7 +175,7 @@ describe('POST /api/staff/services', () => {
     expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
-  // Conflict - duplicate name
+  // Conflict — duplicate name
   it('returns 409 when service name already exists', async () => {
     vi.mocked(serviceUsageService.addCatalogueItem).mockRejectedValueOnce(
       new ServiceUsageServiceError('DUPLICATE_SERVICE_NAME', '"Spa Treatment" already exists.')

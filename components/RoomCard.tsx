@@ -1,11 +1,11 @@
 /**
- * RoomCard - displays a single available room result on the public search page.
+ * RoomCard — displays a single available room result on the public search page.
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T14
- * Type: 🟢 PARALLEL - no DB dependency.
+ * Type: 🟢 PARALLEL — no DB dependency.
  *
  * Design rules (context/07-ui-rules.md):
- * - daily_rate displayed as LKR with 2 decimal places - never multiplied here
+ * - daily_rate displayed as LKR with 2 decimal places — never multiplied here
  * - Color is never the only means of conveying information (icon + color)
  * - All interactive elements have unique, descriptive id attributes
  *
@@ -21,7 +21,7 @@ import Link from 'next/link';
 
 export interface RoomCardProps {
   room: AvailableRoom;
-  /** ISO date strings echoed from the search query - needed for the reserve link */
+  /** ISO date strings echoed from the search query — needed for the reserve link */
   checkIn: string;
   checkOut: string;
   /** Visual index for unique IDs (position in the results list) */
@@ -89,11 +89,11 @@ function AmenityIcon({ name }: { name: string }) {
 
 /**
  * Format a NUMERIC(12,2) string from the API as "LKR XX,XXX.XX".
- * Display-only - authoritative billing lives in PostgreSQL.
+ * Display-only — authoritative billing lives in PostgreSQL.
  */
 function formatRate(dailyRate: string): string {
   const num = parseFloat(dailyRate);
-  if (isNaN(num)) return 'LKR -';
+  if (isNaN(num)) return 'LKR —';
   return (
     'LKR ' +
     num.toLocaleString('en-LK', {
@@ -200,7 +200,7 @@ export default function RoomCard({
   return (
     <article
       id={cardId}
-      aria-label={`Room ${room.room_number} - ${room.type_name}`}
+      aria-label={`Room ${room.room_number} — ${room.type_name}`}
       className="
         group relative flex flex-col
         bg-white dark:bg-[#1a1918]
@@ -214,7 +214,7 @@ export default function RoomCard({
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900">
         <img
           src={imageUrl}
-          alt={`SkyNest Hotel Room ${room.room_number} - ${room.type_name}`}
+          alt={`SkyNest Hotel Room ${room.room_number} — ${room.type_name}`}
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
         />
@@ -327,7 +327,7 @@ export default function RoomCard({
           <Link
             id={reserveId}
             href={`/guest/reservations/new?${reserveParams.toString()}`}
-            aria-label={`Reserve room ${room.room_number} - ${checkIn} to ${checkOut}`}
+            aria-label={`Reserve room ${room.room_number} — ${checkIn} to ${checkOut}`}
             className="
               block w-full text-center py-2.5 px-4
               bg-[#c5a880] hover:bg-[#b59469] active:bg-[#a68042]

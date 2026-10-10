@@ -1,4 +1,4 @@
-# context/01 - Project Overview
+# context/01 — Project Overview
 
 ## Product
 Hotel Reservation and Guest Services Management System (HRGSMS) for SkyNest Hotels.
@@ -11,7 +11,7 @@ Replaces an outdated desktop booking system that caused overbookings, billing de
 
 | Actor | Role (ERD) | Entry Point | Capabilities |
 |---|---|---|---|
-| Public visitor | - | `/`, `/search` | Browse hotel info, search availability |
+| Public visitor | — | `/`, `/search` | Browse hotel info, search availability |
 | Guest | `Guest` | `/guest/login`, `/guest/register` | Book rooms, view own reservations, pay, view bill |
 | Receptionist | `Receptionist` | `/staff/login` | Check-in/out, log services, manage reservations |
 | Manager | `Manager` | `/staff/login` | All receptionist actions + reports |

@@ -1,21 +1,21 @@
 /**
- * Service Usage Repository - data access layer for service_catalogue and service_usage.
+ * Service Usage Repository — data access layer for service_catalogue and service_usage.
  * Owned by: Member 4 (M4) | Task: P04-M04-T09
  *
- * P06-M04-T01 - Mock store replaced with real parameterized pg Pool queries.
- * All SQL is parameterized (no string concatenation - AGENTS.md §8).
+ * P06-M04-T01 — Mock store replaced with real parameterized pg Pool queries.
+ * All SQL is parameterized (no string concatenation — AGENTS.md §8).
  * Money/NUMERIC columns returned as strings from pg (AGENTS.md §8).
  *
  * DB routines used:
- *   service_catalogue table        - P04-M04-T01 (DDL)
- *   service_usage table            - P04-M04-T03 (DDL)
- *   sp_log_service_usage()         - P04-M04-T05 (atomic, price-snapshot procedure)
- *   vw_service_usage_breakdown     - P04-M04-T08 (view; joined usage rows)
+ *   service_catalogue table        — P04-M04-T01 (DDL)
+ *   service_usage table            — P04-M04-T03 (DDL)
+ *   sp_log_service_usage()         — P04-M04-T05 (atomic, price-snapshot procedure)
+ *   vw_service_usage_breakdown     — P04-M04-T08 (view; joined usage rows)
  *
  * DB-first rule: charged_price is NEVER computed in TypeScript.
  * sp_log_service_usage() snapshots service_catalogue.current_price into
  * service_usage.charged_price at the moment of logging.
- * See docs/08_business-rules-and-enforcement.md - Calculation Placement Matrix.
+ * See docs/08_business-rules-and-enforcement.md — Calculation Placement Matrix.
  */
 
 import { pool } from '@/lib/db/pool';
@@ -39,13 +39,13 @@ export interface LogServiceUsageInput {
 
 export interface CreateCatalogueItemInput {
   service_name: string;
-  current_price: string; // NUMERIC(12,2) as string - never a JS float
+  current_price: string; // NUMERIC(12,2) as string — never a JS float
   status?: ServiceCatalogueStatus;
 }
 
 export interface ServiceUsageBreakdownRow extends ServiceUsage {
   service_name: string; // joined from service_catalogue via vw_service_usage_breakdown
-  line_total: string;   // charged_price * quantity - computed inside the view, never in TS
+  line_total: string;   // charged_price * quantity — computed inside the view, never in TS
 }
 
 // ---------------------------------------------------------------------------
@@ -117,7 +117,7 @@ export const serviceUsageRepository = {
   /**
    * Log a service usage record against a reservation by calling sp_log_service_usage().
    *
-   * IMPORTANT - DB-first price snapshot rule:
+   * IMPORTANT — DB-first price snapshot rule:
    * sp_log_service_usage() copies service_catalogue.current_price into
    * service_usage.charged_price at the moment of logging. That price is
    * NEVER recomputed later. TypeScript must NOT pass or compute charged_price.
@@ -125,11 +125,11 @@ export const serviceUsageRepository = {
    * CALL sp_log_service_usage($1, $2, $3, $4, $5, $6)
    *
    * The procedure raises:
-   *   SQLSTATE '22023' - quantity < 1
-   *   SQLSTATE '23503' - reservation not found, or room not part of reservation,
+   *   SQLSTATE '22023' — quantity < 1
+   *   SQLSTATE '23503' — reservation not found, or room not part of reservation,
    *                      or service_id not found (FK / record-missing codes)
-   *   SQLSTATE '45011' - reservation not in CheckedIn status
-   *   SQLSTATE '45012' - service is Inactive
+   *   SQLSTATE '45011' — reservation not in CheckedIn status
+   *   SQLSTATE '45012' — service is Inactive
    *
    * After the CALL we do a SELECT to return the inserted row, since the
    * procedure does not return data via INOUT.
@@ -217,7 +217,7 @@ export const serviceUsageRepository = {
    *            ORDER BY usage_date, usage_id
    *
    * Note: line_total is computed inside vw_service_usage_breakdown in the DB.
-   * The authoritative total is fn_calc_service_charges(reservation_id) - never
+   * The authoritative total is fn_calc_service_charges(reservation_id) — never
    * recomputed in TypeScript.
    */
   listUsageByReservation: async (reservationId: string): Promise<ServiceUsageBreakdownRow[]> => {

@@ -1,4 +1,4 @@
-# docs/09 - Database Routines, Triggers, Views, and Indexes
+# docs/09 — Database Routines, Triggers, Views, and Indexes
 
 _Living inventory. Each entry documents: purpose, signature, inputs/outputs, tables touched, transaction ownership, isolation level, SQLSTATE codes, and lecture alignment._
 
@@ -47,7 +47,7 @@ CREATE OR REPLACE FUNCTION fn_get_available_rooms(
 
 **Tables:** `room`, `room_type`, `reservation`, `reservation_rooms`
 **Transaction ownership:** Caller (read-only within caller's transaction)
-**Isolation level:** Read Committed (default) - concurrency-safe when called with FOR UPDATE in sp_create_reservation
+**Isolation level:** Read Committed (default) — concurrency-safe when called with FOR UPDATE in sp_create_reservation
 **Lecture alignment:** L08 (PL/pgSQL function), L05 (subquery, date overlap), L10 (index usage), L11 (EXPLAIN ANALYZE)
 
 ---
@@ -66,7 +66,7 @@ CREATE OR REPLACE FUNCTION fn_calc_room_charges(
 
 **Formula:** `SUM(rr.rate_per_night * (r.check_out_date - r.check_in_date))`
 **Tables:** `reservation_rooms`, `reservation`
-**Returns:** `NUMERIC(12,2)` - 0.00 if no rooms found
+**Returns:** `NUMERIC(12,2)` — 0.00 if no rooms found
 **Lecture alignment:** L08 (function), L03 (SUM, arithmetic), L05 (JOIN)
 
 ---
@@ -85,7 +85,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 
 **Formula:** `SUM(su.charged_price * su.quantity)`
 **Tables:** `service_usage`
-**Returns:** `NUMERIC(12,2)` - 0.00 if no services
+**Returns:** `NUMERIC(12,2)` — 0.00 if no services
 **Lecture alignment:** L08 (function), L03 (SUM), L05 (JOIN)
 
 ---
@@ -104,7 +104,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 - `p_check_out DATE`
 - `p_room_ids BIGINT[]`
 - `p_booking_source booking_source`
-- `p_employee_id BIGINT` (nullable - NULL for online)
+- `p_employee_id BIGINT` (nullable — NULL for online)
 - `p_discount_percentage NUMERIC(5,2)` (nullable)
 
 **Output:** `p_reservation_id UUID OUT`
@@ -113,9 +113,9 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 **Isolation level:** Read Committed + row-level locking (`SELECT FOR UPDATE`)
 **Concurrency:** Locks room rows before checking overlap; prevents race conditions
 **SQLSTATE exceptions:**
-- `'45001'` - room overlap conflict
-- `'45002'` - room branch mismatch
-- `'45003'` - room in Maintenance status
+- `'45001'` — room overlap conflict
+- `'45002'` — room branch mismatch
+- `'45003'` — room in Maintenance status
 
 **Lecture alignment:** L08 (procedure, exception), L12 (FOR UPDATE, concurrency), L05 (transaction, FK)
 
@@ -130,7 +130,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 **Output:** None
 **Precondition:** `reservation_status = 'Booked'`
 **SQLSTATE exceptions:**
-- `'45010'` - reservation not in Booked status
+- `'45010'` — reservation not in Booked status
 **Lecture alignment:** L08, L05 (transaction, state transition), L12 (atomicity)
 
 ---
@@ -143,7 +143,7 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 **Inputs:** `p_reservation_id UUID`, `p_room_id BIGINT`, `p_service_id BIGINT`, `p_quantity INT`, `p_employee_id BIGINT`
 **Precondition:** `reservation_status = 'CheckedIn'`
 **SQLSTATE exceptions:**
-- `'45011'` - reservation not checked in
+- `'45011'` — reservation not checked in
 **Price snapshot:** Reads `service_catalogue.current_price` and writes to `service_usage.charged_price`
 **Lecture alignment:** L08, L05 (snapshot, constraint enforcement)
 
@@ -168,8 +168,8 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 
 **Inputs:** `p_invoice_id UUID`, `p_amount NUMERIC(12,2)`, `p_method VARCHAR`, `p_reference VARCHAR`, `p_user_id UUID`, `p_employee_id BIGINT`
 **SQLSTATE exceptions:**
-- `'23505'` - duplicate transaction_reference (UNIQUE violation)
-- `'45020'` - amount exceeds outstanding balance
+- `'23505'` — duplicate transaction_reference (UNIQUE violation)
+- `'45020'` — amount exceeds outstanding balance
 **Lecture alignment:** L08, L05 (UNIQUE, transaction), L12
 
 ---
@@ -181,8 +181,8 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 
 **Inputs:** `p_reservation_id UUID`, `p_employee_id BIGINT`
 **SQLSTATE exceptions:**
-- `'45030'` - outstanding balance > 0 (checkout blocked)
-- `'45031'` - reservation not CheckedIn
+- `'45030'` — outstanding balance > 0 (checkout blocked)
+- `'45031'` — reservation not CheckedIn
 **Lecture alignment:** L08, L05 (transaction, guard), L12 (balance check atomicity)
 
 ---
@@ -196,12 +196,12 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 **Status:** REVIEW (P05-M05-T07)
 **Fires:** `AFTER UPDATE OF reservation_status ON reservation FOR EACH ROW`
 **Skips:** Rows where `NEW.reservation_status = OLD.reservation_status` (no-op guard)
-**Security:** `SECURITY DEFINER` - runs as owner to guarantee INSERT access
+**Security:** `SECURITY DEFINER` — runs as owner to guarantee INSERT access
 
 **Actor attribution (session variables, set with `SET LOCAL` inside SP/route transaction):**
-- `app.current_user_id` - UUID of the authenticated user
-- `app.current_employee_id` - BIGINT of the employee (NULL for guest-initiated changes)
-- `app.audit_reason` - optional human-readable reason string
+- `app.current_user_id` — UUID of the authenticated user
+- `app.current_employee_id` — BIGINT of the employee (NULL for guest-initiated changes)
+- `app.audit_reason` — optional human-readable reason string
 
 **Backed by table:** `reservation_audit_log` (created in `P05-M05-T07-01_create_reservation_audit_log.sql`)
 **Lecture alignment:** L08 (trigger, FOR EACH ROW, AFTER UPDATE, TG_ variables, SECURITY DEFINER)
@@ -271,15 +271,15 @@ CREATE OR REPLACE FUNCTION fn_calc_service_charges(
 **Status:** REVIEW (P02-M02-T04)
 **Definition:**
 ```sql
--- 1. Covering index on reservation_rooms - optimises room_id + join lookup
+-- 1. Covering index on reservation_rooms — optimises room_id + join lookup
 CREATE INDEX IF NOT EXISTS idx_reservation_rooms_room_dates
   ON reservation_rooms (room_id, reservation_id);
 
--- 2. Composite index on reservation - optimises status filter + date overlap checks
+-- 2. Composite index on reservation — optimises status filter + date overlap checks
 CREATE INDEX IF NOT EXISTS idx_reservation_overlap_lookup
   ON reservation (reservation_status, check_in_date, check_out_date);
 
--- 3. Covering index on room - optimises branch + maintenance filter with type projection
+-- 3. Covering index on room — optimises branch + maintenance filter with type projection
 CREATE INDEX IF NOT EXISTS idx_room_branch_status
   ON room (branch_id, status)
   INCLUDE (type_id, room_number);
@@ -303,9 +303,9 @@ CREATE INDEX idx_reservation_guest_id ON reservation (guest_id);
 
 ---
 
-## EXPLAIN ANALYZE - Availability Query Performance (P02-M02-T18)
+## EXPLAIN ANALYZE — Availability Query Performance (P02-M02-T18)
 
-**Task:** P02-M02-T18 - EXPLAIN ANALYZE for availability query
+**Task:** P02-M02-T18 — EXPLAIN ANALYZE for availability query
 **Member:** Member 2 | **Status:** REVIEW (script written; output to be captured after DB migration)
 **Script:** `database/tests/explain_analyze_availability.sql`
 **Lecture alignment:** L10 (index design), L11 (EXPLAIN ANALYZE interpretation, query cost model)
@@ -332,7 +332,7 @@ WHERE r.branch_id = $1          -- idx_room_branch_status
 ORDER BY rt.capacity ASC, rt.daily_rate ASC, r.room_number ASC;
 ```
 
-### Expected Execution Plan (without indexes - baseline)
+### Expected Execution Plan (without indexes — baseline)
 
 ```
 Function Scan on fn_get_available_rooms (cost=...) rows=...
@@ -356,7 +356,7 @@ Function Scan on fn_get_available_rooms (cost=...) rows=...
 
 **Without indexes:** Both `room` and `reservation_rooms` are full sequential scans. For 15 rooms and ~20 reservations this is acceptable, but at scale (1000+ rooms, 10000+ reservations) the sequential join would be O(N × M) per room.
 
-### Expected Execution Plan (with indexes - optimized)
+### Expected Execution Plan (with indexes — optimized)
 
 ```
 Function Scan on fn_get_available_rooms  (cost=... rows=...)
@@ -389,7 +389,7 @@ Function Scan on fn_get_available_rooms  (cost=... rows=...)
 
 ### How to Capture Real Output
 
-After running all Phase 1-3 migrations and seeding:
+After running all Phase 1–3 migrations and seeding:
 
 ```bash
 psql -U hrgsms_user -d hrgsms -f database/tests/explain_analyze_availability.sql \
@@ -400,6 +400,6 @@ Paste the actual `EXPLAIN ANALYZE` output below this line once captured.
 
 ### Actual EXPLAIN ANALYZE Output
 
-> ⏳ **Pending** - to be captured after Phase 6 DB migration execution (P06-M02-T03).
+> ⏳ **Pending** — to be captured after Phase 6 DB migration execution (P06-M02-T03).
 > Run `database/tests/explain_analyze_availability.sql` against the live seeded database and paste here.
 

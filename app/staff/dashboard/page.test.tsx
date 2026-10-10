@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 /**
- * Unit tests for Staff Dashboard Skeleton - P01-M01-T29
+ * Unit tests for Staff Dashboard Skeleton — P01-M01-T29
  *
  * Strategy:
  *   The dashboard is a Server Component that calls getSession() and
@@ -135,7 +135,7 @@ function adminSession() {
 
 /* ─── Tests ─────────────────────────────────────────────────────────────── */
 
-describe('StaffDashboardPage - rendering', () => {
+describe('StaffDashboardPage — rendering', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -211,13 +211,13 @@ describe('StaffDashboardPage - rendering', () => {
 
   it('renders the development mock-data notice outside production', async () => {
     mockGetSession.mockResolvedValue(receptionistSession());
-    // NODE_ENV is 'test' in vitest - same behaviour as dev: notice should render
+    // NODE_ENV is 'test' in vitest — same behaviour as dev: notice should render
     await renderDashboard();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 });
 
-describe('StaffDashboardPage - Receptionist role', () => {
+describe('StaffDashboardPage — Receptionist role', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -283,7 +283,7 @@ describe('StaffDashboardPage - Receptionist role', () => {
   });
 });
 
-describe('StaffDashboardPage - Manager role', () => {
+describe('StaffDashboardPage — Manager role', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -329,7 +329,7 @@ describe('StaffDashboardPage - Manager role', () => {
   });
 });
 
-describe('StaffDashboardPage - Admin role', () => {
+describe('StaffDashboardPage — Admin role', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -349,7 +349,7 @@ describe('StaffDashboardPage - Admin role', () => {
   });
 });
 
-describe('StaffDashboardPage - activity feed', () => {
+describe('StaffDashboardPage — activity feed', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -397,7 +397,7 @@ describe('StaffDashboardPage - activity feed', () => {
   });
 });
 
-describe('StaffDashboardPage - unauthenticated', () => {
+describe('StaffDashboardPage — unauthenticated', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
@@ -424,7 +424,7 @@ describe('StaffDashboardPage - unauthenticated', () => {
   });
 });
 
-describe('StaffDashboardPage - accessibility', () => {
+describe('StaffDashboardPage — accessibility', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();

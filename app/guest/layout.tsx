@@ -1,5 +1,5 @@
 /**
- * Guest route layout - renders GuestNav for all /guest/* pages.
+ * Guest route layout — renders GuestNav for all /guest/* pages.
  *
  * GuestNav is a React Server Component that reads the iron-session via
  * next/headers. It MUST live in a Server Component (this layout), not be

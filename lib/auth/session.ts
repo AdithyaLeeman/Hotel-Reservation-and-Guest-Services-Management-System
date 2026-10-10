@@ -10,7 +10,7 @@
  * Security rules (AGENTS.md Section 10):
  * - Never trust any session field supplied by the browser.
  * - Always read session server-side on every protected request.
- * - Guest ownership is always derived from session.guestId - never from
+ * - Guest ownership is always derived from session.guestId — never from
  *   a client-supplied query param or request body field.
  * - SESSION_SECRET must be at least 32 characters (iron-session requirement).
  *
@@ -26,7 +26,7 @@ import type { SessionData } from '@/types/session';
 export const SESSION_COOKIE_NAME = 'hrgsms_session';
 
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
-  // Only throw at startup - not during module evaluation - so tests that mock
+  // Only throw at startup — not during module evaluation — so tests that mock
   // the env variable can set it before requiring this module.
   if (process.env.NODE_ENV === 'production') {
     throw new Error(
@@ -52,7 +52,7 @@ export const sessionOptions: SessionOptions = {
  * Call this inside a Server Component, Route Handler, or Server Action.
  * The returned object is mutable: assign fields then call session.save().
  *
- * @returns IronSession<SessionData> - contains session fields or empty object
+ * @returns IronSession<SessionData> — contains session fields or empty object
  *
  * @example
  * const session = await getSession();

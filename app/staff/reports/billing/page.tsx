@@ -59,7 +59,7 @@ function fmt(val: string): string {
 }
 
 function fmtDate(iso: string): string {
-  if (!iso) return '-';
+  if (!iso) return '—';
   try {
     const clean = iso.includes('T') ? iso.split('T')[0] : iso;
     const d = new Date(clean + 'T00:00:00');
@@ -327,7 +327,7 @@ export default function GuestBillingSummaryPage() {
           <div>
             <h1 className="bs-title">Guest <span>Billing Summary</span></h1>
             <p className="bs-subtitle">
-              Individual invoice breakdown - room charges, tax, services, payments, and outstanding balances.
+              Individual invoice breakdown — room charges, tax, services, payments, and outstanding balances.
             </p>
           </div>
         </header>

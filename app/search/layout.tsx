@@ -1,5 +1,5 @@
 /**
- * Search route layout - provides SEO metadata and guest navigation for /search.
+ * Search route layout — provides SEO metadata and guest navigation for /search.
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T13
  *
@@ -17,7 +17,7 @@ import type { ReactNode } from 'react';
 import GuestNav from '@/components/GuestNav';
 
 export const metadata: Metadata = {
-  title: 'Search Available Rooms - SkyNest Hotels',
+  title: 'Search Available Rooms — SkyNest Hotels',
   description:
     'Check room availability at SkyNest Hotels across our Colombo, Kandy, and Galle branches. ' +
     'Search by date and book your stay instantly.',

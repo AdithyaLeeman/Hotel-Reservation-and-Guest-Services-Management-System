@@ -24,7 +24,7 @@ function baseInput(overrides: Partial<PostPaymentInput> = {}): PostPaymentInput 
 
 // ── Test Suite ────────────────────────────────────────────────────────────────
 
-describe('Payment Service (Mock) - P05-M05-T09', () => {
+describe('Payment Service (Mock) — P05-M05-T09', () => {
   beforeEach(() => {
     paymentRepository._resetMockStore();
   });
@@ -188,7 +188,7 @@ describe('Payment Service (Mock) - P05-M05-T09', () => {
       expect(resultsB[0].invoice_id).toBe(INVOICE_B);
     });
 
-    it('returns a defensive copy - mutation does not affect the stored record', async () => {
+    it('returns a defensive copy — mutation does not affect the stored record', async () => {
       await paymentService.postPayment(baseInput(), USER_GUEST);
       const results = await paymentService.listPaymentsByInvoice(INVOICE_A);
 

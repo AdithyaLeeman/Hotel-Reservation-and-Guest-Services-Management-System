@@ -57,7 +57,7 @@ const MOCK_INVOICE_RESPONSE = {
   meta: { requestId: 'req-1' },
 };
 
-describe('GuestPayPage - P05-M05-T14', () => {
+describe('GuestPayPage — P05-M05-T14', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

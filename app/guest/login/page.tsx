@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Guest Login Page - P01-M01-T27
+ * Guest Login Page — P01-M01-T27
  *
  * - Calls POST /api/guest/login with { username, password }
  * - On success: server writes iron-session; page redirects to /guest/reservations
@@ -40,7 +40,7 @@ interface ApiErrorResponse {
 /* ─── Client-side validation ─────────────────────────────────────────────────── */
 
 /**
- * Lightweight UX-only validation - mirrors GuestLoginSchema.
+ * Lightweight UX-only validation — mirrors GuestLoginSchema.
  * The server always re-validates authoritatively.
  */
 function validateForm(values: LoginFormState): FieldErrors {
@@ -150,7 +150,7 @@ function GuestLoginForm() {
         return;
       }
 
-      // Success - session written by server. Redirect.
+      // Success — session written by server. Redirect.
       const returnTo = searchParams.get('redirect');
       router.push(returnTo && returnTo.startsWith('/') ? returnTo : '/guest/reservations');
       router.refresh();
@@ -177,7 +177,7 @@ function GuestLoginForm() {
   return (
     <>
       {/* ── SEO ── */}
-      <title>Guest Login - SkyNest Hotels</title>
+      <title>Guest Login — SkyNest Hotels</title>
 
       <main
         className="
@@ -211,7 +211,7 @@ function GuestLoginForm() {
               id="login-heading"
               className="font-serif text-3xl md:text-4xl font-normal text-white leading-tight"
             >
-              Welcome Back - Guest Portal
+              Welcome Back — Guest Portal
             </h1>
             <p className="mt-2 text-[#c5a880]/80 text-xs uppercase tracking-wider font-light">
               Access your reservations, view itemized charges, and checkout
@@ -272,7 +272,7 @@ function GuestLoginForm() {
                     href="/staff/login"
                     className="font-medium text-[#c5a880] hover:underline transition-colors"
                   >
-                    Staff Login
+                    Staff Login →
                   </Link>
                 </p>
               </div>
@@ -418,7 +418,7 @@ function GuestLoginForm() {
   );
 }
 
-/* ─── Page export - wraps form in Suspense for useSearchParams ───────────────── */
+/* ─── Page export — wraps form in Suspense for useSearchParams ───────────────── */
 
 export default function GuestLoginPage() {
   return (

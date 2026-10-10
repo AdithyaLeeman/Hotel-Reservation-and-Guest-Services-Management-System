@@ -1,5 +1,5 @@
 /**
- * Payment Service - business logic layer for posting payments and checkout.
+ * Payment Service — business logic layer for posting payments and checkout.
 
  * Idempotency:
  * - Duplicate transaction_reference → SQLSTATE '23505' → HTTP 409.
@@ -8,7 +8,7 @@
  * - Replace paymentRepository mock calls with real pg/withTransaction calls.
  * - No signature changes required in this service.
  *
- * See docs/21_shared-contracts.md - Section 9 (transactions), Section 11
+ * See docs/21_shared-contracts.md — Section 9 (transactions), Section 11
  * (billing definitions), Section 14 (SQLSTATE map).
  */
 
@@ -62,7 +62,7 @@ export const paymentService = {
       transaction_reference: input.transaction_reference ?? null,
     };
 
-    // Delegates to repository - in mock phase this enforces idempotency
+    // Delegates to repository — in mock phase this enforces idempotency
     // and amount > 0 check in memory. In Phase 6, delegates to sp_post_payment().
     return paymentRepository.postPayment(params);
   },

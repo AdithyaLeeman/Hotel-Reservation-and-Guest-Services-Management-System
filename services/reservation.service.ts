@@ -1,9 +1,9 @@
 /**
- * Reservation Service - orchestrates reservation creation, retrieval, and cancellation.
+ * Reservation Service — orchestrates reservation creation, retrieval, and cancellation.
  *
  * Architectural rules:
  *   - DB-first: sp_create_reservation() and sp_cancel_reservation() own all
- *     atomic mutations. This layer calls those via the repository - never
+ *     atomic mutations. This layer calls those via the repository — never
  *     reimplements their logic.
  *   - SQLSTATE mapping: DB error codes (45001, 45010, P0002) are caught here
  *     and re-thrown as typed ServiceError so route handlers stay thin.
@@ -12,13 +12,13 @@
  *
  * Error model:
  *   ServiceError.code values route handlers should handle:
- *     'ROOM_OVERLAP'            - 409 Conflict
- *     'ROOM_BRANCH_MISMATCH'    - 422 Unprocessable Entity
- *     'ROOM_IN_MAINTENANCE'     - 422 Unprocessable Entity
- *     'NOT_FOUND'               - 404 Not Found
- *     'INVALID_STATUS_TRANSITION' - 409 Conflict
+ *     'ROOM_OVERLAP'            — 409 Conflict
+ *     'ROOM_BRANCH_MISMATCH'    — 422 Unprocessable Entity
+ *     'ROOM_IN_MAINTENANCE'     — 422 Unprocessable Entity
+ *     'NOT_FOUND'               — 404 Not Found
+ *     'INVALID_STATUS_TRANSITION' — 409 Conflict
  *
- * Owned by: Member 3 (M3) - Hiripitiya S.K., 240238C
+ * Owned by: Member 3 (M3) — Hiripitiya S.K., 240238C
  * Tasks:    P03-M03-T10 (createGuestReservation / createStaffReservation /
  *                         getGuestReservations / listActiveReservations /
  *                         getReservationDetail / cancelReservation)
@@ -38,7 +38,7 @@ import { isSqlState } from '@/types/api';
 import { SQLSTATE } from '@/types/enums';
 
 // ---------------------------------------------------------------------------
-// Typed service errors - route handlers catch these instead of raw DB errors
+// Typed service errors — route handlers catch these instead of raw DB errors
 // ---------------------------------------------------------------------------
 
 export type ServiceErrorCode =
@@ -82,7 +82,7 @@ function mapDbError(err: unknown): ServiceError | null {
 
 export const reservationService = {
   // -------------------------------------------------------------------------
-  // P03-M03-T10 - Create reservation (guest path)
+  // P03-M03-T10 — Create reservation (guest path)
   // -------------------------------------------------------------------------
 
   /**
@@ -92,9 +92,9 @@ export const reservationService = {
    * Delegates the atomic INSERT + overlap check to sp_create_reservation()
    * via the repository.
    *
-   * @param input    - validated CreateReservationInput from Zod schema
-   * @param session  - server-side session (guest_id sourced from here)
-   * @returns        - { reservation_id } of the newly created reservation
+   * @param input    — validated CreateReservationInput from Zod schema
+   * @param session  — server-side session (guest_id sourced from here)
+   * @returns        — { reservation_id } of the newly created reservation
    * @throws ServiceError on room overlap, branch mismatch, or maintenance
    */
   createGuestReservation: async (
@@ -106,7 +106,7 @@ export const reservationService = {
     }
 
     const params: CreateReservationParams = {
-      guest_id:              session.guestId,          // ALWAYS from session - never input
+      guest_id:              session.guestId,          // ALWAYS from session — never input
       branch_id:             input.branch_id,
       check_in_date:         input.check_in_date,
       check_out_date:        input.check_out_date,
@@ -114,26 +114,26 @@ export const reservationService = {
       booking_source:        'Online',                 // guest-portal bookings are always Online
       created_by_user_id:    session.userId,
       employee_id:           null,                     // no employee for guest-initiated bookings
-      // Pass discount as number|null - PostgreSQL casts it to NUMERIC(5,2) via the procedure.
+      // Pass discount as number|null — PostgreSQL casts it to NUMERIC(5,2) via the procedure.
       // Authoritative financial computation stays in SQL (context/04-code-standards.md).
       discount_percentage:   input.discount_percentage ?? null,
     };
 
-    // sp_create_reservation owns its own transaction - do NOT wrap in BEGIN/COMMIT
+    // sp_create_reservation owns its own transaction — do NOT wrap in BEGIN/COMMIT
     const client = await pool.connect();
     try {
       return await reservationRepository.callCreateReservation(client, params);
     } catch (err) {
       const mapped = mapDbError(err);
       if (mapped) throw mapped;
-      throw err; // unexpected error - let route handler return 500
+      throw err; // unexpected error — let route handler return 500
     } finally {
       client.release();
     }
   },
 
   // -------------------------------------------------------------------------
-  // P03-M03-T10 - Create reservation (staff path)
+  // P03-M03-T10 — Create reservation (staff path)
   // -------------------------------------------------------------------------
 
   /**
@@ -142,11 +142,11 @@ export const reservationService = {
    * Staff can set booking_source to 'Reception' or 'Phone' and may apply a
    * discount. The employee_id is read from the session.
    *
-   * @param input    - validated CreateReservationInput from Zod schema
-   * @param session  - staff session (employeeId sourced from here)
-   * @param guestId  - guest_id for the target guest (looked up by staff, must
+   * @param input    — validated CreateReservationInput from Zod schema
+   * @param session  — staff session (employeeId sourced from here)
+   * @param guestId  — guest_id for the target guest (looked up by staff, must
    *                   be verified as a real guest before calling this method)
-   * @returns        - { reservation_id } of the newly created reservation
+   * @returns        — { reservation_id } of the newly created reservation
    * @throws ServiceError on room overlap, branch mismatch, or maintenance
    */
   createStaffReservation: async (
@@ -163,7 +163,7 @@ export const reservationService = {
       booking_source:        input.booking_source,     // staff can use Reception / Phone
       created_by_user_id:    session.userId,
       employee_id:           session.employeeId ?? null,
-      // Pass discount as number|null - PostgreSQL casts it to NUMERIC(5,2) via the procedure.
+      // Pass discount as number|null — PostgreSQL casts it to NUMERIC(5,2) via the procedure.
       // Authoritative financial computation stays in SQL (context/04-code-standards.md).
       discount_percentage:   input.discount_percentage ?? null,
     };
@@ -181,7 +181,7 @@ export const reservationService = {
   },
 
   // -------------------------------------------------------------------------
-  // P03-M03-T06 - List reservations for a guest
+  // P03-M03-T06 — List reservations for a guest
   // -------------------------------------------------------------------------
 
   /**
@@ -190,15 +190,15 @@ export const reservationService = {
    * SECURITY: guestId is sourced from the session by the route handler.
    * It must NOT be taken from the request URL or body.
    *
-   * @param guestId  - session.guestId
-   * @returns        - array of Reservation rows (may be empty)
+   * @param guestId  — session.guestId
+   * @returns        — array of Reservation rows (may be empty)
    */
   getGuestReservations: async (guestId: string): Promise<Reservation[]> => {
     return reservationRepository.listByGuestId(guestId);
   },
 
   // -------------------------------------------------------------------------
-  // P03-M03-T06 - List active reservations for staff
+  // P03-M03-T06 — List active reservations for staff
   // -------------------------------------------------------------------------
 
   /**
@@ -208,8 +208,8 @@ export const reservationService = {
    *   - Receptionist: pass session.branchId → scoped to their branch
    *   - Manager / Admin: pass null → returns all branches
    *
-   * @param branchId  - session.branchId for Receptionist; null for Manager/Admin
-   * @returns         - array of ActiveReservationRow
+   * @param branchId  — session.branchId for Receptionist; null for Manager/Admin
+   * @returns         — array of ActiveReservationRow
    */
   listActiveReservations: async (
     branchId: number | null
@@ -218,7 +218,7 @@ export const reservationService = {
   },
 
   // -------------------------------------------------------------------------
-  // P03-M03-T07 - Get full reservation detail
+  // P03-M03-T07 — Get full reservation detail
   // -------------------------------------------------------------------------
 
   /**
@@ -229,11 +229,11 @@ export const reservationService = {
    *   - Staff access: pass null → no ownership restriction
    *
    * Returns null (→ 404) if the reservation is not found or (for guest access)
-   * does not belong to the requesting guest - same result to prevent info leakage.
+   * does not belong to the requesting guest — same result to prevent info leakage.
    *
-   * @param reservationId  - UUID from URL param
-   * @param guestId        - session.guestId for guest; null for staff
-   * @returns              - ReservationDetail or null
+   * @param reservationId  — UUID from URL param
+   * @param guestId        — session.guestId for guest; null for staff
+   * @returns              — ReservationDetail or null
    */
   getReservationDetail: async (
     reservationId: string,
@@ -243,7 +243,7 @@ export const reservationService = {
   },
 
   // -------------------------------------------------------------------------
-  // P03-M03-T04 - Cancel reservation
+  // P03-M03-T04 — Cancel reservation
   // -------------------------------------------------------------------------
 
   /**
@@ -254,9 +254,9 @@ export const reservationService = {
    *   - Allows only 'Booked' status to be cancelled (raises 45010 otherwise)
    *   - Enforces guest ownership when guestId is provided
    *
-   * @param reservationId      - UUID from URL param
-   * @param cancelledByUserId  - session.userId of the actor (for audit trail)
-   * @param guestId            - session.guestId for guest cancellations;
+   * @param reservationId      — UUID from URL param
+   * @param cancelledByUserId  — session.userId of the actor (for audit trail)
+   * @param guestId            — session.guestId for guest cancellations;
    *                             null for staff override (no ownership check)
    * @throws ServiceError 'NOT_FOUND' if not found or (for guest) wrong owner
    * @throws ServiceError 'INVALID_STATUS_TRANSITION' if not in 'Booked' status

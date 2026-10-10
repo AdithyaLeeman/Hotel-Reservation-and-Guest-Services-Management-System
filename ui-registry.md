@@ -1,10 +1,10 @@
-# ui-registry.md - HRGSMS UI Pattern Registry
+# ui-registry.md — HRGSMS UI Pattern Registry
 
 _Populated by `/imprint` after meaningful UI work. Run `/imprint` after any significant UI component or workflow is built._
 _Run `/imprint audit` at each phase checkpoint for consistency review._
 
 ## Status
-Phase 0 - No UI components built yet. Scaffold only.
+Phase 0 — No UI components built yet. Scaffold only.
 
 ## Design System
 
@@ -16,7 +16,7 @@ See `context/06-ui-tokens.md` for CSS variable definitions.
 
 ### Typography
 See `context/06-ui-tokens.md`.
-- Typography: Burj Khalifa System (`burjkhalifa.ae`) - `Inter` (Headings, display, badges, buttons) + `Lato` (Body, cards, tables, inputs)
+- Font: to be defined (Inter or similar from Google Fonts planned)
 
 ## Components Registry
 

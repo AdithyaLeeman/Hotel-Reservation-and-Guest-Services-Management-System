@@ -1,7 +1,7 @@
 /**
  * Page: /staff/reports/service-usage
  *
- * Service Usage Report page - displays the top-used services ranked by total
+ * Service Usage Report page — displays the top-used services ranked by total
  * quantity consumed. Fetches data from GET /api/staff/reports/top-services.
  *
  * Security:
@@ -65,14 +65,14 @@ export default function ServiceUsageReportPage() {
       .catch(() => {
         setState({
           stage: 'error',
-          message: 'Network error - unable to reach the server.',
+          message: 'Network error — unable to reach the server.',
         });
       });
   }, []);
 
   return (
     <>
-      <title>Service Usage Report - SkyNest Hotels Staff Portal</title>
+      <title>Service Usage Report — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
         <main
@@ -94,7 +94,7 @@ export default function ServiceUsageReportPage() {
               href="/staff/dashboard"
               className="btn btn-ghost text-sm hidden sm:inline-flex"
             >
-              Dashboard
+              ← Dashboard
             </Link>
           </header>
 
@@ -181,7 +181,7 @@ export default function ServiceUsageReportPage() {
           id="service-usage-report-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels - Staff Portal · Generated {new Date().toLocaleDateString('en-LK')}
+          SkyNest Hotels — Staff Portal · Generated {new Date().toLocaleDateString('en-LK')}
         </footer>
       </div>
     </>

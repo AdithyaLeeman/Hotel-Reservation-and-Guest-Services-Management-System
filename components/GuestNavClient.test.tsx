@@ -1,5 +1,5 @@
 /**
- * GuestNavClient - Unit tests for the interactive guest navigation bar.
+ * GuestNavClient — Unit tests for the interactive guest navigation bar.
  *
  * @vitest-environment jsdom
  *
@@ -115,7 +115,7 @@ describe('GuestNavClient', () => {
     expect(logo.getAttribute('href')).toBe('/');
   });
 
-  /* 2. Public link - Search Rooms - always renders */
+  /* 2. Public link — Search Rooms — always renders */
   it('always renders the Search Rooms link', () => {
     renderNav();
     // Desktop and mobile both render links; at least one should be present

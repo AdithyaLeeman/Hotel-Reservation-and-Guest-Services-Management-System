@@ -8,12 +8,12 @@
  *   total_paid, outstanding_balance) come exclusively from vw_invoice_totals via
  *   billingService.getInvoiceTotals(). TypeScript NEVER computes any financial value.
  *
- * P06-M05-T01 - Wire billing to real DB
+ * P06-M05-T01 — Wire billing to real DB
  *
  * Flow:
  *   1. Authenticate guest session (iron-session)
  *   2. Verify reservation belongs to this guest (ownership enforcement)
- *   3. Call sp_finalize_invoice() via billingService.finalizeInvoice() - idempotent
+ *   3. Call sp_finalize_invoice() via billingService.finalizeInvoice() — idempotent
  *   4. Read vw_invoice_totals via billingService.getInvoiceTotals()
  *   5. Read payment history via paymentService.listPaymentsByInvoice()
  *   6. Return combined response
@@ -36,7 +36,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
       return session;
     }
   } catch {
-    // Cookie absent or malformed - fall through
+    // Cookie absent or malformed — fall through
   }
   return {};
 }

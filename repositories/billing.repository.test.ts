@@ -1,5 +1,5 @@
 /**
- * Billing Repository - integration tests (P06-M05-T01)
+ * Billing Repository — integration tests (P06-M05-T01)
  *
  * These tests run against the real PostgreSQL database.
  * Set DATABASE_URL in .env.test.local before running.
@@ -59,7 +59,7 @@ describe('billingRepository.callFinalizeInvoice', () => {
     testInvoiceId = result.invoice_id;
   });
 
-  it('is idempotent - returns the same invoice_id on repeat call', async () => {
+  it('is idempotent — returns the same invoice_id on repeat call', async () => {
     if (!testReservationId || !testInvoiceId) {
       console.warn('Skipping: no test reservation or invoice available');
       return;

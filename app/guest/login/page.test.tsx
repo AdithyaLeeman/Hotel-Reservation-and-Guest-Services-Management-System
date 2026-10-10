@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 /**
- * Unit tests for Guest Login Page - P01-M01-T27
+ * Unit tests for Guest Login Page — P01-M01-T27
  *
  * Strategy:
  *   - Rendering: all fields, button, navigation links
@@ -57,7 +57,7 @@ function successResponse() {
 
 /* ─── Tests ──────────────────────────────────────────────────────────────────── */
 
-describe('GuestLoginPage - rendering', () => {
+describe('GuestLoginPage — rendering', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -106,7 +106,7 @@ describe('GuestLoginPage - rendering', () => {
   });
 });
 
-describe('GuestLoginPage - client validation', () => {
+describe('GuestLoginPage — client validation', () => {
   beforeEach(() => mockFetch.mockClear());
 
   it('shows required-field errors when form is submitted empty', async () => {
@@ -144,7 +144,7 @@ describe('GuestLoginPage - client validation', () => {
   });
 });
 
-describe('GuestLoginPage - password reveal toggle', () => {
+describe('GuestLoginPage — password reveal toggle', () => {
   it('toggles password input type between password and text', () => {
     render(<GuestLoginPage />);
     const passwordInput = screen.getByLabelText(/^password/i) as HTMLInputElement;
@@ -156,7 +156,7 @@ describe('GuestLoginPage - password reveal toggle', () => {
   });
 });
 
-describe('GuestLoginPage - successful submission', () => {
+describe('GuestLoginPage — successful submission', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -216,7 +216,7 @@ describe('GuestLoginPage - successful submission', () => {
   });
 });
 
-describe('GuestLoginPage - server error handling', () => {
+describe('GuestLoginPage — server error handling', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -291,14 +291,14 @@ describe('GuestLoginPage - server error handling', () => {
   });
 });
 
-describe('GuestLoginPage - submit button state', () => {
+describe('GuestLoginPage — submit button state', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockGet.mockReturnValue(null);
   });
 
   it('is disabled and shows loading text while submitting', async () => {
-    // Promise that never resolves - keeps the component mid-flight
+    // Promise that never resolves — keeps the component mid-flight
     mockFetch.mockReturnValueOnce(new Promise(() => {}));
     render(<GuestLoginPage />);
     fillForm();

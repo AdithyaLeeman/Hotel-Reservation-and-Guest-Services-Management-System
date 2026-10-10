@@ -1,26 +1,26 @@
 /**
- * Check-in Service - Real DB Implementation
+ * Check-in Service — Real DB Implementation
  *
  * Orchestrates the check-in workflow:
  *   1. Verify the session employee has branch access to the reservation.
- *   2. Call the repository which delegates to sp_check_in() - the stored
+ *   2. Call the repository which delegates to sp_check_in() — the stored
  *      procedure performs the status transition + room status update atomically
- *      inside a single PostgreSQL transaction (L08 - transactions, L09 - concurrency).
+ *      inside a single PostgreSQL transaction (L08 — transactions, L09 — concurrency).
  *
  * DB-first rule (AGENTS.md §5):
  *   sp_check_in() owns the entire state transition. This service MUST NOT
- *   reproduce any status check or room update in TypeScript - it only calls
+ *   reproduce any status check or room update in TypeScript — it only calls
  *   the stored procedure and maps SQLSTATE errors to structured service errors.
  *
- * P06-M04-T01 - Mock store replaced with real pg Pool via checkinRepository.
+ * P06-M04-T01 — Mock store replaced with real pg Pool via checkinRepository.
  *
  * DB routines used:
- *   sp_check_in(p_reservation_id, p_employee_id) - P04-M04-T04
+ *   sp_check_in(p_reservation_id, p_employee_id) — P04-M04-T04
  *
  * Error states from sp_check_in SQLSTATE codes:
- *   SQLSTATE '23503' - reservation not found (FK / record missing)
- *   SQLSTATE '45010' - reservation is not in 'Booked' status
- *   SQLSTATE '45003' - a reserved room is in Maintenance
+ *   SQLSTATE '23503' — reservation not found (FK / record missing)
+ *   SQLSTATE '45010' — reservation is not in 'Booked' status
+ *   SQLSTATE '45003' — a reserved room is in Maintenance
  *
  * Owned by: Member 4 (M4) | Task: P04-M04-T10
  * Lecture alignment: L08 (transactions), L09 (concurrency)
@@ -30,7 +30,7 @@ import { pool } from '@/lib/db/pool';
 import type { ReservationStatus } from '@/types/enums';
 
 // ---------------------------------------------------------------------------
-// CheckinServiceError - structured error with machine-readable code.
+// CheckinServiceError — structured error with machine-readable code.
 // Route handlers map these to appropriate HTTP status codes.
 // ---------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ export const checkinService = {
    *
    * Branch scope is verified before calling sp_check_in() so that
    * Receptionists cannot check in reservations outside their branch
-   * (the stored procedure does not enforce branch scope - that is an
+   * (the stored procedure does not enforce branch scope — that is an
    * application-layer responsibility per AGENTS.md §10).
    *
    * The stored procedure (sp_check_in) atomically:
@@ -137,13 +137,13 @@ export const checkinService = {
       if (pgErr.code === '45010') {
         throw new CheckinServiceError(
           'NOT_BOOKED_STATUS',
-          `Reservation ${reservationId} cannot be checked in - ${msg}`
+          `Reservation ${reservationId} cannot be checked in — ${msg}`
         );
       }
       if (pgErr.code === '45003') {
         throw new CheckinServiceError(
           'ROOM_IN_MAINTENANCE',
-          `Cannot check in - one or more reserved rooms are in Maintenance.`
+          `Cannot check in — one or more reserved rooms are in Maintenance.`
         );
       }
 

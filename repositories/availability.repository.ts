@@ -13,7 +13,7 @@ export interface AvailableRoom {
   /** Joined from room_type inside the PostgreSQL function */
   type_name: string;
   capacity: number;
-  /** NUMERIC(12,2) returned as string from pg - never use as JS float */
+  /** NUMERIC(12,2) returned as string from pg — never use as JS float */
   daily_rate: string;
   /** List of amenity names for this room type */
   amenities: string[];
@@ -23,7 +23,7 @@ export const availabilityRepository = {
   /**
    * @param branchId  - integer branch PK
    * @param checkIn   - ISO date string YYYY-MM-DD (inclusive)
-   * @param checkOut  - ISO date string YYYY-MM-DD (exclusive - checkout day)
+   * @param checkOut  - ISO date string YYYY-MM-DD (exclusive — checkout day)
    */
   getAvailableRooms: async (
     branchId: number,

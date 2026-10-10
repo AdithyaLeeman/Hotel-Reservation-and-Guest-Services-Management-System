@@ -10,7 +10,7 @@ vi.mock('@/lib/auth/session', () => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Mock room repository - real repo now uses pg Pool (Phase 6 SP6.1).
+// Mock room repository — real repo now uses pg Pool (Phase 6 SP6.1).
 // Route tests stay fast and DB-independent.
 // ---------------------------------------------------------------------------
 vi.mock('@/repositories/room.repository', () => {

@@ -47,7 +47,7 @@ interface ApiSuccessResponse {
 /* ─── Client-side validation ─────────────────────────────────────────────────── */
 
 /**
- * Mirror of GuestRegisterSchema - UX only, server always re-validates.
+ * Mirror of GuestRegisterSchema — UX only, server always re-validates.
  */
 function validateForm(values: RegisterFormState): FieldErrors {
   const errors: FieldErrors = {};
@@ -196,7 +196,7 @@ export default function GuestRegisterPage() {
         return;
       }
 
-      // Success - session is now active (server wrote it), redirect to reservations
+      // Success — session is now active (server wrote it), redirect to reservations
       router.push('/guest/reservations');
       router.refresh();
     } catch {
@@ -221,7 +221,7 @@ export default function GuestRegisterPage() {
   return (
     <>
       {/* ── SEO ── */}
-      <title>Create Account - SkyNest Hotels</title>
+      <title>Create Account — SkyNest Hotels</title>
 
       <main
         className="

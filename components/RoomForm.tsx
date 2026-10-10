@@ -1,21 +1,21 @@
 'use client';
 
 /**
- * RoomForm - modal dialog for creating a room or updating a room's status.
+ * RoomForm — modal dialog for creating a room or updating a room's status.
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T16
- * Type: PARALLEL - no DB dependency.
+ * Type: PARALLEL — no DB dependency.
  *
  * Modes:
- *   'create'        - POST /api/staff/rooms     (Manager/Admin only; API enforces)
- *   'update-status' - PATCH /api/staff/rooms/[id] (Receptionist allowed except Maintenance)
+ *   'create'        — POST /api/staff/rooms     (Manager/Admin only; API enforces)
+ *   'update-status' — PATCH /api/staff/rooms/[id] (Receptionist allowed except Maintenance)
  *
  * Business rules enforced in UI (server enforces authoritatively):
  *   - Maintenance status is flagged as Manager/Admin only in the UI label.
- *   - All money displayed as LKR - never recomputed here.
+ *   - All money displayed as LKR — never recomputed here.
  *
  * UI Rules (context/07-ui-rules.md):
- *   - Every field has a visible label - never placeholder-only.
+ *   - Every field has a visible label — never placeholder-only.
  *   - Required fields marked with *.
  *   - Validation errors shown inline below the field.
  *   - Disabled submit while request is in flight.
@@ -303,7 +303,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
 
   // ── Render ─────────────────────────────────────────────────────────────
 
-  const title      = mode === 'create' ? 'Add New Room' : `Update Status - Room ${room?.room_number ?? ''}`;
+  const title      = mode === 'create' ? 'Add New Room' : `Update Status — Room ${room?.room_number ?? ''}`;
   const submitLabel = mode === 'create' ? (submitting ? 'Creating…' : 'Create Room') : (submitting ? 'Saving…' : 'Save Status');
 
   return (
@@ -315,7 +315,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
       onKeyDown={handleKeyDown}
     >
-      {/* Overlay - click closes dialog */}
+      {/* Overlay — click closes dialog */}
       <div
         aria-hidden="true"
         className="absolute inset-0"

@@ -1,13 +1,13 @@
 /**
  * Route: /api/staff/reservations/[id]/cancel
  *
- * PATCH - cancel a reservation (staff override, no guest ownership check)
+ * PATCH — cancel a reservation (staff override, no guest ownership check)
  *
  * Security:
  *   - Requires a staff role (Receptionist / Manager / Admin)
  *   - Receptionist scope: enforces that the reservation belongs to their branch
  *     (checked via detail lookup before cancellation)
- *   - No guest ownership check - staff can cancel any 'Booked' reservation
+ *   - No guest ownership check — staff can cancel any 'Booked' reservation
  *   - employee_id and branchId always come from session, never from body
  *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
  *
@@ -22,7 +22,7 @@ import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB - fallback when cookies are not present in dev mode
+// DEV SESSION STUB — fallback when cookies are not present in dev mode
 // ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
@@ -79,7 +79,7 @@ interface RouteContext {
 }
 
 // ---------------------------------------------------------------------------
-// PATCH /api/staff/reservations/[id]/cancel - staff cancel
+// PATCH /api/staff/reservations/[id]/cancel — staff cancel
 // ---------------------------------------------------------------------------
 
 export async function PATCH(

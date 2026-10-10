@@ -12,7 +12,7 @@ vi.mock('@/lib/auth/session', () => ({
   getSession: vi.fn(),
 }));
 
-// Typed helper - works correctly after vi.resetAllMocks() unlike vi.spyOn
+// Typed helper — works correctly after vi.resetAllMocks() unlike vi.spyOn
 const mockedGetSession = () => vi.mocked(sessionModule.getSession);
 
 function makeReq(reservationId = 'res-uuid-0001'): NextRequest {
@@ -63,7 +63,7 @@ function mockGuestSession(): void {
   } as any);
 }
 
-describe('POST /api/staff/reservations/[id]/checkout - P05-M05-T11', () => {
+describe('POST /api/staff/reservations/[id]/checkout — P05-M05-T11', () => {
   beforeEach(() => {
     paymentRepository._resetMockStore();
     vi.resetAllMocks();

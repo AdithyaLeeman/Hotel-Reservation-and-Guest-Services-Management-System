@@ -134,7 +134,7 @@ function NotFoundState({ reservationId }: { reservationId: string }) {
           id="pay-not-found-back-btn"
           className="gold-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
         >
-          Back to My Reservations
+          &larr; Back to My Reservations
         </Link>
       </div>
     </div>

@@ -1,5 +1,5 @@
 /**
- * Staff segment layout - /staff/* pages.
+ * Staff segment layout — /staff/* pages.
  *
  * This is a React Server Component (no 'use client' directive).
  * It renders <StaffNav />, which reads the iron-session via next/headers.

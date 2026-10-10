@@ -19,7 +19,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush, refresh: mockRefresh }),
 }));
 
-// next/link - render as plain anchor
+// next/link — render as plain anchor
 vi.mock('next/link', () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode;[k: string]: unknown }) => (
     <a href={href} {...rest}>{children}</a>
@@ -61,7 +61,7 @@ function renderNav(
 
 /* ─── Tests ──────────────────────────────────────────────────────────────────── */
 
-describe('StaffNavClient - role-conditional link rendering', () => {
+describe('StaffNavClient — role-conditional link rendering', () => {
   beforeEach(() => {
     localStorageMock.clear();
     mockPush.mockClear();
@@ -94,7 +94,7 @@ describe('StaffNavClient - role-conditional link rendering', () => {
   });
 });
 
-describe('StaffNavClient - branch badge', () => {
+describe('StaffNavClient — branch badge', () => {
   it('shows branch badge when branchName is provided', () => {
     renderNav('Receptionist', 'Jane', 'Colombo');
     expect(screen.getAllByText(/Colombo/).length).toBeGreaterThan(0);
@@ -106,7 +106,7 @@ describe('StaffNavClient - branch badge', () => {
   });
 });
 
-describe('StaffNavClient - role badge and greeting', () => {
+describe('StaffNavClient — role badge and greeting', () => {
   it('displays the role pill', () => {
     renderNav('Manager');
     // role pill in desktop area
@@ -124,7 +124,7 @@ describe('StaffNavClient - role badge and greeting', () => {
   });
 });
 
-describe('StaffNavClient - logout', () => {
+describe('StaffNavClient — logout', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockPush.mockClear();
@@ -143,7 +143,7 @@ describe('StaffNavClient - logout', () => {
   });
 });
 
-describe('StaffNavClient - mobile menu', () => {
+describe('StaffNavClient — mobile menu', () => {
   it('opens and closes the mobile menu', () => {
     renderNav('Manager');
     const hamburger = screen.getByRole('button', { name: /open navigation menu/i });
@@ -163,7 +163,7 @@ describe('StaffNavClient - mobile menu', () => {
   });
 });
 
-describe('StaffNavClient - theme toggle', () => {
+describe('StaffNavClient — theme toggle', () => {
   afterEach(() => {
     localStorageMock.clear();
     document.documentElement.removeAttribute('data-theme');

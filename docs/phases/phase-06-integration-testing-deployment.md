@@ -1,14 +1,14 @@
-# Phase 6 - Integration, Testing, and Deployment Prep
+# Phase 6 — Integration, Testing, and Deployment Prep
 
 ## Coordinator: Member 1 (M1)
-## Dependency: All P1-P5 tasks in REVIEW or DONE
+## Dependency: All P1–P5 tasks in REVIEW or DONE
 
 ## Goal
 Wire all mock-first code to the real database, verify every E2E flow, run all security and concurrency tests, capture performance data, and finalize documentation for the lecturer demo.
 
 ## Subphases
 
-### SP6.1 - Mock→Real DB Wire-up _(all members, after their DB tables are executed)_
+### SP6.1 — Mock→Real DB Wire-up _(all members, after their DB tables are executed)_
 Each member replaces all mock return values in their repository files with real parameterized SQL.
 
 | Task | Member | Title | Status |
@@ -22,7 +22,7 @@ Each member replaces all mock return values in their repository files with real 
 
 ---
 
-### SP6.2 - E2E Flow Verification _(all members verify their slice on real DB)_
+### SP6.2 — E2E Flow Verification _(all members verify their slice on real DB)_
 
 | Task | Member | Title | Status |
 |---|---|---|---|
@@ -34,7 +34,7 @@ Each member replaces all mock return values in their repository files with real 
 
 ---
 
-### SP6.3 - Security and Concurrency Tests _(M1 + M3 + M5)_
+### SP6.3 — Security and Concurrency Tests _(M1 + M3 + M5)_
 
 | Task | Member | Title | Status |
 |---|---|---|---|
@@ -46,7 +46,7 @@ Each member replaces all mock return values in their repository files with real 
 
 ---
 
-### SP6.4 - Performance _(M2 + M5)_
+### SP6.4 — Performance _(M2 + M5)_
 
 | Task | Member | Title | Status |
 |---|---|---|---|
@@ -57,7 +57,7 @@ Results filed in `docs/09_database-routines-triggers-views-indexes.md`.
 
 ---
 
-### SP6.5 - Final Polish _(M1 coordinates, all members contribute)_
+### SP6.5 — Final Polish _(M1 coordinates, all members contribute)_
 
 | Task | Member | Title | Status |
 |---|---|---|---|
@@ -71,4 +71,4 @@ Results filed in `docs/09_database-routines-triggers-views-indexes.md`.
 - Concurrent booking test: exactly one success, one 409
 - Both EXPLAIN ANALYZE results filed with analysis notes
 - Clean DB rebuild succeeds from empty database using `npm run migrate && npm run seed`
-- Final README includes: setup, environment variables, demo credentials, academic concept list (L01-L14 mapped to features)
+- Final README includes: setup, environment variables, demo credentials, academic concept list (L01–L14 mapped to features)

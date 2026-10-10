@@ -1,7 +1,7 @@
 /**
  * Page: /staff/reservations/[id]/services
  *
- * Service Usage Logging page - allows Receptionist/Manager/Admin to:
+ * Service Usage Logging page — allows Receptionist/Manager/Admin to:
  *   1. View the current service usage breakdown for a checked-in reservation.
  *   2. Log a new service usage entry by selecting from the catalogue,
  *      entering quantity and date, then calling
@@ -50,7 +50,7 @@ interface UsageRow {
   quantity: number;
   usage_date: string;
   charged_price: number;
-  line_total: number;   // charged_price * quantity - for display only
+  line_total: number;   // charged_price * quantity — for display only
   channel: string;
 }
 
@@ -133,7 +133,7 @@ export default function ServiceUsageLoggingPage({
   // Reservation details
   const [reservation, setReservation] = useState<ReservationInfo | null>(null);
 
-  // Usage rows (mock fallback in test - real in dev/prod: GET /api/staff/reservations/[id]/services)
+  // Usage rows (mock fallback in test — real in dev/prod: GET /api/staff/reservations/[id]/services)
   const [usageRows, setUsageRows] = useState<UsageRow[]>(
     process.env.NODE_ENV === 'test' ? MOCK_USAGE_ROWS : []
   );
@@ -305,7 +305,7 @@ export default function ServiceUsageLoggingPage({
           setSubmitState('error');
         }
       } catch {
-        setErrorMessage('Network error - unable to reach the server.');
+        setErrorMessage('Network error — unable to reach the server.');
         setSubmitState('error');
       }
     });
@@ -332,7 +332,7 @@ export default function ServiceUsageLoggingPage({
 
   return (
     <>
-      <title>Log Service Usage - SkyNest Hotels Staff Portal</title>
+      <title>Log Service Usage — SkyNest Hotels Staff Portal</title>
 
       <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
         <main
@@ -360,7 +360,7 @@ export default function ServiceUsageLoggingPage({
               id="service-usage-back-link"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-[#3b3631] hover:border-[#c5a880] text-xs uppercase tracking-wider text-[#c5a880] hover:text-[#e0c49c] rounded-md transition-colors"
             >
-              Back to Reservation
+              ← Back to Reservation
             </Link>
           </header>
 
@@ -426,7 +426,7 @@ export default function ServiceUsageLoggingPage({
                           className="bg-[#1c1917] text-[#f5f5f4]"
                           style={{ backgroundColor: '#1c1917', color: '#f5f5f4' }}
                         >
-                          {item.service_name} - {formatCurrency(item.current_price)}
+                          {item.service_name} — {formatCurrency(item.current_price)}
                         </option>
                       ))}
                     </select>
@@ -642,7 +642,7 @@ export default function ServiceUsageLoggingPage({
                           className="px-4 py-3 text-right font-semibold text-[var(--color-text-muted)]"
                         >
                           Total Service Charge
-                          <span className="ml-1 text-xs font-normal">(display only - authoritative in DB)</span>
+                          <span className="ml-1 text-xs font-normal">(display only — authoritative in DB)</span>
                         </td>
                         <td
                           id="service-usage-total"
@@ -684,7 +684,7 @@ export default function ServiceUsageLoggingPage({
                     id="service-usage-view-reservation-link"
                     className="btn btn-ghost text-sm"
                   >
-                    View Full Reservation
+                    View Full Reservation →
                   </Link>
                 </span>
               </div>
@@ -696,7 +696,7 @@ export default function ServiceUsageLoggingPage({
           id="service-usage-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"
         >
-          SkyNest Hotels - Staff Portal · All access is logged and monitored
+          SkyNest Hotels — Staff Portal · All access is logged and monitored
         </footer>
       </div>
 

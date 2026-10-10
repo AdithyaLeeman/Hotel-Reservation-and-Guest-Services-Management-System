@@ -1,5 +1,5 @@
 /**
- * Dashboard Repository - live database metrics and activity for Staff Dashboard
+ * Dashboard Repository — live database metrics and activity for Staff Dashboard
  *
  * DB-first: All metrics derived from PostgreSQL queries and vw_audit_log.
  * No hardcoded or mock figures.

@@ -121,6 +121,6 @@ describe('/staff/reports/service-usage page', () => {
       expect(screen.getByRole('alert')).toBeTruthy()
     );
 
-    expect(screen.getByText(/network error - unable to reach the server/i)).toBeTruthy();
+    expect(screen.getByText(/network error — unable to reach the server/i)).toBeTruthy();
   });
 });

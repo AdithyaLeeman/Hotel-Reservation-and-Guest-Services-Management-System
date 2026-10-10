@@ -45,7 +45,7 @@ interface ApiSuccessResponse {
 // ---------------------------------------------------------------------------
 
 /**
- * Count nights between two ISO date strings - DISPLAY ONLY.
+ * Count nights between two ISO date strings — DISPLAY ONLY.
  *
  * This helper is used solely for the UI summary badge (cosmetic).
  * It does NOT affect billing or authoritative night calculations.
@@ -61,7 +61,7 @@ function countNights(checkIn: string, checkOut: string): number {
   return Math.max(0, Math.round(diff / (1000 * 60 * 60 * 24)));
 }
 
-/** Format an ISO date string as "Thu, 01 Oct 2026" - display only. */
+/** Format an ISO date string as "Thu, 01 Oct 2026" — display only. */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
   const clean = iso.includes('T') ? iso.split('T')[0] : iso;
@@ -218,7 +218,7 @@ function ParamErrorBanner({ errors }: { errors: FormErrors }) {
           text-sm font-medium underline underline-offset-2 hover:no-underline
         "
       >
-        Back to room search
+        &larr; Back to room search
       </Link>
     </div>
   );
@@ -238,7 +238,7 @@ function NewReservationContent() {
   const rawCheckOut = searchParams.get('checkOut');
   const rawBranchId = searchParams.get('branchId');
 
-  // Validate params directly during render (validateParams is a pure function - no side effects)
+  // Validate params directly during render (validateParams is a pure function — no side effects)
   const paramErrors = validateParams(rawRoomId, rawCheckIn, rawCheckOut, rawBranchId);
   const paramsValid = Object.keys(paramErrors).length === 0;
 
@@ -283,7 +283,7 @@ function NewReservationContent() {
        * POST /api/guest/reservations
        *
        * Payload matches CreateReservationSchema (lib/validation/reservation.schema.ts).
-       * guest_id is NEVER in the body - sourced from session by the route handler.
+       * guest_id is NEVER in the body — sourced from session by the route handler.
        * booking_source 'Online' is enforced again by the service layer for guest paths.
        */
       const payload = {
@@ -292,7 +292,7 @@ function NewReservationContent() {
         check_out_date: checkOut,
         room_ids: [parseInt(roomId, 10)],
         booking_source: 'Online' as const,
-        // discount_percentage omitted - guests cannot self-apply discounts
+        // discount_percentage omitted — guests cannot self-apply discounts
       };
 
       const response = await fetch('/api/guest/reservations', {
@@ -326,7 +326,7 @@ function NewReservationContent() {
       const { reservation_id } = (json as ApiSuccessResponse).data;
       setSubmitted(true);
 
-      // Redirect to booking confirmation page (T15 - /guest/book/confirm?id=...)
+      // Redirect to booking confirmation page (T15 — /guest/book/confirm?id=...)
       // T15 then provides a link forward to the full detail page (T17)
       router.push(`/guest/book/confirm?id=${reservation_id}`);
     } catch {
@@ -395,10 +395,10 @@ function NewReservationContent() {
         {/* ── Main content ───────────────────────────────────────────── */}
         <section className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-10">
 
-          {/* Invalid params - show error and stop */}
+          {/* Invalid params — show error and stop */}
           {!paramsValid && <ParamErrorBanner errors={paramErrors} />}
 
-          {/* Valid params - show booking form */}
+          {/* Valid params — show booking form */}
           {paramsValid && (
             <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
 
@@ -588,7 +588,7 @@ function NewReservationContent() {
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400
                       "
                     >
-                      Back to Search
+                      &larr; Back to Search
                     </Link>
 
                     <button
@@ -756,7 +756,7 @@ function NewReservationContent() {
 }
 
 // ---------------------------------------------------------------------------
-// Default export - wraps the client component in Suspense so Next.js can
+// Default export — wraps the client component in Suspense so Next.js can
 // prerender the shell and avoid the missing-suspense-with-csr-bailout error.
 // ---------------------------------------------------------------------------
 

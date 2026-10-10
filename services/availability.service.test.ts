@@ -1,5 +1,5 @@
 /**
- * Tests for Availability Service - P02-M02-T08
+ * Tests for Availability Service — P02-M02-T08
  * Owned by: Member 2 (M2)
  */
 
@@ -11,7 +11,7 @@ import {
 import { availabilityRepository } from '../repositories/availability.repository';
 
 // ---------------------------------------------------------------------------
-// Mock the repository - real repo now delegates to PostgreSQL fn_get_available_rooms.
+// Mock the repository — real repo now delegates to PostgreSQL fn_get_available_rooms.
 // Service tests stay fast and DB-independent.
 // ---------------------------------------------------------------------------
 vi.mock('../repositories/availability.repository', () => ({
@@ -40,7 +40,7 @@ describe('Availability Service', () => {
     dateSpy.mockRestore();
   });
 
-  describe('searchAvailable - happy path', () => {
+  describe('searchAvailable — happy path', () => {
     it('computes nightsRequested correctly', async () => {
       const result = await availabilityService.searchAvailable({
         branchId: 2,
@@ -51,7 +51,7 @@ describe('Availability Service', () => {
     });
   });
 
-  describe('searchAvailable - validation errors', () => {
+  describe('searchAvailable — validation errors', () => {
     it('throws AvailabilityValidationError for branchId = 0', async () => {
       await expect(
         availabilityService.searchAvailable({

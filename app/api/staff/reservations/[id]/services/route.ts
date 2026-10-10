@@ -11,16 +11,16 @@
  *   - Manager / Admin: can log service usage on any reservation
  *
  * HTTP responses:
- *   201  - service usage logged successfully
- *   400  - validation error (missing/invalid body fields)
- *   401  - not authenticated
- *   403  - wrong role or branch scope violation
- *   404  - reservation or service not found
- *   409  - reservation is not in CheckedIn status
- *   422  - service is inactive or quantity is invalid
- *   500  - unexpected error
+ *   201  — service usage logged successfully
+ *   400  — validation error (missing/invalid body fields)
+ *   401  — not authenticated
+ *   403  — wrong role or branch scope violation
+ *   404  — reservation or service not found
+ *   409  — reservation is not in CheckedIn status
+ *   422  — service is inactive or quantity is invalid
+ *   500  — unexpected error
  *
- * DB-first price snapshot rule (MANDATORY - see AGENTS.md Section 5):
+ * DB-first price snapshot rule (MANDATORY — see AGENTS.md Section 5):
  *   TypeScript NEVER computes charged_price.
  *   sp_log_service_usage() (Phase 6) / the mock repository snapshots
  *   service_catalogue.current_price at the moment of logging.
@@ -39,7 +39,7 @@ import {
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// TODO Phase 6: remove dev fallback - require real iron-session cookie
+// TODO Phase 6: remove dev fallback — require real iron-session cookie
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-004',

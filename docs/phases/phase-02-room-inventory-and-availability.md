@@ -1,17 +1,17 @@
-# Phase 2 - Room Inventory and Availability
+# Phase 2 — Room Inventory and Availability
 
 ## Integration Owner: Member 2 (M2)
 ## Dependency (DB layer): SP1.2 tables executed on real DB
 ## Parallel start: SP2.3 + SP2.4 begin Day 1 with mock data
 
 ## Parallelism Strategy
-- **SP2.1** - `room` DDL. Needs branch + room_type tables to exist. Write + run after SP1.2 is merged.
-- **SP2.2** - `fn_get_available_rooms` references `reservation_rooms`. Write the SQL now; execute after P03-M03-T02 is merged.
-- **SP2.3 + SP2.4** - Room API and UI. Write fully against mock data from Day 1. Swap mocks for real SQL when SP2.1 is executed.
+- **SP2.1** — `room` DDL. Needs branch + room_type tables to exist. Write + run after SP1.2 is merged.
+- **SP2.2** — `fn_get_available_rooms` references `reservation_rooms`. Write the SQL now; execute after P03-M03-T02 is merged.
+- **SP2.3 + SP2.4** — Room API and UI. Write fully against mock data from Day 1. Swap mocks for real SQL when SP2.1 is executed.
 
 ## Subphases
 
-### SP2.1 - Room Schema _(DB serial, after SP1.2 executed)_
+### SP2.1 — Room Schema _(DB serial, after SP1.2 executed)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -20,7 +20,7 @@
 
 ---
 
-### SP2.2 - Availability DB _(DB serial - needs reservation_rooms from P3)_
+### SP2.2 — Availability DB _(DB serial — needs reservation_rooms from P3)_
 
 | Task | Title | Type | Depends On |
 |---|---|---|---|
@@ -36,22 +36,22 @@ existing_checkin < p_check_out AND existing_checkout > p_check_in
 
 ---
 
-### SP2.3 - Room API _(mock-first - start Day 1)_
+### SP2.3 — Room API _(mock-first — start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
-| P02-M02-T05 | Room repository - CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` |
-| P02-M02-T06 | Room service - business logic | 🟡 MOCK-FIRST | `services/room.service.ts` |
+| P02-M02-T05 | Room repository — CRUD queries | 🟡 MOCK-FIRST | `repositories/room.repository.ts` |
+| P02-M02-T06 | Room service — business logic | 🟡 MOCK-FIRST | `services/room.service.ts` |
 | P02-M02-T07 | Availability repository (wraps fn_get_available_rooms) | 🟡 MOCK-FIRST | `repositories/availability.repository.ts` |
-| P02-M02-T08 | Availability service - search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` |
-| P02-M02-T09 | GET `/api/availability` - public availability search | 🟡 MOCK-FIRST | `app/api/availability/route.ts` |
-| P02-M02-T10 | GET `/api/staff/rooms` - list rooms (with filters) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` |
-| P02-M02-T11 | POST `/api/staff/rooms` - create room | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` |
-| P02-M02-T12 | PATCH `/api/staff/rooms/[id]` - update room status | 🟡 MOCK-FIRST | `app/api/staff/rooms/[id]/route.ts` |
+| P02-M02-T08 | Availability service — search orchestration | 🟡 MOCK-FIRST | `services/availability.service.ts` |
+| P02-M02-T09 | GET `/api/availability` — public availability search | 🟡 MOCK-FIRST | `app/api/availability/route.ts` |
+| P02-M02-T10 | GET `/api/staff/rooms` — list rooms (with filters) | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` |
+| P02-M02-T11 | POST `/api/staff/rooms` — create room | 🟡 MOCK-FIRST | `app/api/staff/rooms/route.ts` |
+| P02-M02-T12 | PATCH `/api/staff/rooms/[id]` — update room status | 🟡 MOCK-FIRST | `app/api/staff/rooms/[id]/route.ts` |
 
 ---
 
-### SP2.4 - Room UI _(mock-first - start Day 1)_
+### SP2.4 — Room UI _(mock-first — start Day 1)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|
@@ -62,7 +62,7 @@ existing_checkin < p_check_out AND existing_checkout > p_check_in
 
 ---
 
-### SP2.5 - Tests _(serial, after SP2.2 executed)_
+### SP2.5 — Tests _(serial, after SP2.2 executed)_
 
 | Task | Title | Type | Files |
 |---|---|---|---|

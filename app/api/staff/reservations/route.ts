@@ -1,8 +1,8 @@
 /**
  * Route: /api/staff/reservations
  *
- * GET  - list active (Booked + CheckedIn) reservations for staff dashboard
- * POST - create a reservation on behalf of a guest (staff-initiated)
+ * GET  — list active (Booked + CheckedIn) reservations for staff dashboard
+ * POST — create a reservation on behalf of a guest (staff-initiated)
  *
  * Security:
  *   - Requires a staff role (Receptionist / Manager / Admin)
@@ -25,7 +25,7 @@ import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// DEV SESSION STUB - guarded so it never applies in production.
+// DEV SESSION STUB — guarded so it never applies in production.
 // Replace with real iron-session once P01-M01-T07 lands.
 // Toggle the returned role/branchId to test different access scenarios.
 // ---------------------------------------------------------------------------
@@ -85,10 +85,10 @@ function isStaffRole(role: string | undefined): role is StaffRole {
 }
 
 // ---------------------------------------------------------------------------
-// GET /api/staff/reservations - list active reservations
+// GET /api/staff/reservations — list active reservations
 //
 // Query params:
-//   ?branch_id=<n>  - (Manager/Admin only) filter to a specific branch
+//   ?branch_id=<n>  — (Manager/Admin only) filter to a specific branch
 //                     Receptionist always sees only their own branch.
 // ---------------------------------------------------------------------------
 
@@ -132,7 +132,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 }
 
 // ---------------------------------------------------------------------------
-// POST /api/staff/reservations - create reservation (staff-initiated)
+// POST /api/staff/reservations — create reservation (staff-initiated)
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest): Promise<NextResponse> {

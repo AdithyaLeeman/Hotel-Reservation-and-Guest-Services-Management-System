@@ -1,5 +1,5 @@
 /**
- * Reservation Service tests - P06-M03-T01 (real DB wire-up)
+ * Reservation Service tests — P06-M03-T01 (real DB wire-up)
  * Mocks the reservation repository so tests stay fast and DB-independent.
  * All original assertions are preserved.
  */
@@ -9,7 +9,7 @@ import type { CreateReservationInput } from '@/lib/validation/reservation.schema
 import type { SessionData } from '@/types/session';
 
 // ---------------------------------------------------------------------------
-// Seed data mirrors the Phase 3 mock store - used to configure mock returns
+// Seed data mirrors the Phase 3 mock store — used to configure mock returns
 // ---------------------------------------------------------------------------
 const MOCK_RESERVATIONS = [
   {
@@ -139,7 +139,7 @@ const {
 }));
 
 // ---------------------------------------------------------------------------
-// Mock the reservation repository - service calls go through these fns
+// Mock the reservation repository — service calls go through these fns
 // ---------------------------------------------------------------------------
 vi.mock('@/repositories/reservation.repository', () => ({
   reservationRepository: {
@@ -357,7 +357,7 @@ describe('Reservation Service', () => {
 
     it('throws ServiceError INVALID_STATUS_TRANSITION when trying to cancel a CheckedIn reservation', async () => {
       const statusErr = Object.assign(
-        new Error('Reservation cannot be cancelled - current status is CheckedIn'),
+        new Error('Reservation cannot be cancelled — current status is CheckedIn'),
         { code: '45010' }
       );
       mockCallCancel.mockRejectedValueOnce(statusErr);

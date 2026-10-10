@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Staff Rooms Management Page - /staff/rooms
+ * Staff Rooms Management Page — /staff/rooms
  *
  * Owned by: Member 2 (M2) | Task: P02-M02-T15
- * Type: 🟡 MOCK-FIRST - consumes GET /api/staff/rooms (currently mock data).
+ * Type: 🟡 MOCK-FIRST — consumes GET /api/staff/rooms (currently mock data).
  *
  * Responsibilities:
  *   - List all rooms visible to the authenticated staff member.
@@ -66,15 +66,15 @@ interface FilterState {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** pg returns numeric columns as strings - compare as strings */
+/** pg returns numeric columns as strings — compare as strings */
 function branchName(branchId: number | string, branchList: BranchOption[] = DEFAULT_BRANCHES): string {
   return branchList.find((b) => String(b.id) === String(branchId))?.name ?? `Branch ${branchId}`;
 }
 
 function formatRate(rate: string | undefined): string {
-  if (!rate) return '-';
+  if (!rate) return '—';
   const n = parseFloat(rate);
-  if (isNaN(n)) return '-';
+  if (isNaN(n)) return '—';
   return (
     'LKR ' +
     n.toLocaleString('en-LK', {
@@ -85,7 +85,7 @@ function formatRate(rate: string | undefined): string {
 }
 
 // ---------------------------------------------------------------------------
-// Status badge - dark theme variants
+// Status badge — dark theme variants
 // ---------------------------------------------------------------------------
 
 function statusBadgeStyle(status: string): React.CSSProperties {
@@ -254,7 +254,7 @@ export default function StaffRoomsPage() {
 
       setRooms(json.data ?? []);
     } catch {
-      setError('Network error - could not reach the server. Please try again.');
+      setError('Network error — could not reach the server. Please try again.');
       setRooms([]);
     } finally {
       setLoading(false);
@@ -282,7 +282,7 @@ export default function StaffRoomsPage() {
         }
       } catch {
         if (!ignore) {
-          setError('Network error - could not reach the server. Please try again.');
+          setError('Network error — could not reach the server. Please try again.');
           setRooms([]);
         }
       } finally {

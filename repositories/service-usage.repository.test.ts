@@ -1,5 +1,5 @@
 /**
- * Service Usage Repository Tests - P06-M04-T01 (real DB wire-up)
+ * Service Usage Repository Tests — P06-M04-T01 (real DB wire-up)
  * Mocks `pool.query` / `pool.connect` so tests stay fast and DB-independent.
  * All original assertions are preserved.
  *
@@ -91,7 +91,7 @@ import { serviceUsageRepository } from './service-usage.repository';
 function configureMocks(): void {
   resetUsageStore();
 
-  // pool.query - handles SELECT queries (listCatalogue, findCatalogueById,
+  // pool.query — handles SELECT queries (listCatalogue, findCatalogueById,
   //              INSERT catalogue, listUsageByReservation)
   mockPoolQuery.mockImplementation((sql: string, params?: unknown[]) => {
     // listCatalogue: SELECT ... WHERE status = 'Active' ORDER BY service_name
@@ -99,7 +99,7 @@ function configureMocks(): void {
       const rows = [...SEED_CATALOGUE]
         .filter((s) => s.status === 'Active')
         .sort((a, b) => a.service_name.localeCompare(b.service_name))
-        .map((s) => ({ ...s })); // deep copy - matches real DB result (fresh rows each call)
+        .map((s) => ({ ...s })); // deep copy — matches real DB result (fresh rows each call)
       return Promise.resolve({ rows, rowCount: rows.length });
     }
 
@@ -144,7 +144,7 @@ function configureMocks(): void {
     return Promise.resolve({ rows: [], rowCount: 0 });
   });
 
-  // client.query - handles BEGIN, CALL sp_log_service_usage(), SELECT room,
+  // client.query — handles BEGIN, CALL sp_log_service_usage(), SELECT room,
   //                SELECT fetched row, COMMIT, ROLLBACK
   mockClientQuery.mockImplementation((sql: string, params?: unknown[]) => {
     const trimmed = sql.trim();
@@ -153,7 +153,7 @@ function configureMocks(): void {
       return Promise.resolve({ rows: [], rowCount: 0 });
     }
 
-    // Resolve room_id - SELECT room_id FROM reservation_rooms
+    // Resolve room_id — SELECT room_id FROM reservation_rooms
     if (sql.includes('FROM reservation_rooms') && sql.includes('LIMIT 1')) {
       // Return a default room_id for any reservation in tests
       return Promise.resolve({ rows: [{ room_id: 1 }], rowCount: 1 });
@@ -198,7 +198,7 @@ function configureMocks(): void {
       return Promise.resolve({ rows: [], rowCount: 0 });
     }
 
-    // Fetch inserted row - SELECT ... FROM service_usage WHERE reservation_id = $1 ...
+    // Fetch inserted row — SELECT ... FROM service_usage WHERE reservation_id = $1 ...
     if (sql.includes('FROM service_usage') && sql.includes('ORDER BY usage_id DESC')) {
       const reservationId = (params as unknown[])[0] as string;
       const serviceId     = Number((params as unknown[])[1]);
@@ -248,7 +248,7 @@ describe('Service Usage Repository (Mock)', () => {
       expect(names).toEqual([...names].sort());
     });
 
-    it('returns copies - mutating result does not affect store', async () => {
+    it('returns copies — mutating result does not affect store', async () => {
       const items = await serviceUsageRepository.listCatalogue();
       items[0].service_name = 'MUTATED';
       const fresh = await serviceUsageRepository.listCatalogue();
@@ -335,7 +335,7 @@ describe('Service Usage Repository (Mock)', () => {
       expect(usage.logged_by_employee_id).toBe(20);
     });
 
-    it('price snapshot is immutable - catalogue price change does not affect logged record', async () => {
+    it('price snapshot is immutable — catalogue price change does not affect logged record', async () => {
       // Log at current price
       const usage = await serviceUsageRepository.callLogServiceUsage({
         reservation_id: 'RES-MOCK-003',
@@ -353,7 +353,7 @@ describe('Service Usage Repository (Mock)', () => {
         item.current_price = '9999.00';
       }
 
-      // Retrieve the logged record - price must still be the snapshot
+      // Retrieve the logged record — price must still be the snapshot
       const records = await serviceUsageRepository.listUsageByReservation('RES-MOCK-003');
       expect(records[0].charged_price).toBe('1500.00');
     });

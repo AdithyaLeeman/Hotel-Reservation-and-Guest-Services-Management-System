@@ -1,4 +1,4 @@
-# docs/20 - Approved Libraries and Patterns
+# docs/20 — Approved Libraries and Patterns
 
 _Every third-party dependency used in the project. All additions must be recorded here._
 _See `context/05-library-patterns.md` for usage patterns._
@@ -30,11 +30,11 @@ _See `context/05-library-patterns.md` for usage patterns._
 | `@types/bcryptjs` | `^2` | bcryptjs types | M1 | APPROVED |
 | `zod` | `^3` | Input validation | M1 | APPROVED |
 
-## Testing Libraries (Phase 1 - Confirm)
+## Testing Libraries (Phase 1 — Confirm)
 
 | Package | Purpose | Status |
 |---|---|---|
-| `vitest` | Unit/integration tests | PROPOSED - team to confirm |
+| `vitest` | Unit/integration tests | PROPOSED — team to confirm |
 | `@testing-library/react` | Component tests | PROPOSED |
 | `@vitejs/plugin-react` | Vitest React support | PROPOSED |
 

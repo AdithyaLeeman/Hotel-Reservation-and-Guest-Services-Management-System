@@ -32,7 +32,7 @@ export const CreateReservationSchema = z.object({
   room_ids: z.array(z.number().int().positive()).min(1, 'At least one room is required'),
   booking_source: z.enum(['Online', 'Reception', 'Phone']),
   discount_percentage: z.number().min(0).max(99.99).optional(),
-  // processed_by_employee_id is read from session - never from request body
+  // processed_by_employee_id is read from session — never from request body
 }).refine(
   (data) => data.check_in_date < data.check_out_date,
   { message: 'check_out_date must be after check_in_date', path: ['check_out_date'] }

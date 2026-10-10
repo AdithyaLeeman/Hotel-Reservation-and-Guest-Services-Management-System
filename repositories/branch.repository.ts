@@ -1,5 +1,5 @@
 /**
- * Branch Repository - data access layer for hotel branches.
+ * Branch Repository — data access layer for hotel branches.
  * Queries the PostgreSQL branch table using pg Pool.
  */
 

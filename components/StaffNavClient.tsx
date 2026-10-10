@@ -173,7 +173,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           id="staff-nav-logo"
           href="/staff/dashboard"
           className="flex items-center gap-2.5 font-semibold text-[var(--color-text)] text-lg tracking-tight hover:opacity-90 transition-opacity duration-[var(--duration-fast)] no-underline group"
-          aria-label="SkyNest Hotels Staff Portal - dashboard"
+          aria-label="SkyNest Hotels Staff Portal — dashboard"
         >
           {/* Gold Crest Icon */}
           <div className="flex items-center justify-center w-8 h-8 rounded-sm bg-[#c5a880]/15 border border-[#c5a880]/50 text-[#c5a880]">
@@ -216,7 +216,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
 
         {/* ── Desktop: Branch badge + Staff info + Controls ── */}
         <div className="hidden md:flex items-center gap-2">
-          {/* Branch badge - shown for Receptionist to reinforce branch scope */}
+          {/* Branch badge — shown for Receptionist to reinforce branch scope */}
           {branchName && (
             <span
               id="staff-nav-branch"

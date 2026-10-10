@@ -8,7 +8,7 @@ import type { IronSession } from 'iron-session';
  * Every protected route handler must call requireRole() (and optionally
  * requireBranchScope()) before any business logic.
  *
- * Role and branch scope are read from the server-side iron-session - never
+ * Role and branch scope are read from the server-side iron-session — never
  * from the request body, query params, or headers supplied by the browser.
  *
  * Authorization sequence (docs/21_shared-contracts.md Section 12):

@@ -59,14 +59,14 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return NextResponse.next();
   }
 
-  // 3. Find the matching role rule (most specific match wins - rules are ordered)
+  // 3. Find the matching role rule (most specific match wins — rules are ordered)
   const matchedRule = ROLE_RULES.find((rule) => pathname.startsWith(rule.prefix));
   if (!matchedRule) {
-    // No rule for this path - allow through (API routes, static, etc.)
+    // No rule for this path — allow through (API routes, static, etc.)
     return NextResponse.next();
   }
 
-  // 4. Read session - use nextProxyCookies so cookie writes propagate correctly
+  // 4. Read session — use nextProxyCookies so cookie writes propagate correctly
   //    (rotation, if ever needed in middleware). Read only here; no save().
   const response = NextResponse.next();
 
@@ -83,7 +83,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 5. Unauthenticated - no userId in session
+  // 5. Unauthenticated — no userId in session
   if (!session.userId || !session.role) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = matchedRule.loginRedirect;
@@ -98,7 +98,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 7. Authenticated + authorized - pass through
+  // 7. Authenticated + authorized — pass through
   return response;
 }
 

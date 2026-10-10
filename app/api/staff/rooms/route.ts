@@ -1,8 +1,8 @@
 /**
  * Route: /api/staff/rooms
  *
- * GET  - list rooms with optional filtering (status, typeId, branchId)
- * POST - create a new room (Manager/Admin only)
+ * GET  — list rooms with optional filtering (status, typeId, branchId)
+ * POST — create a new room (Manager/Admin only)
  *
  * Security:
  *   - Authentication: requires staff role (Receptionist, Manager, Admin)

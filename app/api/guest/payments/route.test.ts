@@ -47,7 +47,7 @@ const VALID_BODY = {
   payment_method: 'Cash',
 };
 
-describe('POST /api/guest/payments - P05-M05-T10', () => {
+describe('POST /api/guest/payments — P05-M05-T10', () => {
   beforeEach(() => {
     paymentRepository._resetMockStore();
     vi.clearAllMocks();

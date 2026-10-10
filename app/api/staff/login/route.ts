@@ -5,7 +5,7 @@ import { StaffLoginSchema, flattenZodErrors } from '@/lib/validation/auth.schema
 import { ERROR_CODES } from '@/types/api';
 
 export async function POST(req: Request): Promise<Response> {
-  // Step 1 - Parse + validate input shape
+  // Step 1 — Parse + validate input shape
   let body: unknown;
   try {
     body = await req.json();
@@ -31,10 +31,10 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   try {
-    // Step 2 - Verify credentials + fetch employee profile
+    // Step 2 — Verify credentials + fetch employee profile
     const sessionData = await authService.loginStaff(parsed.data);
 
-    // Step 3 - Write session
+    // Step 3 — Write session
     // branchId is present for Receptionist, undefined for Manager/Admin (all-branch)
     const session = await getSession();
     session.userId = sessionData.userId;
@@ -43,7 +43,7 @@ export async function POST(req: Request): Promise<Response> {
     session.branchId = sessionData.branchId;
     await session.save();
 
-    // Step 4 - Return safe session info
+    // Step 4 — Return safe session info
     return Response.json(
       {
         data: {

@@ -1,5 +1,5 @@
 /**
- * Room Service - business logic layer for room inventory management.
+ * Room Service — business logic layer for room inventory management.
  * Owned by: Member 2 (M2) | Task: P02-M02-T06 (Mock-First)
  */
 
@@ -54,7 +54,7 @@ export interface UpdateRoomStatusInput {
   status: RoomStatus;
   /**
    * The role of the authenticated staff member making this request.
-   * Read from server-side session - never from request body.
+   * Read from server-side session — never from request body.
    */
   requesterRole: string;
 }
