@@ -1,69 +1,60 @@
-
-CREATE OR REPLACE PROCEDURE sp_checkout(
-    p_reservation_id UUID,
-    p_employee_id    BIGINT
+create or replace procedure sp_checkout(
+  p_reservation_id uuid,
+  p_employee_id bigint
 )
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    v_status              reservation_status;
-    v_outstanding_balance NUMERIC(12, 2);
-BEGIN
-    -- 1. Check reservation exists and retrieve current status
-    SELECT reservation_status
-    INTO   v_status
-    FROM   reservation
-    WHERE  reservation_id = p_reservation_id;
+language plpgsql
+as $$
+declare
+  v_status reservation_status;
+  v_outstanding_balance numeric(12,2);
+begin
+  select reservation_status
+  into v_status
+  from reservation
+  where reservation_id = p_reservation_id;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Reservation % not found', p_reservation_id
-            USING ERRCODE = '23503';
-    END IF;
+  if not found then
+    raise exception 'Reservation % not found', p_reservation_id
+      using errcode = '23503';
+  end if;
 
-    -- 2. State guard: must be in 'CheckedIn' status to check out (BR-08)
-    IF v_status != 'CheckedIn' THEN
-        RAISE EXCEPTION 'Reservation % cannot be checked out - current status is %',
-            p_reservation_id, v_status
-            USING ERRCODE = '45031';
-    END IF;
+  if v_status != 'CheckedIn' then
+    raise exception 'Reservation % cannot be checked out - current status is %',
+      p_reservation_id, v_status
+      using errcode = '45031';
+  end if;
 
-    -- 3. Balance guard: read outstanding balance from vw_invoice_totals (BR-08)
-    SELECT outstanding_balance
-    INTO   v_outstanding_balance
-    FROM   vw_invoice_totals
-    WHERE  reservation_id = p_reservation_id;
+  select outstanding_balance
+  into v_outstanding_balance
+  from vw_invoice_totals
+  where reservation_id = p_reservation_id;
 
-    IF FOUND AND v_outstanding_balance > 0 THEN
-        RAISE EXCEPTION 'Reservation % has outstanding balance of %; checkout blocked',
-            p_reservation_id, v_outstanding_balance
-            USING ERRCODE = '45030';
-    END IF;
+  if found and v_outstanding_balance > 0 then
+    raise exception 'Reservation % has outstanding balance of %; checkout blocked',
+      p_reservation_id, v_outstanding_balance
+      using errcode = '45030';
+  end if;
 
-    -- 4. Set session employee context for trg_audit_reservation_status
-    IF p_employee_id IS NOT NULL THEN
-        PERFORM set_config('app.current_employee_id', p_employee_id::text, true);
-    END IF;
+  if p_employee_id is not null then
+    perform set_config('app.current_employee_id', p_employee_id::text, true);
+  end if;
 
-    -- 5. Transition reservation status to 'CheckedOut'
-    UPDATE reservation
-    SET reservation_status       = 'CheckedOut',
-        processed_by_employee_id = p_employee_id
-    WHERE reservation_id = p_reservation_id;
+  update reservation
+  set reservation_status = 'CheckedOut',
+      processed_by_employee_id = p_employee_id
+  where reservation_id = p_reservation_id;
 
-    -- 6. Release all assigned rooms back to 'Available' atomically (BR-10)
-    UPDATE room
-    SET status = 'Available'
-    WHERE room_id IN (
-        SELECT room_id
-        FROM   reservation_rooms
-        WHERE  reservation_id = p_reservation_id
-    );
+  update room
+  set status = 'Available'
+  where room_id in (
+    select room_id
+    from reservation_rooms
+    where reservation_id = p_reservation_id
+  );
 
-    -- 7. Ensure invoice payment_status is marked 'Paid' if billing record exists
-    UPDATE billing_summary
-    SET payment_status = 'Paid'
-    WHERE reservation_id = p_reservation_id
-      AND payment_status != 'Paid';
-
-END;
+  update billing_summary
+  set payment_status = 'Paid'
+  where reservation_id = p_reservation_id
+    and payment_status != 'Paid';
+end;
 $$;

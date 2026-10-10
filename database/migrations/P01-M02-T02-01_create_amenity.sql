@@ -1,4 +1,4 @@
-create table if not exists amenity (
+create table if not exists amenity(
   amenity_id bigint generated always as identity,
   amenity_name varchar(100) not null,
 

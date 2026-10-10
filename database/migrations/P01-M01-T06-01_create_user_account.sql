@@ -1,5 +1,5 @@
 create table if not exists user_account(
-  user_id UUID not null default  gen_random_uuid(),
+  user_id uuid not null default gen_random_uuid(),
   username varchar(100) not null,
   password_hash varchar(255) not null,
   role user_role not null,
@@ -7,7 +7,7 @@ create table if not exists user_account(
 
   constraint pk_user_account primary key (user_id),
   constraint uq_user_account_username unique (username),
-  constraint ck_user_account_username check (length(trim(username))>=3)
+  constraint ck_user_account_username check (length(trim(username)) >= 3)
 );
 
 comment on table user_account is

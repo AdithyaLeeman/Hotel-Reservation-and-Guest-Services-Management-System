@@ -1,4 +1,4 @@
-create table if not exists room_type_amenity (
+create table if not exists room_type_amenity(
   type_id bigint not null,
   amenity_id bigint not null,
 

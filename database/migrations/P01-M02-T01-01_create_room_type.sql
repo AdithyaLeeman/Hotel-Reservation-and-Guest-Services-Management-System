@@ -1,4 +1,4 @@
-create table if not exists room_type (
+create table if not exists room_type(
   type_id bigint generated always as identity,
   type_name varchar(50) not null,
   capacity int not null,

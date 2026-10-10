@@ -1,85 +1,71 @@
--- =============================================================================
--- Routine:   sp_log_service_usage.sql
--- Owner:     Member 4
--- Phase:     P4 - Stay Services and Billing
--- Task:      P04-M04-T05
--- =============================================================================
-
-CREATE OR REPLACE PROCEDURE sp_log_service_usage(
-    p_reservation_id UUID,
-    p_room_id BIGINT,
-    p_service_id BIGINT,
-    p_quantity INT,
-    p_logged_by_employee_id BIGINT,
-    p_request_channel VARCHAR
+create or replace procedure sp_log_service_usage(
+  p_reservation_id uuid,
+  p_room_id bigint,
+  p_service_id bigint,
+  p_quantity int,
+  p_logged_by_employee_id bigint,
+  p_request_channel varchar
 )
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    v_status reservation_status;
-    v_service_status service_catalogue_status;
-    v_current_price DECIMAL(12, 2);
-BEGIN
-    -- Validate quantity
-    IF p_quantity < 1 THEN
-        RAISE EXCEPTION 'Quantity must be at least 1' USING ERRCODE = '22023';
-    END IF;
+language plpgsql
+as $$
+declare
+  v_status reservation_status;
+  v_service_status service_catalogue_status;
+  v_current_price decimal(12,2);
+begin
+  if p_quantity < 1 then
+    raise exception 'Quantity must be at least 1' using errcode = '22023';
+  end if;
 
-    -- Check if reservation exists and get its status
-    SELECT reservation_status INTO v_status
-    FROM reservation
-    WHERE reservation_id = p_reservation_id;
+  select reservation_status into v_status
+  from reservation
+  where reservation_id = p_reservation_id;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Reservation % not found', p_reservation_id USING ERRCODE = '23503';
-    END IF;
+  if not found then
+    raise exception 'Reservation % not found', p_reservation_id using errcode = '23503';
+  end if;
 
-    -- Ensure reservation is in CheckedIn status
-    IF v_status != 'CheckedIn' THEN
-        RAISE EXCEPTION 'Reservation % must be CheckedIn to log service usage', p_reservation_id USING ERRCODE = '45011';
-    END IF;
+  if v_status != 'CheckedIn' then
+    raise exception 'Reservation % must be CheckedIn to log service usage', p_reservation_id using errcode = '45011';
+  end if;
 
-    -- Check if room is part of the reservation
-    IF NOT EXISTS (
-        SELECT 1 
-        FROM reservation_rooms 
-        WHERE reservation_id = p_reservation_id 
-          AND room_id = p_room_id
-    ) THEN
-        RAISE EXCEPTION 'Room % does not belong to reservation %', p_room_id, p_reservation_id USING ERRCODE = '23503';
-    END IF;
+  if not exists (
+    select 1
+    from reservation_rooms
+    where reservation_id = p_reservation_id
+      and room_id = p_room_id
+  ) then
+    raise exception 'Room % does not belong to reservation %', p_room_id, p_reservation_id using errcode = '23503';
+  end if;
 
-    -- Get service catalogue details
-    SELECT status, current_price INTO v_service_status, v_current_price
-    FROM service_catalogue
-    WHERE service_id = p_service_id;
+  select status, current_price into v_service_status, v_current_price
+  from service_catalogue
+  where service_id = p_service_id;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Service % not found', p_service_id USING ERRCODE = '23503';
-    END IF;
+  if not found then
+    raise exception 'Service % not found', p_service_id using errcode = '23503';
+  end if;
 
-    -- Ensure service is active
-    IF v_service_status != 'Active' THEN
-        RAISE EXCEPTION 'Service % is inactive', p_service_id USING ERRCODE = '45012';
-    END IF;
+  if v_service_status != 'Active' then
+    raise exception 'Service % is inactive', p_service_id using errcode = '45012';
+  end if;
 
-    -- Log service usage, snapshotting the current price
-    INSERT INTO service_usage (
-        room_id,
-        reservation_id,
-        service_id,
-        quantity,
-        charged_price,
-        logged_by_employee_id,
-        request_channel
-    ) VALUES (
-        p_room_id,
-        p_reservation_id,
-        p_service_id,
-        p_quantity,
-        v_current_price,
-        p_logged_by_employee_id,
-        p_request_channel
-    );
-END;
+  insert into service_usage (
+    room_id,
+    reservation_id,
+    service_id,
+    quantity,
+    charged_price,
+    logged_by_employee_id,
+    request_channel
+  ) values (
+    p_room_id,
+    p_reservation_id,
+    p_service_id,
+    p_quantity,
+    v_current_price,
+    p_logged_by_employee_id,
+    p_request_channel
+  );
+end;
 $$;

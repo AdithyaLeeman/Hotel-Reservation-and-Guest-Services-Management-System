@@ -1,11 +1,9 @@
--- Seed room types (P01-M02-T04)
 insert into room_type (type_name, capacity, daily_rate) values
   ('Single', 1, 5000.00),
   ('Double', 2, 8000.00),
   ('Suite', 4, 15000.00)
 on conflict (type_name) do nothing;
 
--- Seed amenities (P01-M02-T04)
 insert into amenity (amenity_name) values
   ('Wi-Fi'),
   ('Air Conditioning'),
@@ -14,7 +12,6 @@ insert into amenity (amenity_name) values
   ('Jacuzzi')
 on conflict (amenity_name) do nothing;
 
--- Seed room_type_amenity junction (P01-M02-T04)
 insert into room_type_amenity (type_id, amenity_id)
 select rt.type_id, a.amenity_id
 from room_type rt
