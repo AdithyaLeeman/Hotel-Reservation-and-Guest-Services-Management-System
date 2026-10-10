@@ -49,9 +49,10 @@ export const userRepository = {
     username: string
   ): Promise<UserAccountWithHash | null> => {
     const result = await pool.query<UserAccountWithHash>(
-      `SELECT user_id, username, role, status, password_hash
-       FROM user_account
-       WHERE username = $1`,
+      `SELECT ua.user_id, ua.username, ua.role, ua.status, ua.password_hash
+       FROM user_account ua
+       LEFT JOIN guest g ON g.user_id = ua.user_id
+       WHERE username = $1 OR g.email = $1`,
       [username]
     );
     return result.rows[0] ?? null;
@@ -78,8 +79,9 @@ export const userRepository = {
    * Find a user_account joined with employee to get branch_id.
    * INCLUDES password_hash - only for internal staff login verification.
    * NEVER expose to route handlers or responses.
+   * Supports login by either username OR work email.
    *
-   * @param username - The staff login username
+   * @param username - The staff login username or email
    * @returns Row combining user account, hash, and employee context if found
    */
   findStaffByUsername: async (
@@ -100,7 +102,7 @@ export const userRepository = {
          e.branch_id
        FROM user_account ua
        JOIN employee e ON e.user_id = ua.user_id
-       WHERE ua.username = $1`,
+       WHERE ua.username = $1 OR e.email = $1`,
       [username]
     );
     if (!result.rows[0]) return null;

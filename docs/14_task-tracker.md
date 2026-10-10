@@ -457,8 +457,8 @@ _Allowed statuses: `TODO` | `READY` | `IN_PROGRESS` | `BLOCKED` | `REVIEW` | `DO
 
 | Task ID | Member | Title | Status |
 |---|---|---|---|
-| P06-M01-T06 | M1 | README update (setup, demo credentials, academic concept list) | TODO |
-| P06-M01-T07 | M1 | Demo scenario script (walkthrough for lecturer demo) | TODO |
+| P06-M01-T06 | M1 | README update (setup, demo credentials, academic concept list) | DONE |
+| P06-M01-T07 | M1 | Demo scenario script (walkthrough for lecturer demo) | DONE |
 | P06-M01-T08 | M1 | Final docs review + context/08 progress tracker final update | TODO |
 
 **Phase 6 Completion Criteria:**
