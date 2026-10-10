@@ -1,4 +1,4 @@
-create table if not exists room (
+create table if not exists room(
   room_id bigint generated always as identity,
   room_number varchar(10) not null,
   branch_id bigint not null,

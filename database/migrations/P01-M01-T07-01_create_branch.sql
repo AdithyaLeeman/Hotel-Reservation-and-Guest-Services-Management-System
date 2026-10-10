@@ -4,7 +4,7 @@ create table if not exists branch(
 
   constraint pk_branch primary key (branch_id),
   constraint uq_branch_location_name unique (location_name),
-  constraint ck_branch_location_len check (length(trim(location_name))>=2)
+  constraint ck_branch_location_len check (length(trim(location_name)) >= 2)
 );
 
 comment on table branch is
