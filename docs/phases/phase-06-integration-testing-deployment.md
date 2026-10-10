@@ -61,8 +61,8 @@ Results filed in `docs/09_database-routines-triggers-views-indexes.md`.
 
 | Task | Member | Title | Status |
 |---|---|---|---|
-| P06-M01-T06 | M1 | README update (local setup steps, demo credentials, academic concept index) | TODO |
-| P06-M01-T07 | M1 | Demo scenario script (step-by-step walkthrough for lecturer demo) | TODO |
+| P06-M01-T06 | M1 | README update (local setup steps, demo credentials, academic concept index) | DONE |
+| P06-M01-T07 | M1 | Demo scenario script (step-by-step walkthrough for lecturer demo) | DONE |
 | P06-M01-T08 | M1 | Final context/08 + docs/14 progress tracker update to all DONE | TODO |
 
 ## Completion Criteria
