@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Guest Reservation Detail Page — /guest/reservations/[id]
+ * Guest Reservation Detail Page - /guest/reservations/[id]
  *
  * Owned by: Member 3 (M3) | Task: P03-M03-T17
- * Type: MOCK-FIRST — calls GET /api/guest/reservations/[id] (currently mock data).
+ * Type: MOCK-FIRST - calls GET /api/guest/reservations/[id] (currently mock data).
  *
  * Responsibilities:
  *   - Read `id` from the dynamic URL segment via useParams
@@ -17,7 +17,7 @@
  * Security:
  *   Ownership is enforced server-side at the DB level via fn_get_reservation_detail().
  *   The API returns 404 for both "not found" and "wrong guest" to prevent info leakage.
- *   This component sends NO guest_id — it is read from the session by the route handler.
+ *   This component sends NO guest_id - it is read from the session by the route handler.
  *
  * Entry points:
  *   - T15 (confirm page) "View Reservation" CTA → /guest/reservations/[id]
@@ -70,7 +70,7 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Format ISO date as "01 Oct 2026" — display only. */
+/** Format ISO date as "01 Oct 2026" - display only. */
 function formatDate(iso: string): string {
   if (!iso) return '\u2014';
   const clean = iso.includes('T') ? iso.split('T')[0] : iso;
@@ -83,7 +83,7 @@ function formatDate(iso: string): string {
   });
 }
 
-/** Format ISO timestamp as "01 Oct 2026, 10:30 AM" — display only. */
+/** Format ISO timestamp as "01 Oct 2026, 10:30 AM" - display only. */
 function formatDateTime(iso: string): string {
   if (!iso) return '\u2014';
   const d = new Date(iso);
@@ -103,7 +103,7 @@ function countNights(checkIn: string, checkOut: string): number {
   return Math.max(0, Math.round(diff / (1000 * 60 * 60 * 24)));
 }
 
-/** Format a NUMERIC(12,2) string as "LKR XX,XXX.XX" — display only. */
+/** Format a NUMERIC(12,2) string as "LKR XX,XXX.XX" - display only. */
 function formatRate(rate: string): string {
   const num = parseFloat(rate);
   if (isNaN(num)) return 'LKR \u2014';
@@ -213,7 +213,7 @@ function NotFoundState() {
         id="not-found-back-btn"
         className="gold-btn px-6 py-2.5 rounded-xs text-sm uppercase tracking-wider font-semibold inline-flex items-center gap-2"
       >
-        &larr; Return to Reservations
+        Return to Reservations
       </Link>
     </div>
   );
@@ -271,7 +271,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
           id="detail-error-back-btn"
           className="px-6 py-2.5 rounded-xs border border-[#38332c] hover:border-[#c5a880] text-sm text-neutral-300 hover:text-white transition-colors duration-200"
         >
-          &larr; My Reservations
+          My Reservations
         </Link>
       </div>
     </div>
@@ -279,7 +279,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 }
 
 // ---------------------------------------------------------------------------
-// Detail label–value row
+// Detail label-value row
 // ---------------------------------------------------------------------------
 
 function DetailRow({ label, value, id }: { label: string; value: React.ReactNode; id: string }) {
@@ -452,7 +452,7 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
               </span>
             </div>
 
-            {/* Dates itinerary panel — framed luxury box with clear fonts */}
+            {/* Dates itinerary panel - framed luxury box with clear fonts */}
             <div className="bg-[#121110]/80 border border-[#2e2a24] rounded-xs p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <span className="text-[11px] text-[#a8a29e] uppercase tracking-[0.18em] font-medium">
@@ -661,7 +661,7 @@ export default function ReservationDetailPage() {
   // Incrementing retryKey re-triggers the fetch effect (only from handleRetry click handler)
   const [retryKey,     setRetryKey]     = useState(0);
 
-  // Redirect if id is missing from the URL — should not happen in normal navigation
+  // Redirect if id is missing from the URL - should not happen in normal navigation
   useEffect(() => {
     if (!id) router.replace('/guest/reservations');
   }, [id, router]);
@@ -680,9 +680,9 @@ export default function ReservationDetailPage() {
       try {
         /**
          * GET /api/guest/reservations/[id]
-         * guest_id is sourced server-side from the session — not sent here.
+         * guest_id is sourced server-side from the session - not sent here.
          * Returns 404 for both "not found" and "wrong guest" to prevent info leakage.
-         * All setState calls are after the first `await` — never synchronous within
+         * All setState calls are after the first `await` - never synchronous within
          * the effect body, satisfying react-hooks/set-state-in-effect.
          */
         const response = await fetch(`/api/guest/reservations/${id}`);
@@ -816,7 +816,7 @@ export default function ReservationDetailPage() {
             aria-live="polite"
             aria-busy={isLoading}
           >
-            {/* Back link — always visible (except during loading to avoid clutter) */}
+            {/* Back link - always visible (except during loading to avoid clutter) */}
             {!isLoading && (
               <div className="mb-6">
                 <Link
@@ -828,20 +828,6 @@ export default function ReservationDetailPage() {
                     transition-colors duration-200
                   "
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-4 h-4"
-                    aria-hidden="true"
-                  >
-                    <line x1="19" y1="12" x2="5" y2="12" />
-                    <polyline points="12 19 5 12 12 5" />
-                  </svg>
                   Back to My Reservations
                 </Link>
               </div>
