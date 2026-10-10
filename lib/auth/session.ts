@@ -25,14 +25,19 @@ import type { SessionData } from '@/types/session';
 
 export const SESSION_COOKIE_NAME = 'hrgsms_session';
 
-const fallbackSecret = 'dev_secret_replace_in_production_32+';
-const secret = process.env.SESSION_SECRET && process.env.SESSION_SECRET.length >= 32
-  ? process.env.SESSION_SECRET
-  : fallbackSecret;
+if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
+  // Only throw at startup - not during module evaluation - so tests that mock
+  // the env variable can set it before requiring this module.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'SESSION_SECRET environment variable must be set and at least 32 characters long.'
+    );
+  }
+}
 
 export const sessionOptions: SessionOptions = {
   cookieName: SESSION_COOKIE_NAME,
-  password: secret,
+  password: process.env.SESSION_SECRET ?? 'dev_secret_replace_in_production_32+',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

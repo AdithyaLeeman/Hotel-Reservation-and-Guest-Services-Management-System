@@ -35,16 +35,16 @@ if [ -n "$DATABASE_URL" ]; then
   # Run migrations unless explicitly disabled
   if [ "$AUTO_MIGRATE" != "false" ]; then
     echo "[startup] Running schema migrations..."
-    tsx lib/db/migrate.ts || echo "[startup] Warning: Migrations encountered an issue."
+    tsx lib/db/migrate.ts
 
     echo "[startup] Applying database routines, views, triggers, and indexes..."
-    tsx lib/db/apply-routines.ts || echo "[startup] Warning: Routines encountered an issue."
+    tsx lib/db/apply-routines.ts
   fi
 
   # Run seeds if requested (default to true in demo/dev mode)
   if [ "$SEED_DB" = "true" ]; then
     echo "[startup] Seeding demo database records..."
-    tsx lib/db/seed.ts || echo "[startup] Warning: Seed execution encountered an issue."
+    tsx lib/db/seed.ts
   fi
 else
   echo "[startup] Warning: DATABASE_URL is not set. Skipping DB migration and seed."
