@@ -1,0 +1,50 @@
+services:
+  # ===========================================================================
+  # PostgreSQL Database Service
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: skynest-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-hrgsms}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-hrgsms}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ===========================================================================
+  # Next.js Application Service
+  # ===========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skynest-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-hrgsms}
+      POSTGRES_ADMIN_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/postgres
+      SESSION_SECRET: ${SESSION_SECRET:-replace_with_at_least_32_random_characters_secret_key_12345}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      NODE_ENV: production
+      PORT: 3000
+      SEED_DB: ${SEED_DB:-true}
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    name: skynest_postgres_data

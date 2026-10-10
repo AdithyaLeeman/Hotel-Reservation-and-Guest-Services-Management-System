@@ -1,0 +1,20 @@
+node_modules
+.next
+.git
+.gitignore
+.vscode
+.agent
+.agents
+.claude
+project-sources
+UI- ref
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env*.local
+.env.development
+.env.test
+coverage
+.DS_Store
+Thumbs.db
