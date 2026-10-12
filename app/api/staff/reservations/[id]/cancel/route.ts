@@ -105,7 +105,7 @@ export async function PATCH(
     if (!detail) {
       return err(404, ERROR_CODES.NOT_FOUND, `Reservation ${reservationId} not found.`);
     }
-    if (detail.branch_id !== session.branchId) {
+    if (Number(detail.branch_id) !== Number(session.branchId)) {
       return err(403, ERROR_CODES.BRANCH_SCOPE_VIOLATION,
         'Receptionist can only cancel reservations at their assigned branch.');
     }

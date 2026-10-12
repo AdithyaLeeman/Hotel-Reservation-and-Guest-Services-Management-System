@@ -185,7 +185,12 @@ export const reservationRepository = {
        ORDER BY created_at DESC`,
       [guestId]
     );
-    return result.rows;
+    return result.rows.map((r) => ({
+      ...r,
+      branch_id: Number(r.branch_id),
+      processed_by_employee_id:
+        r.processed_by_employee_id != null ? Number(r.processed_by_employee_id) : null,
+    }));
   },
 
   // -------------------------------------------------------------------------
@@ -281,7 +286,18 @@ export const reservationRepository = {
         [reservationId]
       );
 
-      return { ...header, rooms: roomsRes.rows };
+      return {
+        ...header,
+        branch_id: Number(header.branch_id),
+        processed_by_employee_id:
+          header.processed_by_employee_id != null
+            ? Number(header.processed_by_employee_id)
+            : null,
+        rooms: roomsRes.rows.map((r) => ({
+          ...r,
+          room_id: Number(r.room_id),
+        })),
+      };
     } catch (err: unknown) {
       // P0002 = no_data_found raised by fn_get_reservation_detail on ownership mismatch
       // 22P02 = invalid input syntax for type uuid
@@ -310,7 +326,14 @@ export const reservationRepository = {
        WHERE reservation_id = $1`,
       [reservationId]
     );
-    return result.rows[0] ?? null;
+    if (!result.rows[0]) return null;
+    const r = result.rows[0];
+    return {
+      ...r,
+      branch_id: Number(r.branch_id),
+      processed_by_employee_id:
+        r.processed_by_employee_id != null ? Number(r.processed_by_employee_id) : null,
+    };
   },
 
   // -------------------------------------------------------------------------
@@ -332,7 +355,13 @@ export const reservationRepository = {
       : `SELECT * FROM vw_active_reservations ORDER BY created_at DESC`;
     const params = branchId !== null ? [branchId] : [];
     const result = await pool.query<ActiveReservationRow>(query, params);
-    return result.rows;
+    return result.rows.map((r) => ({
+      ...r,
+      branch_id: Number(r.branch_id),
+      processed_by_employee_id:
+        r.processed_by_employee_id != null ? Number(r.processed_by_employee_id) : null,
+      room_count: Number(r.room_count),
+    }));
   },
 
   // -------------------------------------------------------------------------
