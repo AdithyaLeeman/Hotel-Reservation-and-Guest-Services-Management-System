@@ -105,7 +105,7 @@ export async function GET(
       if (!session.branchId) {
         return err(403, ERROR_CODES.BRANCH_SCOPE_VIOLATION, 'Receptionist session missing branchId.');
       }
-      if (detail.branch_id !== session.branchId) {
+      if (Number(detail.branch_id) !== Number(session.branchId)) {
         return err(403, ERROR_CODES.BRANCH_SCOPE_VIOLATION,
           'Receptionist can only view reservations at their assigned branch.');
       }
