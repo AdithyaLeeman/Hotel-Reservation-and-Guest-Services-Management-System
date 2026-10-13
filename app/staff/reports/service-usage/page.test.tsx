@@ -1,21 +1,10 @@
 // @vitest-environment jsdom
-/**
- * Tests for /staff/reports/service-usage page (P05-M04-T01)
- *
- * Strategy: render with @testing-library/react, mock fetch for the
- * GET /api/staff/reports/top-services endpoint.
- * Verify loading state, successful render of report table, and error handling.
- *
- * Owned by: Member 4 (M4) | Task: P05-M04-T01 (Mock-First)
- */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import ServiceUsageReportPage from './page';
 
-// ---------------------------------------------------------------------------
 // Mocks
-// ---------------------------------------------------------------------------
 
 vi.mock('@/components/StaffNav', () => ({
   default: () => <nav data-testid="staff-nav">StaffNav</nav>,
@@ -48,9 +37,7 @@ function mockFetch(ok: boolean, body: object) {
   } as Response);
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('/staff/reports/service-usage page', () => {
   beforeEach(() => {
     vi.clearAllMocks();

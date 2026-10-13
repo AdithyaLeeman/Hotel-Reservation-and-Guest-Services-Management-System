@@ -1,37 +1,9 @@
-/**
- * Page: /staff/reports/occupancy
- *
- * Room Occupancy Report Page - provides hotel management with detailed
- * room occupancy metrics, night counts, occupancy rates, and revenue across
- * all hotel branches and rooms.
- *
- * Consumes:
- *   GET /api/staff/reports/occupancy
- *   (Supported query parameters: branchId, fromDate, toDate, roomStatus)
- *
- * Security:
- *   - Access restricted to Manager and Admin staff roles (enforced by API).
- *   - Unauthenticated or unauthorized requests display friendly error alerts.
- *
- * Mock-first Strategy (Phase 5 / P05-M02-T01):
- *   Currently backed by mock data in `occupancyReportRepository`.
- *   In Phase 6 (P06-M02-T01), this connects directly to the PostgreSQL
- *   view `vw_room_occupancy`.
- *
- * Layout note:
- *   <StaffNav /> is rendered by `app/staff/layout.tsx`.
- *
- * Owned by: Member 2 (M2) - Karunarathna W.P. 240331F
- * Task: P05-M02-T01
- * Lecture alignment: L05 (views & derived reporting), L03 (aggregations), L07 (RBAC)
- */
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 
-/* ─── Domain Types & Constants ────────────────────────────────────────────── */
+// Domain Types & Constants
 
 export interface OccupancyReportRow {
   branch_id: number;
@@ -80,7 +52,7 @@ type PageState =
   | { stage: 'success'; data: OccupancyReportRow[] }
   | { stage: 'error'; message: string };
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 export function formatLKR(amount: number): string {
   return `LKR ${amount.toLocaleString('en-LK', {
@@ -95,7 +67,7 @@ export function parseMoney(val: string | undefined): number {
   return isNaN(num) ? 0 : num;
 }
 
-/* ─── Status Badge Component ─────────────────────────────────────────────── */
+// Status Badge Component
 
 const STATUS_BADGE_STYLES: Record<string, { bg: string; text: string; border: string }> = {
   Available: {
@@ -152,7 +124,7 @@ function getCurrentMonthBounds(): { fromDate: string; toDate: string } {
   return { fromDate, toDate };
 }
 
-/* ─── Main Page Component ────────────────────────────────────────────────── */
+// Main Page Component
 
 export default function OccupancyReportPage() {
   const initialDates = process.env.NODE_ENV === 'test'
@@ -201,7 +173,7 @@ export default function OccupancyReportPage() {
   // Bump to re-trigger the fetch effect (Refresh / Retry buttons)
   const [refreshKey, setRefreshKey] = useState(0);
 
-  /* ─── Fetch report from API ────────────────────────────────────────────── */
+  // Fetch report from API
   useEffect(() => {
     let cancelled = false;
 
@@ -259,7 +231,7 @@ export default function OccupancyReportPage() {
     return () => { cancelled = true; };
   }, [appliedFilters, refreshKey]);
 
-  /* ─── Filter handlers ──────────────────────────────────────────────────── */
+  // Filter handlers
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setAppliedFilters(filters);
@@ -284,7 +256,7 @@ export default function OccupancyReportPage() {
     setAppliedFilters(updated);
   };
 
-  /* ─── Sorting handler ──────────────────────────────────────────────────── */
+  // Sorting handler
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
       setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
@@ -294,7 +266,7 @@ export default function OccupancyReportPage() {
     }
   };
 
-  /* ─── Processed and Sorted Data ────────────────────────────────────────── */
+  // Processed and Sorted Data
   const sortedData = useMemo(() => {
     if (state.stage !== 'success') return [];
 
@@ -332,7 +304,7 @@ export default function OccupancyReportPage() {
     });
   }, [state, sortKey, sortDir]);
 
-  /* ─── Summary KPIs Calculation ─────────────────────────────────────────── */
+  // Summary KPIs Calculation
   const kpiSummary = useMemo(() => {
     if (state.stage !== 'success' || state.data.length === 0) {
       return {
@@ -370,7 +342,7 @@ export default function OccupancyReportPage() {
         className="flex-1 container-page py-8 space-y-6"
         aria-label="Room Occupancy Report"
       >
-        {/* ── Breadcrumb & Navigation ── */}
+        {/* Breadcrumb & Navigation */}
         <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
           <Link href="/staff/dashboard" className="hover:text-[var(--color-text)] transition-colors">
             Staff Portal
@@ -379,7 +351,7 @@ export default function OccupancyReportPage() {
           <span className="text-[var(--color-text)] font-medium">Occupancy Report</span>
         </nav>
 
-        {/* ── Header ── */}
+        {/* Header */}
         <header id="occupancy-report-header" className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
@@ -423,9 +395,7 @@ export default function OccupancyReportPage() {
           </div>
         </header>
 
-
-
-        {/* ── Summary KPI Cards ── */}
+        {/* Summary KPI Cards */}
         <section aria-label="Key Performance Indicators" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="card p-5 border border-[var(--color-border)]">
             <span className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">
@@ -480,7 +450,7 @@ export default function OccupancyReportPage() {
           </div>
         </section>
 
-        {/* ── Filter Form ── */}
+        {/* Filter Form */}
         <section aria-labelledby="filter-section-title" className="card p-5 border border-[var(--color-border)] bg-[var(--color-surface)]">
           <h2 id="filter-section-title" className="text-sm font-semibold text-[var(--color-text)] mb-3">
             Filter Occupancy Records
@@ -629,7 +599,7 @@ export default function OccupancyReportPage() {
           )}
         </section>
 
-        {/* ── Table & State Views ── */}
+        {/* Table & State Views */}
         <section aria-labelledby="occupancy-data-heading">
           <h2 id="occupancy-data-heading" className="sr-only">
             Occupancy Report Data

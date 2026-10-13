@@ -1,32 +1,3 @@
-/**
- * Page: /staff/reservations
- *
- * Staff Reservations List - allows Receptionist / Manager / Admin to view
- * all active (Booked + CheckedIn) reservations, filter by status / search by
- * guest name or reservation ID, and navigate to per-reservation actions.
- *
- * This is a Client Component because it needs:
- *   - Controlled filter + search inputs
- *   - useState / useEffect for fetch-on-mount + client-side filtering
- *   - Dynamic row interactions (View Details, Check In shortcuts)
- *
- * API consumed:
- *   GET /api/staff/reservations        → { data: ActiveReservationRow[] }
- *
- * Data strategy (mock-first, Phase 3):
- *   Calls the real API route which returns mock data until SP3.1 migrations
- *   are executed on the live DB and the route's USE_MOCK flag is set to false.
- *
- * Mock swap plan (Phase 6 / P06-M03-T01):
- *   No changes to this page - the API route swaps its mock in Phase 6.
- *
- * Layout note:
- *   <StaffNav /> is rendered by app/staff/layout.tsx - do NOT add it here.
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T21 (Mock-First)
- * Lecture alignment: L06 (REST), L07 (RBAC, branch scoping)
- */
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -34,7 +5,7 @@ import Link from 'next/link';
 import type { ActiveReservationRow } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
 
-/* ─── Constants ──────────────────────────────────────────────────────────── */
+// Constants
 
 export interface BranchItem {
   id: number;
@@ -53,7 +24,7 @@ const STATUS_FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   { value: 'CheckedIn', label: 'Checked In' },
 ];
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 type FetchState =
   | { stage: 'loading' }
@@ -66,7 +37,7 @@ interface FilterState {
   search:   string; // free-text: guest name or reservation_id prefix
 }
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 /** Format an ISO date string as "01 Oct 2026" (en-GB, no time). */
 function formatDate(iso: string): string {
@@ -103,7 +74,7 @@ function statusLabel(status: ReservationStatus): string {
   }
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────── */
+// Sub-components
 
 /** Full-width spinning loading card. */
 function LoadingState() {
@@ -315,7 +286,7 @@ function ReservationsTable({ rows }: { rows: ActiveReservationRow[] }) {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function StaffReservationsPage() {
   const [branches, setBranches]     = useState<BranchItem[]>(DEFAULT_BRANCHES);
@@ -328,7 +299,7 @@ export default function StaffReservationsPage() {
   // Incrementing retryKey re-triggers the fetch effect on demand
   const [retryKey, setRetryKey] = useState(0);
 
-  /* ── Dynamic branch lookup ── */
+  // Dynamic branch lookup
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') return;
     fetch('/api/branches')
@@ -346,7 +317,7 @@ export default function StaffReservationsPage() {
       .catch(() => {});
   }, []);
 
-  /* ── Fetch ── */
+  // Fetch
   useEffect(() => {
     let cancelled = false;
 
@@ -383,12 +354,12 @@ export default function StaffReservationsPage() {
     return () => { cancelled = true; };
   }, [retryKey]);
 
-  /* ── Retry ── */
+  // Retry
   function handleRetry() {
     setRetryKey((k) => k + 1);
   }
 
-  /* ── Filter helpers ── */
+  // Filter helpers
   function handleFilterChange(field: keyof FilterState, value: string) {
     setFilters((prev) => ({ ...prev, [field]: value }));
   }
@@ -402,7 +373,7 @@ export default function StaffReservationsPage() {
     filters.status   !== '' ||
     filters.search.trim() !== '';
 
-  /* ── Client-side filter / search ── */
+  // Client-side filter / search
   const filteredRows = useMemo<ActiveReservationRow[]>(() => {
     if (fetchState.stage !== 'success') return [];
     let rows = fetchState.rows;
@@ -428,12 +399,12 @@ export default function StaffReservationsPage() {
     return rows;
   }, [fetchState, filters]);
 
-  /* ── Stats ── */
+  // Stats
   const allRows        = fetchState.stage === 'success' ? fetchState.rows : [];
   const countBooked    = allRows.filter((r) => r.reservation_status === 'Booked').length;
   const countCheckedIn = allRows.filter((r) => r.reservation_status === 'CheckedIn').length;
 
-  /* ── Render ── */
+  // Render
   return (
     <>
       <title>Reservations - SkyNest Hotels Staff Portal</title>
@@ -447,7 +418,7 @@ export default function StaffReservationsPage() {
           aria-label="Staff reservations list"
         >
 
-          {/* ── Page header ────────────────────────────────────────────── */}
+          {/* Page header */}
           <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-[var(--color-text)]">
@@ -466,9 +437,7 @@ export default function StaffReservationsPage() {
             </Link>
           </header>
 
-
-
-          {/* ── Stats strip ──────────────────────────────────────────────── */}
+          {/* Stats strip */}
           {fetchState.stage === 'success' && (
             <div
               id="reservations-stats"
@@ -492,7 +461,7 @@ export default function StaffReservationsPage() {
             </div>
           )}
 
-          {/* ── Filter bar ───────────────────────────────────────────────── */}
+          {/* Filter bar */}
           <section aria-labelledby="filters-heading">
             <h2
               id="filters-heading"
@@ -591,7 +560,7 @@ export default function StaffReservationsPage() {
             </div>
           </section>
 
-          {/* ── Result area ──────────────────────────────────────────────── */}
+          {/* Result area */}
           <section
             aria-labelledby="results-heading"
             aria-live="polite"
@@ -621,7 +590,7 @@ export default function StaffReservationsPage() {
 
         </main>
 
-        {/* ── Footer ───────────────────────────────────────────────────── */}
+        {/* Footer */}
         <footer
           id="staff-reservations-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"

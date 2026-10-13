@@ -12,9 +12,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 
-// ---------------------------------------------------------------------------
 // Mock the service layer
-// ---------------------------------------------------------------------------
 vi.mock('@/services/service-usage.service', () => {
   const ServiceUsageServiceError = class extends Error {
     code: string;
@@ -38,9 +36,7 @@ import {
   ServiceUsageServiceError,
 } from '@/services/service-usage.service';
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 const RESERVATION_ID = 'res-mock-001';
 
 function makeParams(id = RESERVATION_ID) {
@@ -75,9 +71,7 @@ const MOCK_USAGE = {
   channel:       'FrontDesk',
 };
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('POST /api/staff/reservations/[id]/services', () => {
   beforeEach(() => {
     vi.clearAllMocks();

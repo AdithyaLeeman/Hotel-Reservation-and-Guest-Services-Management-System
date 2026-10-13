@@ -1,15 +1,6 @@
 'use client';
 
-/**
- * Public Hotel Landing Page - SkyNest Hotels & Resorts
- *
- * Designed in the Royella luxury 5-star hotel editorial aesthetic.
- * All original links and features are preserved:
- * - Search Rooms (/search)
- * - Guest Register (/guest/register)
- * - Guest Login (/guest/login)
- * - Staff Portal (/staff/login)
- */
+// Public Hotel Landing Page - SkyNest Hotels & Resorts
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -81,7 +72,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] dark:bg-[#121110] text-[#1c1917] dark:text-[#f7f5f2] antialiased selection:bg-[#c5a880]/30 selection:text-[#161514]">
-      {/* ── TOP HEADER / NAVIGATION ── */}
+      {/* TOP HEADER / NAVIGATION */}
       <header className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
         <div className="container-page flex items-center justify-between h-24">
           {/* Logo with Gold Crest */}
@@ -141,7 +132,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* ── HERO SECTION ── */}
+      {/* HERO SECTION */}
       <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-neutral-950">
         {/* Full-bleed Luxury Interior Background */}
         <div className="absolute inset-0 z-0">
@@ -203,8 +194,7 @@ export default function HomePage() {
         </div>
       </section>
 
-
-      {/* ── ROOMS & SUITES SECTION (Matching screenshot middle section) ── */}
+      {/* ROOMS & SUITES SECTION (Matching screenshot middle section) */}
       <section id="rooms" className="py-24 px-4 bg-[#faf8f5] dark:bg-[#121110]">
         <div className="max-w-7xl mx-auto">
           {/* Header with Heraldic Watermark Crest */}
@@ -295,7 +285,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SPLIT STORY / ABOUT SECTION (Matching screenshot lower section) ── */}
+      {/* SPLIT STORY / ABOUT SECTION (Matching screenshot lower section) */}
       <section id="about" className="py-24 px-4 bg-white dark:bg-[#151413] border-t border-[#e7e2d9] dark:border-[#2f2b26]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left: Layered Photography with Gold Frame & Laurel Crest Badge */}
@@ -369,7 +359,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── DESTINATIONS SHOWCASE (Colombo, Kandy, Galle) ── */}
+      {/* DESTINATIONS SHOWCASE (Colombo, Kandy, Galle) */}
       <section id="destinations" className="py-20 px-4 bg-[#f6f3ed] dark:bg-[#121110]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-xl mx-auto mb-14">
@@ -445,7 +435,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── LUXURY FOOTER (Deep Charcoal & Gold Crest) ── */}
+      {/* LUXURY FOOTER (Deep Charcoal & Gold Crest) */}
       <footer className="bg-[#141312] text-white pt-20 pb-12 border-t border-[#2e2a24]">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-16 border-b border-[#2e2a24]">
           {/* Brand Info */}

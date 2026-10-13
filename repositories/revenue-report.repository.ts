@@ -1,4 +1,3 @@
-
 import { pool } from '@/lib/db/pool';
 
 export interface MonthlyRevenueRow {

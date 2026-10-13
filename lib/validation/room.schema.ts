@@ -1,15 +1,3 @@
-/**
- * Zod validation schemas for room inventory and management endpoints.
- *
- * Used by:
- * - GET  /api/staff/rooms       (ListRoomsQuerySchema)
- * - POST /api/staff/rooms       (CreateRoomSchema)
- * - PATCH /api/staff/rooms/[id] (UpdateRoomStatusSchema)
- *
- * Owned by: Member 2 (M2) | Tasks: P02-M02-T10, P02-M02-T11, P02-M02-T12
- * Lecture alignment: L07 (input validation, injection prevention)
- */
-
 import { z } from 'zod';
 
 export const RoomStatusEnum = z.enum(['Available', 'Occupied', 'Maintenance']);

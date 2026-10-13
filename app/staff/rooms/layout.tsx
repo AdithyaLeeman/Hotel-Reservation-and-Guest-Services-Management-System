@@ -1,10 +1,3 @@
-/**
- * Staff Rooms route layout - provides SEO metadata for /staff/rooms.
- *
- * Metadata is defined here (server component) because page.tsx
- * is a 'use client' component and cannot export metadata.
- */
-
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 

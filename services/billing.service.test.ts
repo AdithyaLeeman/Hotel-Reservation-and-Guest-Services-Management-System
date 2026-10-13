@@ -1,12 +1,3 @@
-/**
- * Billing Service - integration tests (P06-M05-T01)
- *
- * Tests the service layer over the real billing repository.
- * Set DATABASE_URL in .env.test.local before running.
- *
- * Run: npx vitest run services/billing.service.test.ts
- */
-
 import { describe, it, expect, beforeAll } from 'vitest';
 import { billingService } from './billing.service';
 import { pool } from '@/lib/db/pool';

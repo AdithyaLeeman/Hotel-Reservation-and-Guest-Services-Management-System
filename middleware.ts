@@ -4,7 +4,6 @@ import { getIronSession, nextProxyCookies } from 'iron-session';
 import type { SessionData } from '@/types/session';
 import { sessionOptions } from '@/lib/auth/session';
 
-
 const PUBLIC_EXACT: readonly string[] = [
   '/',
   '/search',

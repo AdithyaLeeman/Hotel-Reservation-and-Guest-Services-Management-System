@@ -1,30 +1,8 @@
-/**
- * Service Usage Repository - data access layer for service_catalogue and service_usage.
- * Owned by: Member 4 (M4) | Task: P04-M04-T09
- *
- * P06-M04-T01 - Mock store replaced with real parameterized pg Pool queries.
- * All SQL is parameterized (no string concatenation - AGENTS.md §8).
- * Money/NUMERIC columns returned as strings from pg (AGENTS.md §8).
- *
- * DB routines used:
- *   service_catalogue table        - P04-M04-T01 (DDL)
- *   service_usage table            - P04-M04-T03 (DDL)
- *   sp_log_service_usage()         - P04-M04-T05 (atomic, price-snapshot procedure)
- *   vw_service_usage_breakdown     - P04-M04-T08 (view; joined usage rows)
- *
- * DB-first rule: charged_price is NEVER computed in TypeScript.
- * sp_log_service_usage() snapshots service_catalogue.current_price into
- * service_usage.charged_price at the moment of logging.
- * See docs/08_business-rules-and-enforcement.md - Calculation Placement Matrix.
- */
-
 import { pool } from '@/lib/db/pool';
 import type { ServiceCatalogue, ServiceUsage } from '@/types/domain';
 import type { ServiceCatalogueStatus } from '@/types/enums';
 
-// ---------------------------------------------------------------------------
 // Input / extended types
-// ---------------------------------------------------------------------------
 
 export interface LogServiceUsageInput {
   reservation_id: string;
@@ -48,16 +26,11 @@ export interface ServiceUsageBreakdownRow extends ServiceUsage {
   line_total: string;   // charged_price * quantity - computed inside the view, never in TS
 }
 
-// ---------------------------------------------------------------------------
 // Repository
-// ---------------------------------------------------------------------------
 
 export const serviceUsageRepository = {
-  /**
-   * List all Active catalogue items, ordered alphabetically by name.
-   *
-   * SELECT * FROM service_catalogue WHERE status = 'Active' ORDER BY service_name
-   */
+  // List all Active catalogue items, ordered alphabetically by name.
+  // SELECT * FROM service_catalogue WHERE status = 'Active' ORDER BY service_name
   listCatalogue: async (): Promise<ServiceCatalogue[]> => {
     const result = await pool.query<ServiceCatalogue>(
       `SELECT
@@ -72,11 +45,8 @@ export const serviceUsageRepository = {
     return result.rows;
   },
 
-  /**
-   * Find a single catalogue item by its primary key.
-   *
-   * SELECT * FROM service_catalogue WHERE service_id = $1
-   */
+  // Find a single catalogue item by its primary key.
+  // SELECT * FROM service_catalogue WHERE service_id = $1
   findCatalogueById: async (serviceId: number): Promise<ServiceCatalogue | null> => {
     const result = await pool.query<ServiceCatalogue>(
       `SELECT
@@ -91,15 +61,7 @@ export const serviceUsageRepository = {
     return result.rows[0] ?? null;
   },
 
-  /**
-   * Insert a new service catalogue item.
-   *
-   * INSERT INTO service_catalogue (service_name, current_price, status)
-   * VALUES ($1, $2, $3) RETURNING *
-   *
-   * PostgreSQL UNIQUE constraint on service_name raises SQLSTATE 23505
-   * (unique_violation). The service layer maps this to DUPLICATE_SERVICE_NAME.
-   */
+  // Insert a new service catalogue item.
   insertCatalogueItem: async (input: CreateCatalogueItemInput): Promise<ServiceCatalogue> => {
     const result = await pool.query<ServiceCatalogue>(
       `INSERT INTO service_catalogue (service_name, current_price, status)
@@ -114,26 +76,7 @@ export const serviceUsageRepository = {
     return result.rows[0];
   },
 
-  /**
-   * Log a service usage record against a reservation by calling sp_log_service_usage().
-   *
-   * IMPORTANT - DB-first price snapshot rule:
-   * sp_log_service_usage() copies service_catalogue.current_price into
-   * service_usage.charged_price at the moment of logging. That price is
-   * NEVER recomputed later. TypeScript must NOT pass or compute charged_price.
-   *
-   * CALL sp_log_service_usage($1, $2, $3, $4, $5, $6)
-   *
-   * The procedure raises:
-   *   SQLSTATE '22023' - quantity < 1
-   *   SQLSTATE '23503' - reservation not found, or room not part of reservation,
-   *                      or service_id not found (FK / record-missing codes)
-   *   SQLSTATE '45011' - reservation not in CheckedIn status
-   *   SQLSTATE '45012' - service is Inactive
-   *
-   * After the CALL we do a SELECT to return the inserted row, since the
-   * procedure does not return data via INOUT.
-   */
+  // Log a service usage record against a reservation by calling sp_log_service_usage().
   callLogServiceUsage: async (params: LogServiceUsageInput): Promise<ServiceUsage> => {
     const client = await pool.connect();
     try {
@@ -209,17 +152,8 @@ export const serviceUsageRepository = {
     }
   },
 
-  /**
-   * List all service usage records for a reservation, enriched with catalogue details.
-   * Reads from vw_service_usage_breakdown, ordered by usage_date then usage_id.
-   *
-   * SELECT * FROM vw_service_usage_breakdown WHERE reservation_id = $1
-   *            ORDER BY usage_date, usage_id
-   *
-   * Note: line_total is computed inside vw_service_usage_breakdown in the DB.
-   * The authoritative total is fn_calc_service_charges(reservation_id) - never
-   * recomputed in TypeScript.
-   */
+  // List all service usage records for a reservation, enriched with catalogue details.
+  // Reads from vw_service_usage_breakdown, ordered by usage_date then usage_id.
   listUsageByReservation: async (reservationId: string): Promise<ServiceUsageBreakdownRow[]> => {
     const result = await pool.query<ServiceUsageBreakdownRow>(
       `SELECT
@@ -242,10 +176,8 @@ export const serviceUsageRepository = {
     return result.rows;
   },
 
-  /**
-   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
-   * The mock store has been removed; this stub ensures existing test setups
-   * that call _resetMockStore() continue to compile and run without error.
-   */
+  // No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
+  // The mock store has been removed; this stub ensures existing test setups
+  // that call _resetMockStore() continue to compile and run without error.
   _resetMockStore: (): void => {},
 };

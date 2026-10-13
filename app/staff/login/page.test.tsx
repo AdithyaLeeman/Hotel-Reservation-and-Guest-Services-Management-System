@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import StaffLoginPage from './page';
 
-/* ─── Mocks ──────────────────────────────────────────────────────────────────── */
+// Mocks
 
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
@@ -24,7 +24,7 @@ vi.mock('next/link', () => ({
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-/* ─── Helpers ────────────────────────────────────────────────────────────────── */
+// Helpers
 
 function fillForm(username = 'receptionist_01', password = 'staffpass123') {
   fireEvent.change(screen.getByLabelText(/username/i), { target: { value: username } });
@@ -42,7 +42,7 @@ function successResponse() {
   });
 }
 
-/* ─── Tests ──────────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('StaffLoginPage - rendering', () => {
   beforeEach(() => {

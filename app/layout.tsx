@@ -4,7 +4,7 @@ import Script from 'next/script';
 
 import './globals.css';
 
-/* ─── Burj Khalifa Typography: Inter (Headings & UI) + Lato (Body & Copy) ─── */
+// Burj Khalifa Typography: Inter (Headings & UI) + Lato (Body & Copy)
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -26,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500'],
 });
 
-/* ─── Heritage Luxury Serif: Cormorant Garamond ─── */
+// Heritage Luxury Serif: Cormorant Garamond
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
   display: 'swap',
@@ -34,7 +34,7 @@ const cormorantGaramond = Cormorant_Garamond({
   weight: ['300', '400', '500', '600', '700'],
 });
 
-/* ─── Metadata ──────────────────────────────────────────────────────────────── */
+// Metadata
 
 export const metadata: Metadata = {
 
@@ -85,7 +85,7 @@ export const viewport: Viewport = {
   ],
 };
 
-/* ─── Root Layout ───────────────────────────────────────────────────────────── */
+// Root Layout
 
 interface RootLayoutProps {
   children: React.ReactNode;

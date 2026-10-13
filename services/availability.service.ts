@@ -1,29 +1,9 @@
-/**
- * Availability Service - search orchestration layer.
- * Owned by: Member 2 (M2) | Task: P02-M02-T08 (Mock-First)
- *
- * Responsibilities:
- *   1. Validate input date ranges (shape + semantics)
- *   2. Delegate to availabilityRepository.getAvailableRooms()
- *   3. Map raw repository rows to a typed response the route handler returns
- *
- * DB-first rule (AGENTS.md §5):
- *   This service does NOT perform any availability logic itself.
- *   All overlap detection and status filtering happen inside fn_get_available_rooms()
- *   (or its in-memory mock equivalent in the repository during parallel development).
- *
- * This layer intentionally contains NO financial calculations.
- * daily_rate is passed through from the DB row as a string - never multiplied here.
- */
-
 import {
   availabilityRepository,
   type AvailableRoom,
 } from '@/repositories/availability.repository';
 
-// ---------------------------------------------------------------------------
 // Error types
-// ---------------------------------------------------------------------------
 
 export class AvailabilityValidationError extends Error {
   constructor(
@@ -35,9 +15,7 @@ export class AvailabilityValidationError extends Error {
   }
 }
 
-// ---------------------------------------------------------------------------
 // Input / output types
-// ---------------------------------------------------------------------------
 
 export interface AvailabilitySearchInput {
   branchId: number;
@@ -49,11 +27,9 @@ export interface AvailabilitySearchInput {
   amenities?: string[];
 }
 
-/**
- * The shape returned to route handlers and ultimately to the client.
- * daily_rate is kept as a string to honour the money-as-string contract
- * (docs/21_shared-contracts.md §3).
- */
+// The shape returned to route handlers and ultimately to the client.
+// daily_rate is kept as a string to honour the money-as-string contract
+// (docs/21_shared-contracts.md §3).
 export interface AvailabilitySearchResult {
   rooms: AvailableRoom[];
   /** Human-readable ISO dates echoed back for client confirmation */
@@ -63,9 +39,7 @@ export interface AvailabilitySearchResult {
   nightsRequested: number;
 }
 
-// ---------------------------------------------------------------------------
 // ISO date helpers
-// ---------------------------------------------------------------------------
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -75,35 +49,19 @@ function isValidIsoDate(value: string): boolean {
   return !isNaN(d.getTime());
 }
 
-/**
- * Compute the number of calendar nights between two ISO date strings.
- * Used for display only - DO NOT use this for billing calculations.
- * Authoritative nights = check_out_date - check_in_date computed in PostgreSQL.
- */
+// Compute the number of calendar nights between two ISO date strings.
+// Used for display only - DO NOT use this for billing calculations.
+// Authoritative nights = check_out_date - check_in_date computed in PostgreSQL.
 function computeNights(checkIn: string, checkOut: string): number {
   const inMs  = new Date(checkIn  + 'T00:00:00Z').getTime();
   const outMs = new Date(checkOut + 'T00:00:00Z').getTime();
   return Math.round((outMs - inMs) / (1000 * 60 * 60 * 24));
 }
 
-// ---------------------------------------------------------------------------
 // Service
-// ---------------------------------------------------------------------------
 
 export const availabilityService = {
-  /**
-   * Search for available rooms for a given branch and date range.
-   *
-   * Validation (performed here, before DB call):
-   *   - branchId must be a positive integer
-   *   - checkIn and checkOut must be valid ISO YYYY-MM-DD date strings
-   *   - checkOut must be strictly after checkIn (minimum 1 night stay)
-   *   - checkIn must not be in the past (today or future only)
-   *
-   * Delegation:
-   *   All availability computation is delegated to availabilityRepository,
-   *   which wraps fn_get_available_rooms() (PostgreSQL in production).
-   */
+  // Search for available rooms for a given branch and date range.
   async searchAvailable(
     input: AvailabilitySearchInput,
   ): Promise<AvailabilitySearchResult> {

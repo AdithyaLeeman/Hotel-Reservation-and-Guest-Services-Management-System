@@ -1,36 +1,9 @@
-/**
- * Billing Repository - calls sp_finalize_invoice() and reads vw_invoice_totals.
- *
- * DB-first rule: ALL financial totals come from vw_invoice_totals.
- * This repository never computes any monetary value.
- *
- * Owned by: Member 5 (M5) | P06-M05-T01 - Wire billing to real DB
- *
- * Lecture alignment:
- *   L05 (transactions / ACID), L08 (stored procedures),
- *   L09 (views as authoritative data layer)
- */
-
 import { pool } from '@/lib/db/pool';
 import { withTransaction } from '@/lib/db/transaction';
 import type { InvoiceTotals } from '@/types/domain';
 
 export const billingRepository = {
-  /**
-   * Call sp_finalize_invoice() to create (or retrieve) a billing_summary row.
-   *
-   * IDEMPOTENT - safe to call multiple times for the same reservation.
-   * The procedure returns the existing invoice_id if one already exists,
-   * so the caller never needs to check first.
-   *
-   * SQLSTATE mapping (from sp_finalize_invoice):
-   *   45040 - reservation not found
-   *   45041 - reservation is Cancelled
-   *   45042 - no active tax policy found
-   *
-   * @param reservationId  UUID of the reservation to invoice
-   * @returns              The invoice_id UUID (new or existing)
-   */
+  // Call sp_finalize_invoice() to create (or retrieve) a billing_summary row.
   callFinalizeInvoice: async (reservationId: string): Promise<{ invoice_id: string }> => {
     return withTransaction(async (client) => {
       // CALL returns OUT parameters as a single row via pg
@@ -50,15 +23,7 @@ export const billingRepository = {
     });
   },
 
-  /**
-   * Read all billing totals for a reservation from vw_invoice_totals.
-   *
-   * outstanding_balance is computed EXCLUSIVELY by PostgreSQL inside the view.
-   * TypeScript NEVER recomputes any monetary value (AGENTS.md §5).
-   *
-   * @param reservationId  UUID of the reservation
-   * @returns              InvoiceTotals or null if no invoice exists yet
-   */
+  // Read all billing totals for a reservation from vw_invoice_totals.
   getInvoiceTotals: async (reservationId: string): Promise<InvoiceTotals | null> => {
     const result = await pool.query<{
       invoice_id: string;
@@ -105,14 +70,7 @@ export const billingRepository = {
     };
   },
 
-  /**
-   * Read billing totals for a specific invoice_id from vw_invoice_totals.
-   *
-   * Used when the caller already knows the invoice_id (e.g. payment flow).
-   *
-   * @param invoiceId  UUID of the billing_summary record
-   * @returns          InvoiceTotals or null if not found
-   */
+  // Read billing totals for a specific invoice_id from vw_invoice_totals.
   getInvoiceTotalsById: async (invoiceId: string): Promise<InvoiceTotals | null> => {
     const result = await pool.query<{
       invoice_id: string;

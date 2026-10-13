@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useId } from 'react';
 
-/* ─── Types ─────────────────────────────────────────────────────────────────── */
+// Types
 
 interface GuestNavClientProps {
   isLoggedIn: boolean;
   guestName: string | null;
 }
 
-/* ─── Nav links ─────────────────────────────────────────────────────────────── */
+// Nav links
 
 const PUBLIC_LINKS = [
   { href: '/search', label: 'Search Rooms' },
@@ -21,7 +21,7 @@ const GUEST_LINKS = [
   { href: '/guest/reservations', label: 'My Reservations' },
 ] as const;
 
-/* ─── Component ─────────────────────────────────────────────────────────────── */
+// Component
 
 export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClientProps) {
   const pathname = usePathname();
@@ -30,13 +30,13 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
   const [loggingOut, setLoggingOut] = useState(false);
   const menuId = useId();
 
-  /* ── Close mobile menu on route change ── */
+  // Close mobile menu on route change
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting local UI state on navigation is a side-effect response to pathname, not cascading render
     setMenuOpen(false);
   }, [pathname]);
 
-  /* ── Close menu on Escape key ── */
+  // Close menu on Escape key
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -59,7 +59,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
-  /* ── Link class helper ── */
+  // Link class helper
   const navLinkClass = (href: string) =>
     [
       'relative px-3.5 py-1.5 rounded-sm text-xs uppercase tracking-[0.14em] font-medium transition-colors duration-[var(--duration-fast)]',
@@ -85,7 +85,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
         aria-label="Guest navigation"
         className="container-page flex h-16 items-center justify-between"
       >
-        {/* ── Logo ── */}
+        {/* Logo */}
         <Link
           id="guest-nav-logo"
           href="/"
@@ -119,7 +119,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
           </div>
         </Link>
 
-        {/* ── Desktop Nav Links ── */}
+        {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-1">
           {PUBLIC_LINKS.map(({ href, label }) => (
             <Link key={href} id={`guest-nav-${label.toLowerCase().replace(/\s+/g, '-')}`} href={href} className={navLinkClass(href)}>
@@ -134,7 +134,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
             ))}
         </div>
 
-        {/* ── Desktop Auth Controls ── */}
+        {/* Desktop Auth Controls */}
         <div className="hidden md:flex items-center gap-2.5">
           {isLoggedIn ? (
             <>
@@ -171,7 +171,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
           )}
         </div>
 
-        {/* ── Mobile: hamburger ── */}
+        {/* Mobile: hamburger */}
         <div className="flex md:hidden items-center gap-2">
           <button
             id="guest-nav-hamburger"
@@ -197,7 +197,7 @@ export default function GuestNavClient({ isLoggedIn, guestName }: GuestNavClient
         </div>
       </nav>
 
-      {/* ── Mobile Menu Panel ── */}
+      {/* Mobile Menu Panel */}
       {menuOpen && (
         <div
           id={menuId}

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useId } from 'react';
 import type { StaffRole } from '@/types/enums';
 
-/* ─── Types ──────────────────────────────────────────────────────────────────── */
+// Types
 
 export interface StaffNavClientProps {
   role: StaffRole;
@@ -15,7 +15,7 @@ export interface StaffNavClientProps {
   branchName: string | null;
 }
 
-/* ─── Nav link definitions ───────────────────────────────────────────────────── */
+// Nav link definitions
 
 interface NavLink {
   href: string;
@@ -23,7 +23,6 @@ interface NavLink {
   /** Minimum role required to see this link. */
   minRole: StaffRole;
 }
-
 
 const STAFF_LINKS: NavLink[] = [
   { href: '/staff/reservations', label: 'Reservations', minRole: 'Receptionist' },
@@ -41,7 +40,6 @@ function hasAccess(actingRole: StaffRole, minRole: StaffRole): boolean {
   };
   return RANK[actingRole] >= RANK[minRole];
 }
-
 
 function SunIcon() {
   return (
@@ -65,14 +63,13 @@ function MoonIcon() {
   );
 }
 
-/* ─── Role badge colours ─────────────────────────────────────────────────────── */
+// Role badge colours
 
 const ROLE_BADGE: Record<StaffRole, { bg: string; text: string; border: string }> = {
   Receptionist: { bg: 'rgba(197, 168, 128, 0.12)', text: '#e0c49c', border: '1px solid rgba(197, 168, 128, 0.35)' },
   Manager: { bg: 'rgba(180, 83, 9, 0.16)', text: '#fcd34d', border: '1px solid rgba(180, 83, 9, 0.38)' },
   Admin: { bg: 'rgba(197, 168, 128, 0.2)', text: '#c5a880', border: '1px solid rgba(197, 168, 128, 0.45)' },
 };
-
 
 export default function StaffNavClient({ role, staffName, branchName }: StaffNavClientProps) {
   const pathname = usePathname();
@@ -83,7 +80,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
   const [isDark, setIsDark] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  /* ── Initialise theme from localStorage on mount ── */
+  // Initialise theme from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('skynest-theme');
     if (stored === 'dark') {
@@ -96,13 +93,13 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
     }
   }, []);
 
-  /* ── Close mobile menu on route change ── */
+  // Close mobile menu on route change
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMenuOpen(false);
   }, [pathname]);
 
-  /* ── Close menu on Escape key ── */
+  // Close menu on Escape key
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -135,7 +132,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
-  /* ── Link class helpers ── */
+  // Link class helpers
   const navLinkClass = (href: string) =>
     [
       'relative px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors duration-[var(--duration-fast)]',
@@ -168,7 +165,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
         aria-label="Staff navigation"
         className="container-page flex h-16 items-center justify-between"
       >
-        {/* ── Logo ── */}
+        {/* Logo */}
         <Link
           id="staff-nav-logo"
           href="/staff/dashboard"
@@ -200,7 +197,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           </span>
         </Link>
 
-        {/* ── Desktop Nav Links ── */}
+        {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-1">
           {visibleLinks.map(({ href, label }) => (
             <Link
@@ -214,7 +211,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           ))}
         </div>
 
-        {/* ── Desktop: Branch badge + Staff info + Controls ── */}
+        {/* Desktop: Branch badge + Staff info + Controls */}
         <div className="hidden md:flex items-center gap-2">
           {/* Branch badge - shown for Receptionist to reinforce branch scope */}
           {branchName && (
@@ -274,7 +271,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
           </button>
         </div>
 
-        {/* ── Mobile: theme toggle + hamburger ── */}
+        {/* Mobile: theme toggle + hamburger */}
         <div className="flex md:hidden items-center gap-2">
           <button
             id="staff-nav-theme-toggle-mobile"
@@ -313,7 +310,7 @@ export default function StaffNavClient({ role, staffName, branchName }: StaffNav
         </div>
       </nav>
 
-      {/* ── Mobile Menu Panel ── */}
+      {/* Mobile Menu Panel */}
       {menuOpen && (
         <div
           id={menuId}

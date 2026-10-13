@@ -5,7 +5,7 @@ import type { FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-/* ─── Types ──────────────────────────────────────────────────────────────────── */
+// Types
 
 interface RegisterFormState {
   username: string;
@@ -44,11 +44,9 @@ interface ApiSuccessResponse {
   meta: { requestId: string };
 }
 
-/* ─── Client-side validation ─────────────────────────────────────────────────── */
+// Client-side validation
 
-/**
- * Mirror of GuestRegisterSchema - UX only, server always re-validates.
- */
+// Mirror of GuestRegisterSchema - UX only, server always re-validates.
 function validateForm(values: RegisterFormState): FieldErrors {
   const errors: FieldErrors = {};
 
@@ -89,7 +87,7 @@ function validateForm(values: RegisterFormState): FieldErrors {
   return errors;
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────────── */
+// Sub-components
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -103,7 +101,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────────── */
+// Page
 
 export default function GuestRegisterPage() {
   const router = useRouter();
@@ -206,7 +204,7 @@ export default function GuestRegisterPage() {
     }
   }
 
-  /* ── Shared input class helper ── */
+  // Shared input class helper
   const inputClass = (field: keyof FieldErrors) => [
     'block w-full px-4 py-2.5 rounded-xl text-sm',
     'bg-white dark:bg-neutral-900',
@@ -220,7 +218,7 @@ export default function GuestRegisterPage() {
 
   return (
     <>
-      {/* ── SEO ── */}
+      {/* SEO */}
       <title>Create Account - SkyNest Hotels</title>
 
       <main
@@ -230,7 +228,7 @@ export default function GuestRegisterPage() {
           text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
-        {/* ── Hero header ── */}
+        {/* Hero header */}
         <section
           aria-labelledby="register-heading"
           className="
@@ -263,7 +261,7 @@ export default function GuestRegisterPage() {
           </div>
         </section>
 
-        {/* ── Form card ── */}
+        {/* Form card */}
         <section className="flex-1 flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-lg">
 
@@ -314,7 +312,7 @@ export default function GuestRegisterPage() {
                 </p>
               </div>
 
-              {/* ── Full Name ── */}
+              {/* Full Name */}
               <div>
                 <label htmlFor={id('full_name')} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                   Full Name <span aria-hidden="true" className="text-red-500">*</span>
@@ -336,7 +334,7 @@ export default function GuestRegisterPage() {
                 <FieldError id={errId('full_name')} message={fieldErrors.full_name} />
               </div>
 
-              {/* ── Email ── */}
+              {/* Email */}
               <div>
                 <label htmlFor={id('email')} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                   Email Address <span aria-hidden="true" className="text-red-500">*</span>
@@ -358,7 +356,7 @@ export default function GuestRegisterPage() {
                 <FieldError id={errId('email')} message={fieldErrors.email} />
               </div>
 
-              {/* ── Username ── */}
+              {/* Username */}
               <div>
                 <label htmlFor={id('username')} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                   Username <span aria-hidden="true" className="text-red-500">*</span>
@@ -385,7 +383,7 @@ export default function GuestRegisterPage() {
                 <FieldError id={errId('username')} message={fieldErrors.username} />
               </div>
 
-              {/* ── Password ── */}
+              {/* Password */}
               <div>
                 <label htmlFor={id('password')} className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                   Password <span aria-hidden="true" className="text-red-500">*</span>
@@ -442,7 +440,7 @@ export default function GuestRegisterPage() {
                 <FieldError id={errId('password')} message={fieldErrors.password} />
               </div>
 
-              {/* ── Optional fields ── */}
+              {/* Optional fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                 {/* Phone */}
@@ -488,7 +486,7 @@ export default function GuestRegisterPage() {
                 </div>
               </div>
 
-              {/* ── Submit ── */}
+              {/* Submit */}
               <button
                 id="register-submit-btn"
                 type="submit"
@@ -523,7 +521,7 @@ export default function GuestRegisterPage() {
                 )}
               </button>
 
-              {/* ── Login link ── */}
+              {/* Login link */}
               <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
                 Already have an account?{' '}
                 <Link

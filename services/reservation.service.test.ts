@@ -1,16 +1,8 @@
-/**
- * Reservation Service tests - P06-M03-T01 (real DB wire-up)
- * Mocks the reservation repository so tests stay fast and DB-independent.
- * All original assertions are preserved.
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { CreateReservationInput } from '@/lib/validation/reservation.schema';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // Seed data mirrors the Phase 3 mock store - used to configure mock returns
-// ---------------------------------------------------------------------------
 const MOCK_RESERVATIONS = [
   {
     reservation_id: 'res-mock-001',
@@ -121,9 +113,7 @@ const MOCK_ACTIVE = [
   },
 ];
 
-// ---------------------------------------------------------------------------
 // Hoisted mock fns for repository methods
-// ---------------------------------------------------------------------------
 const {
   mockCallCreate,
   mockListByGuest,
@@ -138,9 +128,7 @@ const {
   mockCallCancel: vi.fn(),
 }));
 
-// ---------------------------------------------------------------------------
 // Mock the reservation repository - service calls go through these fns
-// ---------------------------------------------------------------------------
 vi.mock('@/repositories/reservation.repository', () => ({
   reservationRepository: {
     callCreateReservation: mockCallCreate,
@@ -170,9 +158,7 @@ vi.mock('@/lib/db/pool', () => ({
 import { reservationService, ServiceError } from './reservation.service';
 import { reservationRepository } from '@/repositories/reservation.repository';
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('Reservation Service', () => {
   beforeEach(() => {
     // _resetMockStore is now a no-op in the real repo; safe to call on vi.fn()
@@ -180,7 +166,6 @@ describe('Reservation Service', () => {
     vi.clearAllMocks();
   });
 
-  // -------------------------------------------------------------------------
   describe('createGuestReservation', () => {
     it('creates a guest reservation and sources guest_id from session', async () => {
       const newId = 'res-new-001';
@@ -274,7 +259,6 @@ describe('Reservation Service', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('createStaffReservation', () => {
     it('creates a staff reservation with employeeId and discount', async () => {
       const newId = 'res-staff-001';
@@ -310,7 +294,6 @@ describe('Reservation Service', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('getGuestReservations', () => {
     it('returns all reservations for the session guest', async () => {
       const guest001 = MOCK_RESERVATIONS.filter((r) => r.guest_id === 'guest-mock-001');
@@ -322,7 +305,6 @@ describe('Reservation Service', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('listActiveReservations', () => {
     it('returns all active reservations for Manager/Admin (branchId = null)', async () => {
       mockListActive.mockResolvedValueOnce(MOCK_ACTIVE);
@@ -344,7 +326,6 @@ describe('Reservation Service', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('cancelReservation', () => {
     it('cancels a Booked reservation successfully', async () => {
       mockCallCancel.mockResolvedValueOnce(undefined);

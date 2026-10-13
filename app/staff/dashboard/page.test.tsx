@@ -1,32 +1,10 @@
 /** @vitest-environment jsdom */
 
-/**
- * Unit tests for Staff Dashboard Skeleton - P01-M01-T29
- *
- * Strategy:
- *   The dashboard is a Server Component that calls getSession() and
- *   conditionally renders content based on the returned role.
- *
- *   Because vitest-jsdom cannot run RSC async functions directly, we:
- *     1. Mock `@/lib/auth/session` so `getSession` returns a controlled session.
- *     2. Mock `next/navigation` (redirect, Link).
- *     3. Mock `@/components/StaffNav` with a lightweight stub.
- *     4. Import and invoke the default export as an async function (RSC pattern),
- *        then render the JSX it returns.
- *
- *   Coverage:
- *     - Rendering: heading, KPI cards, quick-action links, activity feed, footer
- *     - Role routing: Receptionist sees receptionist KPIs; Manager sees manager KPIs
- *     - Access control: Manager-only actions hidden for Receptionist
- *     - Unauthenticated: redirect to /staff/login called
- *     - Breadcrumb elements and accessible landmarks present
- */
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import React from 'react';
 
-/* ─── Mocks ──────────────────────────────────────────────────────────────── */
+// Mocks
 
 const mockRedirect = vi.fn();
 vi.mock('next/navigation', () => ({
@@ -94,7 +72,7 @@ vi.mock('@/repositories/dashboard.repository', () => ({
   },
 }));
 
-/* ─── Helper: render the RSC page ─────────────────────────────────────────── */
+// Helper: render the RSC page
 
 async function renderDashboard() {
   // Dynamic import so that the mock above is in place first
@@ -104,7 +82,7 @@ async function renderDashboard() {
   render(jsx as React.ReactElement);
 }
 
-/* ─── Session factories ────────────────────────────────────────────────────── */
+// Session factories
 
 function receptionistSession() {
   return {
@@ -133,7 +111,7 @@ function adminSession() {
   };
 }
 
-/* ─── Tests ─────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('StaffDashboardPage - rendering', () => {
   beforeEach(() => {

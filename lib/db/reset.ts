@@ -1,21 +1,3 @@
-/**
- * DB reset script - P06-M01-T02
- *
- * Drops and recreates the database from empty, then runs migrations, applies
- * all routines/views/triggers/indexes in correct dependency order, and finally
- * seeds reference data.
- *
- * Run with: npm run db:reset
- *
- * Requires in .env.local:
- *   POSTGRES_ADMIN_URL - superuser connection string (NOT to hrgsms DB itself)
- *   DATABASE_URL       - application connection string (to hrgsms DB)
- *
- * WARNING: This destroys ALL data. Development use only.
- *
- * Lecture alignment: L05 (transactions, schema management), L06 (DDL lifecycle)
- */
-
 import { Client } from 'pg';
 import { execSync } from 'child_process';
 import { readFile, readdir } from 'fs/promises';
@@ -23,17 +5,13 @@ import { join } from 'path';
 
 const PROJECT_ROOT = process.cwd();
 
-// ---------------------------------------------------------------------------
 // Helper: run a SQL file against the application DB
-// ---------------------------------------------------------------------------
 async function applySqlFile(client: Client, filePath: string): Promise<void> {
   const sql = await readFile(filePath, 'utf8');
   await client.query(sql);
 }
 
-// ---------------------------------------------------------------------------
 // Helper: apply all .sql files in a directory, sorted alphabetically
-// ---------------------------------------------------------------------------
 async function applyDirectory(
   client: Client,
   dirPath: string,
@@ -57,9 +35,7 @@ async function applyDirectory(
   }
 }
 
-// ---------------------------------------------------------------------------
 // Helper: apply all .sql files in a directory AND its subdirectories
-// ---------------------------------------------------------------------------
 async function applyDirectoryRecursive(
   client: Client,
   dirPath: string,
@@ -96,9 +72,7 @@ async function applyDirectoryRecursive(
   }
 }
 
-// ---------------------------------------------------------------------------
 // Main
-// ---------------------------------------------------------------------------
 async function resetDatabase(): Promise<void> {
   const adminUrl = process.env.POSTGRES_ADMIN_URL;
   const appUrl = process.env.DATABASE_URL;
@@ -124,9 +98,7 @@ async function resetDatabase(): Promise<void> {
 
   console.log(`[reset] Target database: ${dbName}`);
 
-  // -------------------------------------------------------------------------
   // Step 1: Drop and recreate the database via admin connection
-  // -------------------------------------------------------------------------
   console.log('\n[reset] Step 1 - Drop and recreate database...');
   const adminClient = new Client({ connectionString: adminUrl });
   await adminClient.connect();
@@ -146,13 +118,10 @@ async function resetDatabase(): Promise<void> {
 
   await adminClient.end();
 
-  // -------------------------------------------------------------------------
   // Step 2: Run migrations (tables, enums, constraints, indexes in migrations/)
-  // -------------------------------------------------------------------------
   console.log('\n[reset] Step 2 - Running migrations (npm run migrate)...');
   execSync('npm run migrate', { stdio: 'inherit', cwd: PROJECT_ROOT });
 
-  // -------------------------------------------------------------------------
   // Step 3: Apply routines, views, triggers, and remaining indexes
   //         These are CREATE OR REPLACE objects applied after all tables exist.
   //
@@ -169,7 +138,6 @@ async function resetDatabase(): Promise<void> {
   //           3h. views - depend on all tables + routines above
   //           3i. triggers - depend on tables + audit log
   //           3j. indexes - standalone, no deps beyond tables
-  // -------------------------------------------------------------------------
   console.log('\n[reset] Step 3 - Applying routines, views, triggers, and indexes...');
 
   const appClient = new Client({ connectionString: appUrl });
@@ -231,9 +199,7 @@ async function resetDatabase(): Promise<void> {
 
   await appClient.end();
 
-  // -------------------------------------------------------------------------
   // Step 4: Run seeds
-  // -------------------------------------------------------------------------
   console.log('\n[reset] Step 4 - Running seeds (npm run seed)...');
   execSync('npm run seed', { stdio: 'inherit', cwd: PROJECT_ROOT });
 

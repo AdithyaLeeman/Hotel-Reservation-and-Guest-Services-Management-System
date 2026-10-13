@@ -1,21 +1,3 @@
-/**
- * Route: /api/staff/reservations
- *
- * GET  - list active (Booked + CheckedIn) reservations for staff dashboard
- * POST - create a reservation on behalf of a guest (staff-initiated)
- *
- * Security:
- *   - Requires a staff role (Receptionist / Manager / Admin)
- *   - Receptionist: automatically scoped to session.branchId
- *   - Manager / Admin: can see all branches
- *   - guest_id for creation must be supplied as body.guest_id (staff looks it up),
- *     but employee_id and branch scoping always come from session
- *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
- *
- * Owned by: Member 3 (M3) | Tasks: P03-M03-T18, P03-M03-T19
- * Lecture alignment: L06 (REST), L07 (RBAC, branch scoping)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 import { CreateReservationSchema } from '@/lib/validation/reservation.schema';
@@ -24,11 +6,9 @@ import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // DEV SESSION STUB - guarded so it never applies in production.
 // Replace with real iron-session once P01-M01-T07 lands.
 // Toggle the returned role/branchId to test different access scenarios.
-// ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-003',
@@ -53,18 +33,14 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Extended body schema for staff create (adds required guest_id)
-// ---------------------------------------------------------------------------
 const StaffCreateReservationSchema = CreateReservationSchema.and(
   z.object({
     guest_id: z.string().uuid('guest_id must be a valid UUID'),
   })
 );
 
-// ---------------------------------------------------------------------------
 // Shared response helpers
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
@@ -84,13 +60,11 @@ function isStaffRole(role: string | undefined): role is StaffRole {
   return STAFF_ROLES.includes(role as StaffRole);
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/reservations - list active reservations
 //
 // Query params:
 //   ?branch_id=<n>  - (Manager/Admin only) filter to a specific branch
 //                     Receptionist always sees only their own branch.
-// ---------------------------------------------------------------------------
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
@@ -131,9 +105,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // POST /api/staff/reservations - create reservation (staff-initiated)
-// ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   // TODO (P01-M01-T07): replace resolveSession with direct getSession() call

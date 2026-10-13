@@ -1,27 +1,3 @@
-/**
- * Route: POST /api/staff/reservations/[id]/checkin
- *
- * Triggers the check-in workflow for a reservation.
- * Delegates to checkinService which (mock-first) transitions the reservation
- * to 'CheckedIn' and marks all reservation rooms as 'Occupied'.
- *
- * Security:
- *   - Requires staff role: Receptionist, Manager, or Admin
- *   - Receptionist: scoped to their own branchId
- *   - Manager / Admin: can check in any reservation
- *
- * HTTP responses:
- *   200  - check-in succeeded
- *   401  - not authenticated
- *   403  - wrong role or branch scope violation
- *   404  - reservation not found
- *   409  - reservation is not in 'Booked' status (INVALID_STATUS_TRANSITION)
- *   500  - unexpected error
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T12 (Mock-First)
- * Lecture alignment: L08 (transactions), L09 (stored procedures, atomicity)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { checkinService, CheckinServiceError } from '@/services/checkin.service';
@@ -47,9 +23,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers
-// ---------------------------------------------------------------------------
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
     { data, meta: { requestId: crypto.randomUUID() } },
@@ -68,9 +42,7 @@ function isStaffRole(role: string | undefined): role is StaffRole {
   return STAFF_ROLES.includes(role as StaffRole);
 }
 
-// ---------------------------------------------------------------------------
 // POST /api/staff/reservations/[id]/checkin
-// ---------------------------------------------------------------------------
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

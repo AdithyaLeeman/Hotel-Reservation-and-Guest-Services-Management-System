@@ -9,10 +9,8 @@ vi.mock('@/lib/auth/session', () => ({
   getSession: vi.fn(),
 }));
 
-// ---------------------------------------------------------------------------
 // Mock room repository - real repo now uses pg Pool (Phase 6 SP6.1).
 // Route tests stay fast and DB-independent.
-// ---------------------------------------------------------------------------
 vi.mock('@/repositories/room.repository', () => {
   const ROOM_TYPES = [
     { type_id: 1, type_name: 'Single', capacity: 1, daily_rate: '10000.00' },

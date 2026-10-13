@@ -1,11 +1,3 @@
-/**
- * Apply routines, views, triggers, and indexes to the existing database.
- * Run with: npm run db:routines
- *
- * Safe and idempotent: applies CREATE OR REPLACE routines, views, triggers,
- * and indexes without dropping the database or destroying data.
- */
-
 import { Client } from 'pg';
 import { readFile, readdir } from 'fs/promises';
 import { join } from 'path';

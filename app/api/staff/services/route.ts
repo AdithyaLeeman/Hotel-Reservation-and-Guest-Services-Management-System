@@ -1,35 +1,3 @@
-/**
- * Route: GET /api/staff/services  +  POST /api/staff/services
- *
- * GET  - Returns all Active service catalogue items (any staff role).
- * POST - Adds a new item to the service catalogue (Manager / Admin only).
- *
- * Security:
- *   GET  : Receptionist | Manager | Admin
- *   POST : Manager | Admin ONLY  (REQ-4.7.1, SRS Section 5.3)
- *   No branch scoping - the catalogue is hotel-wide.
- *
- * HTTP responses (GET):
- *   200  - array of catalogue items (may be empty)
- *   401  - not authenticated
- *   500  - unexpected error
- *
- * HTTP responses (POST):
- *   201  - catalogue item created
- *   400  - validation error
- *   401  - not authenticated
- *   403  - insufficient role (Receptionist)
- *   409  - service name already exists
- *   500  - unexpected error
- *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- *   GET  listCatalogue()      -> SELECT * FROM service_catalogue WHERE status='Active' ORDER BY service_name
- *   POST addCatalogueItem()   -> INSERT INTO service_catalogue ... RETURNING *
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T14 (GET) + P04-M04-T15 (POST)
- * Lecture alignment: L06 (stored procedures), L08 (price snapshot rule)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSession } from '@/lib/auth/session';
@@ -59,9 +27,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers
-// ---------------------------------------------------------------------------
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
     { data, meta: { requestId: crypto.randomUUID() } },
@@ -81,9 +47,7 @@ function err(
   );
 }
 
-// ---------------------------------------------------------------------------
 // Role helpers
-// ---------------------------------------------------------------------------
 const STAFF_ROLES    = ['Receptionist', 'Manager', 'Admin'] as const;
 const MGMT_ROLES     = ['Manager', 'Admin'] as const;
 type StaffRole      = (typeof STAFF_ROLES)[number];
@@ -97,9 +61,7 @@ function isManagementRole(role: string | undefined): role is ManagementRole {
   return MGMT_ROLES.includes(role as ManagementRole);
 }
 
-// ---------------------------------------------------------------------------
 // POST body schema
-// ---------------------------------------------------------------------------
 const AddCatalogueItemBody = z.object({
   service_name: z
     .string({ error: 'service_name is required.' })
@@ -111,9 +73,7 @@ const AddCatalogueItemBody = z.object({
   status: z.enum(['Active', 'Inactive']).optional().default('Active'),
 });
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/services
-// ---------------------------------------------------------------------------
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_req?: Request): Promise<NextResponse> {
   const session = await resolveSession();
@@ -135,9 +95,7 @@ export async function GET(_req?: Request): Promise<NextResponse> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // POST /api/staff/services
-// ---------------------------------------------------------------------------
 export async function POST(
   req: NextRequest
 ): Promise<NextResponse> {

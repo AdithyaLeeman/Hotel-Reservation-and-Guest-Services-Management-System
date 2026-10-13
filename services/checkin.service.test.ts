@@ -1,16 +1,6 @@
-/**
- * Check-in Service Tests - P06-M04-T01 (real DB wire-up)
- * Mocks the pool so tests stay fast and DB-independent.
- * All original assertions are preserved.
- *
- * Run: npm test -- services/checkin.service.test.ts
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-// ---------------------------------------------------------------------------
 // Seed data mirrors the original mock store
-// ---------------------------------------------------------------------------
 type ReservationStatus = 'Booked' | 'CheckedIn' | 'Cancelled' | 'CheckedOut';
 
 interface MockReservationRow {
@@ -30,18 +20,14 @@ function resetSeed(): void {
   };
 }
 
-// ---------------------------------------------------------------------------
 // Hoisted mock fns for pool
-// ---------------------------------------------------------------------------
 const { mockPoolQuery, mockClientQuery, mockClientRelease } = vi.hoisted(() => ({
   mockPoolQuery: vi.fn(),
   mockClientQuery: vi.fn(),
   mockClientRelease: vi.fn(),
 }));
 
-// ---------------------------------------------------------------------------
 // Mock @/lib/db/pool - the service and repository both import this
-// ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {
     query: mockPoolQuery,
@@ -56,9 +42,7 @@ vi.mock('@/lib/db/pool', () => ({
 
 import { checkinService, CheckinServiceError } from './checkin.service';
 
-// ---------------------------------------------------------------------------
 // Configure pool mock to simulate the seed data
-// ---------------------------------------------------------------------------
 function configurePoolMocks(): void {
   resetSeed();
 
@@ -102,9 +86,7 @@ function configurePoolMocks(): void {
   });
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('Check-in Service (Mock)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -112,9 +94,7 @@ describe('Check-in Service (Mock)', () => {
     checkinService._resetMockStore(); // no-op in real impl; keeps API compatible
   });
 
-  // -------------------------------------------------------------------------
   // Happy path
-  // -------------------------------------------------------------------------
   describe('checkIn - success', () => {
     it('transitions a Booked reservation to CheckedIn', async () => {
       await expect(
@@ -143,9 +123,7 @@ describe('Check-in Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // NOT_FOUND
-  // -------------------------------------------------------------------------
   describe('checkIn - NOT_FOUND', () => {
     it('throws CheckinServiceError NOT_FOUND for unknown reservationId', async () => {
       await expect(
@@ -162,9 +140,7 @@ describe('Check-in Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // NOT_BOOKED_STATUS
-  // -------------------------------------------------------------------------
   describe('checkIn - NOT_BOOKED_STATUS', () => {
     it('throws NOT_BOOKED_STATUS when reservation is already CheckedIn', async () => {
       // RES-MOCK-003 starts in CheckedIn state
@@ -181,9 +157,7 @@ describe('Check-in Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // BRANCH_SCOPE_VIOLATION
-  // -------------------------------------------------------------------------
   describe('checkIn - BRANCH_SCOPE_VIOLATION', () => {
     it('throws BRANCH_SCOPE_VIOLATION when Receptionist tries to check in another branch', async () => {
       // RES-MOCK-002 is branch 1; employee is scoped to branch 2
@@ -202,9 +176,7 @@ describe('Check-in Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // _resetMockStore (no-op compatibility)
-  // -------------------------------------------------------------------------
   describe('_resetMockStore', () => {
     it('restores reservations to seed state after a check-in', async () => {
       await checkinService.checkIn('RES-MOCK-001', 4, 1);

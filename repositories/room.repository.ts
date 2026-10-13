@@ -1,19 +1,8 @@
-/**
- * Room Repository - data access layer for rooms and room types.
- * Owned by: Member 2 (M2) | Task: P06-M02-T01
- *
- * Phase 6 SP6.1 - Mock store replaced with real parameterized pg Pool queries.
- * All SQL is parameterized (no string concatenation - AGENTS.md §8).
- * Money columns returned as strings from pg (NUMERIC(12,2) - AGENTS.md §8).
- */
-
 import { pool } from '@/lib/db/pool';
 import type { Room, RoomType, Amenity } from '@/types/domain';
 import type { RoomStatus } from '@/types/enums';
 
-// ---------------------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------------------
 
 export interface RoomWithDetails extends Room {
   room_type?: RoomType;
@@ -27,14 +16,10 @@ export interface CreateRoomInput {
   status?: RoomStatus;
 }
 
-// ---------------------------------------------------------------------------
 // Repository
-// ---------------------------------------------------------------------------
 
 export const roomRepository = {
-  /**
-   * List all rooms across all branches (Manager / Admin use).
-   */
+  // List all rooms across all branches (Manager / Admin use).
   listAll: async (): Promise<Room[]> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -56,9 +41,7 @@ export const roomRepository = {
     }));
   },
 
-  /**
-   * List all rooms belonging to a specific branch.
-   */
+  // List all rooms belonging to a specific branch.
   listByBranch: async (branchId: number): Promise<Room[]> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -82,9 +65,7 @@ export const roomRepository = {
     }));
   },
 
-  /**
-   * List all rooms across all branches joined with room_type + amenities.
-   */
+  // List all rooms across all branches joined with room_type + amenities.
   listWithDetailsAll: async (): Promise<RoomWithDetails[]> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -142,10 +123,8 @@ export const roomRepository = {
     }));
   },
 
-  /**
-   * List rooms for a branch joined with room_type + amenities.
-   * Amenities aggregated as a JSON array so a single query covers the join.
-   */
+  // List rooms for a branch joined with room_type + amenities.
+  // Amenities aggregated as a JSON array so a single query covers the join.
   listWithDetailsByBranch: async (branchId: number): Promise<RoomWithDetails[]> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -205,9 +184,7 @@ export const roomRepository = {
     }));
   },
 
-  /**
-   * Find a room by primary key (room_id).
-   */
+  // Find a room by primary key (room_id).
   findById: async (roomId: number): Promise<Room | null> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -232,10 +209,8 @@ export const roomRepository = {
     };
   },
 
-  /**
-   * Find a room by unique natural candidate key (branch_id, room_number).
-   * Enforces UNIQUE(branch_id, room_number) invariant from ERD.
-   */
+  // Find a room by unique natural candidate key (branch_id, room_number).
+  // Enforces UNIQUE(branch_id, room_number) invariant from ERD.
   findByBranchAndNumber: async (
     branchId: number,
     roomNumber: string
@@ -263,11 +238,9 @@ export const roomRepository = {
     };
   },
 
-  /**
-   * Insert a new room record.
-   * PostgreSQL UNIQUE constraint on (branch_id, room_number) raises SQLSTATE 23505
-   * on duplicate - caught and re-thrown by the service layer as RoomConflictError.
-   */
+  // Insert a new room record.
+  // PostgreSQL UNIQUE constraint on (branch_id, room_number) raises SQLSTATE 23505
+  // on duplicate - caught and re-thrown by the service layer as RoomConflictError.
   insert: async (input: CreateRoomInput): Promise<Room> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -296,10 +269,8 @@ export const roomRepository = {
     };
   },
 
-  /**
-   * Update the operational status of a room.
-   * Returns the updated row; throws if room_id is not found.
-   */
+  // Update the operational status of a room.
+  // Returns the updated row; throws if room_id is not found.
   updateStatus: async (roomId: number, status: RoomStatus): Promise<Room> => {
     const result = await pool.query<{
       room_id: number | string;
@@ -327,9 +298,7 @@ export const roomRepository = {
     };
   },
 
-  /**
-   * List all room types in the catalogue.
-   */
+  // List all room types in the catalogue.
   listRoomTypes: async (): Promise<RoomType[]> => {
     const result = await pool.query<{
       type_id: number | string;
@@ -349,9 +318,7 @@ export const roomRepository = {
     }));
   },
 
-  /**
-   * Find a single room type by primary key.
-   */
+  // Find a single room type by primary key.
   findRoomTypeById: async (typeId: number): Promise<RoomType | null> => {
     const result = await pool.query<{
       type_id: number | string;
@@ -374,9 +341,7 @@ export const roomRepository = {
     };
   },
 
-  /**
-   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
-   */
+  // No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
   _resetMockStore: (): void => {},
 };
 

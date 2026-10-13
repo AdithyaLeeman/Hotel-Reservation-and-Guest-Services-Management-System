@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { availabilityService, AvailabilityValidationError } from '@/services/availability.service';
 
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

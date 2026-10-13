@@ -1,9 +1,3 @@
-/**
- * Run this script to generate a valid bcrypt hash for the admin account.
- * Usage: node scripts/gen-admin-hash.js
- *
- * Then paste the printed SQL into psql to update the admin password hash.
- */
 const bcrypt = require('bcryptjs');
 
 const PASSWORD = 'Admin@SkyNest2024!';

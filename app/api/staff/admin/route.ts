@@ -1,15 +1,3 @@
-/**
- * Route: POST /api/staff/admin
- *
- * Actions (dispatched by `action` field in body):
- *   - "create_staff"   - Create a new Receptionist or Manager account
- *   - "update_branch"  - Reassign an employee to a different branch
- *   - "toggle_status"  - Activate or suspend a staff account
- *
- * Security: Admin role only (enforced server-side).
- * Owned by: Admin panel (Member 1 territory, Admin-only access)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';

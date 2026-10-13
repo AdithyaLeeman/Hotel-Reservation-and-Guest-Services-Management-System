@@ -1,10 +1,3 @@
-/**
- * Unit tests for lib/validation/auth.schema.ts (P01-M01-T21)
- *
- * Covers: GuestRegisterSchema, GuestLoginSchema, StaffLoginSchema, flattenZodErrors
- * Strategy: valid inputs pass; each invalid field produces the expected error message.
- */
-
 import { describe, it, expect } from 'vitest';
 import { ZodError } from 'zod';
 import {
@@ -14,9 +7,7 @@ import {
   flattenZodErrors,
 } from './auth.schema';
 
-// ---------------------------------------------------------------------------
 // GuestRegisterSchema
-// ---------------------------------------------------------------------------
 
 describe('GuestRegisterSchema', () => {
   const valid = {
@@ -120,9 +111,7 @@ describe('GuestRegisterSchema', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // GuestLoginSchema
-// ---------------------------------------------------------------------------
 
 describe('GuestLoginSchema', () => {
   it('accepts valid login credentials', () => {
@@ -149,9 +138,7 @@ describe('GuestLoginSchema', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // StaffLoginSchema
-// ---------------------------------------------------------------------------
 
 describe('StaffLoginSchema', () => {
   it('accepts valid staff login credentials', () => {
@@ -176,9 +163,7 @@ describe('StaffLoginSchema', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // flattenZodErrors
-// ---------------------------------------------------------------------------
 
 describe('flattenZodErrors', () => {
   it('returns a record with one message per failing field', () => {

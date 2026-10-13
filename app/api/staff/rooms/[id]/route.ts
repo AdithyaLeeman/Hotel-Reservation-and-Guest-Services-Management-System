@@ -1,21 +1,3 @@
-/**
- * Route: /api/staff/rooms/[id]
- *
- * GET   - get room details by ID
- * PATCH - update room status (Available, Occupied, Maintenance)
- *
- * Security & RBAC:
- *   - Authentication: staff role required (Receptionist, Manager, Admin)
- *   - Branch Scoping:
- *       Receptionist can only view and update rooms within their assigned branch.
- *   - Maintenance Status Guard (AGENTS.md §10, BR-16):
- *       Only Manager or Admin may set a room's status to 'Maintenance'.
- *       Receptionists attempting to set 'Maintenance' receive 403 INSUFFICIENT_ROLE.
- *
- * Owned by: Member 2 (M2) | Tasks: P02-M02-T12
- * Lecture alignment: L06 (REST API), L07 (RBAC, branch scoping)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { getSession } from '@/lib/auth/session';
@@ -29,9 +11,7 @@ import { UpdateRoomStatusSchema } from '@/lib/validation/room.schema';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // Fallback dev session for local mock-first development
-// ---------------------------------------------------------------------------
 function getDevStaffSession(): Partial<SessionData> {
   return {
     userId: 'user-mock-staff-002',
@@ -57,9 +37,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers conforming to docs/21_shared-contracts.md Section 6
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
@@ -104,9 +82,7 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/rooms/[id]
-// ---------------------------------------------------------------------------
 
 export async function GET(
   _request: NextRequest,
@@ -164,9 +140,7 @@ export async function GET(
   }
 }
 
-// ---------------------------------------------------------------------------
 // PATCH /api/staff/rooms/[id] (P02-M02-T12)
-// ---------------------------------------------------------------------------
 
 export async function PATCH(
   request: NextRequest,

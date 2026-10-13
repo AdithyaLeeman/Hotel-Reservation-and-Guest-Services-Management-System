@@ -1,19 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
- * Tests: GET /api/staff/reports/top-services
- *
- * Covers:
- *   - 401 when unauthenticated (production mode, no session)
- *   - 403 for Guest role
- *   - 403 for Receptionist role (not allowed for reports)
- *   - 200 with full TopServiceRow[] for Manager
- *   - 200 with full TopServiceRow[] for Admin
- *   - Response shape: { data, meta: { requestId } }
- *   - Data is ordered by usage_rank ascending
- *   - Each row contains required vw_top_services fields
- *
- * Owned by: Member 3 (M3) | Task: P05-M03-T02
- */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NextRequest } from 'next/server';
@@ -33,9 +18,7 @@ describe('GET /api/staff/reports/top-services', () => {
     vi.clearAllMocks();
   });
 
-  // -------------------------------------------------------------------------
   // Authentication
-  // -------------------------------------------------------------------------
 
   it('returns 401 if unauthenticated (no session)', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({} as any);
@@ -56,9 +39,7 @@ describe('GET /api/staff/reports/top-services', () => {
     expect(json.error.code).toBe('NOT_AUTHENTICATED');
   });
 
-  // -------------------------------------------------------------------------
   // RBAC - roles that must be rejected
-  // -------------------------------------------------------------------------
 
   it('returns 403 if user has Guest role', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
@@ -92,9 +73,7 @@ describe('GET /api/staff/reports/top-services', () => {
     expect(json.error.message).toContain('Manager or Admin');
   });
 
-  // -------------------------------------------------------------------------
   // RBAC - roles that must succeed
-  // -------------------------------------------------------------------------
 
   it('returns 200 with data for Manager role', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
@@ -128,9 +107,7 @@ describe('GET /api/staff/reports/top-services', () => {
     expect(json.data.length).toBe(6);
   });
 
-  // -------------------------------------------------------------------------
   // Response shape
-  // -------------------------------------------------------------------------
 
   it('includes meta.requestId in success response', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
@@ -169,9 +146,7 @@ describe('GET /api/staff/reports/top-services', () => {
     }
   });
 
-  // -------------------------------------------------------------------------
   // Data ordering
-  // -------------------------------------------------------------------------
 
   it('returns rows ordered by usage_rank ascending', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
@@ -207,9 +182,7 @@ describe('GET /api/staff/reports/top-services', () => {
     expect(first.total_quantity).toBe(10);
   });
 
-  // -------------------------------------------------------------------------
   // Error handling - simulate repository failure
-  // -------------------------------------------------------------------------
 
   it('returns 500 if the repository throws an unexpected error', async () => {
     vi.spyOn(sessionModule, 'getSession').mockResolvedValue({

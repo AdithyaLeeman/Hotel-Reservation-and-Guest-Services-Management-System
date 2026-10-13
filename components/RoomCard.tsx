@@ -1,23 +1,7 @@
-/**
- * RoomCard - displays a single available room result on the public search page.
- *
- * Owned by: Member 2 (M2) | Task: P02-M02-T14
- * Type: 🟢 PARALLEL - no DB dependency.
- *
- * Design rules (context/07-ui-rules.md):
- * - daily_rate displayed as LKR with 2 decimal places - never multiplied here
- * - Color is never the only means of conveying information (icon + color)
- * - All interactive elements have unique, descriptive id attributes
- *
- * See context/06-ui-tokens.md for design tokens.
- */
-
 import type { AvailableRoom } from '@/repositories/availability.repository';
 import Link from 'next/link';
 
-// ---------------------------------------------------------------------------
 // Props
-// ---------------------------------------------------------------------------
 
 export interface RoomCardProps {
   room: AvailableRoom;
@@ -30,9 +14,7 @@ export interface RoomCardProps {
   highlightedAmenities?: string[];
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 function AmenityIcon({ name }: { name: string }) {
   const lower = name.toLowerCase();
@@ -83,14 +65,10 @@ function AmenityIcon({ name }: { name: string }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
-/**
- * Format a NUMERIC(12,2) string from the API as "LKR XX,XXX.XX".
- * Display-only - authoritative billing lives in PostgreSQL.
- */
+// Format a NUMERIC(12,2) string from the API as "LKR XX,XXX.XX".
+// Display-only - authoritative billing lives in PostgreSQL.
 function formatRate(dailyRate: string): string {
   const num = parseFloat(dailyRate);
   if (isNaN(num)) return 'LKR -';
@@ -107,9 +85,7 @@ function capacityLabel(capacity: number): string {
   return capacity === 1 ? '1 guest' : `Up to ${capacity} guests`;
 }
 
-// ---------------------------------------------------------------------------
 // Status badge
-// ---------------------------------------------------------------------------
 
 const STATUS_BADGE: Record<string, string> = {
   Available:   'bg-[#c5a880]/15 text-[#c5a880] border border-[#c5a880]/40',
@@ -123,9 +99,7 @@ const STATUS_LABEL: Record<string, string> = {
   Maintenance: 'Under Maintenance',
 };
 
-// ---------------------------------------------------------------------------
 // Room type icon (inline SVG, no extra dependency)
-// ---------------------------------------------------------------------------
 
 function RoomTypeIcon({ typeName }: { typeName: string }) {
   if (typeName === 'Single') {
@@ -163,14 +137,10 @@ const ROOM_IMAGES: Record<string, string> = {
   Deluxe: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
 };
 
-// ---------------------------------------------------------------------------
 // Component
-// ---------------------------------------------------------------------------
 
-/**
- * RoomCard displays a single available room from the /api/availability response.
- * The reserve CTA pre-fills the booking form with check-in/check-out dates.
- */
+// RoomCard displays a single available room from the /api/availability response.
+// The reserve CTA pre-fills the booking form with check-in/check-out dates.
 export default function RoomCard({
   room,
   checkIn,

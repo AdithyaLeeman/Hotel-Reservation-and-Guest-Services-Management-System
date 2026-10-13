@@ -1,24 +1,3 @@
-/**
- * GET /api/guest/reservations/[id]/invoice
- *
- * Returns authoritative billing totals and payment history for one reservation.
- *
- * DB-first rule (AGENTS.md §5):
- *   All monetary values (room_charges, tax_amount, service_charges, grand_total,
- *   total_paid, outstanding_balance) come exclusively from vw_invoice_totals via
- *   billingService.getInvoiceTotals(). TypeScript NEVER computes any financial value.
- *
- * P06-M05-T01 - Wire billing to real DB
- *
- * Flow:
- *   1. Authenticate guest session (iron-session)
- *   2. Verify reservation belongs to this guest (ownership enforcement)
- *   3. Call sp_finalize_invoice() via billingService.finalizeInvoice() - idempotent
- *   4. Read vw_invoice_totals via billingService.getInvoiceTotals()
- *   5. Read payment history via paymentService.listPaymentsByInvoice()
- *   6. Return combined response
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { reservationService } from '@/services/reservation.service';

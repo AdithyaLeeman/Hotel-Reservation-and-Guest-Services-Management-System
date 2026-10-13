@@ -1,32 +1,11 @@
-/**
- * Route: /api/staff/reports/top-services
- *
- * GET - return top-used services ranked by total quantity consumed.
- *       Data sourced from vw_top_services (mock-first; real DB in Phase 6).
- *
- * Security:
- *   - Authentication: requires a logged-in staff user (session.userId present)
- *   - RBAC: Manager and Admin only (Receptionist receives 403)
- *   - No branch scoping: this is a hotel-wide aggregate report
- *
- * Response shape: { data: TopServiceRow[], meta: { requestId: string } }
- * Each row contains: service_id, service_name, total_quantity, total_revenue,
- *                    reservation_count, usage_rank
- *
- * Owned by: Member 3 (M3) | Task: P05-M03-T02
- * Lecture alignment: L06 (REST), L07 (RBAC), L05 (views/aggregate)
- */
-
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { topServicesRepository } from '@/repositories/top-services.repository';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // Fallback dev session for local mock-first development.
 // Replaced by real iron-session in Phase 6 (P06-M03-T01).
-// ---------------------------------------------------------------------------
 function getDevStaffSession(): Partial<SessionData> {
   return {
     userId: 'user-mock-003',
@@ -52,10 +31,8 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers - conform to docs/21_shared-contracts.md Section 6
 // { data, meta } for success | { error: { code, message } } for errors
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T): NextResponse {
   return NextResponse.json(
@@ -68,10 +45,8 @@ function err(status: number, code: string, message: string): NextResponse {
   return NextResponse.json({ error: { code, message } }, { status });
 }
 
-// ---------------------------------------------------------------------------
 // Roles permitted to access report endpoints (Manager and Admin only).
 // Receptionist is excluded - reports are management-level views.
-// ---------------------------------------------------------------------------
 const REPORT_ROLES = ['Manager', 'Admin'] as const;
 type ReportRole = (typeof REPORT_ROLES)[number];
 
@@ -79,9 +54,7 @@ function isReportRole(role: string | undefined): role is ReportRole {
   return REPORT_ROLES.includes(role as ReportRole);
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/reports/top-services (P05-M03-T02)
-// ---------------------------------------------------------------------------
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_req?: Request): Promise<NextResponse> {

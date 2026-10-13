@@ -1,27 +1,9 @@
-/**
- * Page: /staff/reports/service-usage
- *
- * Service Usage Report page - displays the top-used services ranked by total
- * quantity consumed. Fetches data from GET /api/staff/reports/top-services.
- *
- * Security:
- *   - Authentication: requires a logged-in staff user (Manager/Admin).
- *   - Controlled by the API route (returns 401/403 if unauthorized).
- *
- * Mock data strategy (Phase 5 / mock-first):
- *   Data is sourced from the API which currently returns mock data.
- *   In Phase 6, the API will be wired to the real DB view `vw_top_services`.
- *
- * Owned by: Member 4 (M4) | Task: P05-M04-T01 (Mock-First)
- * Lecture alignment: L05 (views/aggregate), L07 (RBAC)
- */
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface TopServiceRow {
   service_id:        number;
@@ -37,13 +19,13 @@ type PageState =
   | { stage: 'success'; data: TopServiceRow[] }
   | { stage: 'error'; message: string };
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 function formatCurrency(amount: number): string {
   return `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function ServiceUsageReportPage() {
   const [state, setState] = useState<PageState>({ stage: 'loading' });
@@ -80,7 +62,7 @@ export default function ServiceUsageReportPage() {
           className="flex-1 container-page py-8 space-y-6"
           aria-label="Service usage report"
         >
-          {/* ── Page header ── */}
+          {/* Page header */}
           <header id="report-header" className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-[var(--color-text)]">
@@ -98,9 +80,7 @@ export default function ServiceUsageReportPage() {
             </Link>
           </header>
 
-
-
-          {/* ── Report Content ── */}
+          {/* Report Content */}
           <section aria-labelledby="report-content-heading">
             <h2 id="report-content-heading" className="sr-only">
               Report Data

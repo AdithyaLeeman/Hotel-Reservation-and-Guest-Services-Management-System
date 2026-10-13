@@ -1,13 +1,3 @@
-/**
- * Standard API response types.
- *
- * All route handlers must return responses conforming to these shapes.
- * See docs/21_shared-contracts.md Section 6 for the full contract.
- *
- * Success:  { data: T, meta: { requestId: string } }
- * Error:    { error: { code: string, message: string, fields?: FieldErrors } }
- */
-
 export interface ApiSuccess<T> {
   data: T;
   meta: {
@@ -29,10 +19,8 @@ export interface ApiError {
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
-/**
- * Standard API error codes.
- * Use these constants to ensure consistent error codes across all route handlers.
- */
+// Standard API error codes.
+// Use these constants to ensure consistent error codes across all route handlers.
 export const ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   NOT_AUTHENTICATED: 'NOT_AUTHENTICATED',
@@ -49,13 +37,8 @@ export const ERROR_CODES = {
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
-/**
- * Helper: check if a PostgreSQL error has a specific SQLSTATE code.
- * Used in route handler catch blocks to map DB errors to HTTP responses.
- *
- * @param err - Unknown error from a catch block
- * @param sqlstate - The SQLSTATE code to check (e.g., '23505', '45001')
- */
+// Helper: check if a PostgreSQL error has a specific SQLSTATE code.
+// Used in route handler catch blocks to map DB errors to HTTP responses.
 export function isSqlState(err: unknown, sqlstate: string): boolean {
   return (
     typeof err === 'object' &&

@@ -41,7 +41,7 @@ function formatDate(): string {
 }
 
 const CSS = `
-/* ── Reports Dashboard ─────────────────────────────────────────── */
+// Reports Dashboard
 .rd-page {
   min-height: calc(100vh - 4rem);
   background: var(--color-bg);
@@ -266,7 +266,7 @@ const CSS = `
 }
 `;
 
-/* ─── Sub-components ─────────────────────────────────────────────────────── */
+// Sub-components
 
 function LoadingSkeleton() {
   return (
@@ -310,7 +310,7 @@ function UnauthorizedBanner() {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function ReportsDashboardPage() {
   const [stage, setStage] = useState<PageStage>('loading');

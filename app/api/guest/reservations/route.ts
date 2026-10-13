@@ -1,18 +1,3 @@
-/**
- * Route: /api/guest/reservations
- *
- * GET  - list all reservations for the authenticated guest
- * POST - create a new reservation for the authenticated guest
- *
- * Security:
- *   - guest_id is read from session.guestId - never from the request body
- *   - Role check: session.role must be 'Guest'
- *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
- *
- * Owned by: Member 3 (M3) | Tasks: P03-M03-T11, P03-M03-T12
- * Lecture alignment: L06 (REST API design), L07 (security, input validation)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { CreateReservationSchema } from '@/lib/validation/reservation.schema';
@@ -21,11 +6,9 @@ import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // DEV SESSION STUB - guarded so it never applies in production.
 // Replace with real iron-session once P01-M01-T07 lands:
 //   const session = await getSession();
-// ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
     userId:  'user-mock-001',
@@ -49,9 +32,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Shared response helpers
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
@@ -68,9 +49,7 @@ function notAuthenticated(): NextResponse {
   return err(401, ERROR_CODES.NOT_AUTHENTICATED, 'Not authenticated.');
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/guest/reservations - list my reservations
-// ---------------------------------------------------------------------------
 
 export async function GET(): Promise<NextResponse> {
   // TODO (P01-M01-T07): replace resolveSession with direct getSession() call
@@ -92,9 +71,7 @@ export async function GET(): Promise<NextResponse> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // POST /api/guest/reservations - create a reservation
-// ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   // TODO (P01-M01-T07): replace resolveSession with direct getSession() call

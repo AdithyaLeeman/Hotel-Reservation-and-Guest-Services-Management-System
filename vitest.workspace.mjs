@@ -2,7 +2,7 @@ import { defineWorkspace } from 'vitest/config';
 import path from 'path';
 
 export default defineWorkspace([
-  /* ── Node environment: all existing tests ── */
+  // Node environment: all existing tests
   {
     test: {
       name: 'node-tests',
@@ -22,7 +22,7 @@ export default defineWorkspace([
     },
   },
 
-  /* ── JSDOM environment: React component tests ── */
+  // JSDOM environment: React component tests
   {
     test: {
       name: 'react-tests',

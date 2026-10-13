@@ -1,15 +1,12 @@
 'use client';
 
-
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent } from 'react';
 
 import Link from 'next/link';
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 const DEFAULT_BRANCHES: Record<number, string> = {
   1: 'Colombo',
@@ -17,9 +14,7 @@ const DEFAULT_BRANCHES: Record<number, string> = {
   3: 'Galle',
 };
 
-// ---------------------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------------------
 
 interface FormErrors {
   roomId?: string;
@@ -40,21 +35,9 @@ interface ApiSuccessResponse {
   meta: { requestId: string };
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
-/**
- * Count nights between two ISO date strings - DISPLAY ONLY.
- *
- * This helper is used solely for the UI summary badge (cosmetic).
- * It does NOT affect billing or authoritative night calculations.
- * The authoritative night count is computed in PostgreSQL via
- * (check_out_date - check_in_date) inside fn_calc_room_charges().
- *
- * context/04-code-standards.md: "Never compute number-of-nights in TypeScript"
- * refers to authoritative financial calculations. This is a UI-display label only.
- */
+// Count nights between two ISO date strings - DISPLAY ONLY.
 function countNights(checkIn: string, checkOut: string): number {
   if (!checkIn || !checkOut) return 0;
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();
@@ -108,9 +91,7 @@ function validateParams(
   return errors;
 }
 
-// ---------------------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------------------
 
 /** Right-column booking summary card (display-only). */
 function SummaryCard({
@@ -224,9 +205,7 @@ function ParamErrorBanner({ errors }: { errors: FormErrors }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Page component
-// ---------------------------------------------------------------------------
 
 function NewReservationContent() {
   const router = useRouter();
@@ -279,13 +258,7 @@ function NewReservationContent() {
     setSubmitting(true);
 
     try {
-      /**
-       * POST /api/guest/reservations
-       *
-       * Payload matches CreateReservationSchema (lib/validation/reservation.schema.ts).
-       * guest_id is NEVER in the body - sourced from session by the route handler.
-       * booking_source 'Online' is enforced again by the service layer for guest paths.
-       */
+      // POST /api/guest/reservations
       const payload = {
         branch_id: branchId ?? 1,          // branchId from URL; fallback for safety
         check_in_date: checkIn,
@@ -348,7 +321,7 @@ function NewReservationContent() {
           text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
-        {/* ── Hero header ────────────────────────────────────────────── */}
+        {/* Hero header */}
         <section
           aria-labelledby="book-heading"
           className="
@@ -392,7 +365,7 @@ function NewReservationContent() {
           </div>
         </section>
 
-        {/* ── Main content ───────────────────────────────────────────── */}
+        {/* Main content */}
         <section className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-10">
 
           {/* Invalid params - show error and stop */}
@@ -402,7 +375,7 @@ function NewReservationContent() {
           {paramsValid && (
             <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
 
-              {/* ── Left column: form ─────────────────────────────────── */}
+              {/* Left column: form */}
               <div className="md:col-span-3 flex flex-col gap-6">
 
                 {/* Submit error banner */}
@@ -674,7 +647,7 @@ function NewReservationContent() {
 
               </div>
 
-              {/* ── Right column: summary + nav ────────────────────────── */}
+              {/* Right column: summary + nav */}
               <aside className="md:col-span-2" aria-label="Booking overview">
                 <SummaryCard
                   roomId={roomId}
@@ -755,10 +728,8 @@ function NewReservationContent() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Default export - wraps the client component in Suspense so Next.js can
 // prerender the shell and avoid the missing-suspense-with-csr-bailout error.
-// ---------------------------------------------------------------------------
 
 export default function NewReservationPage() {
   return (

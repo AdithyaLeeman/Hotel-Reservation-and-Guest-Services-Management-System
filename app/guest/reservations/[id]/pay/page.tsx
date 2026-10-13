@@ -338,7 +338,7 @@ export default function GuestPayPage() {
         bg-[#faf8f5] dark:bg-[#141312]
       "
     >
-      {/* ── Hero Banner ──────────────────────────────────────────────── */}
+      {/* Hero Banner */}
       <section
         aria-labelledby="pay-heading"
         className="
@@ -386,7 +386,7 @@ export default function GuestPayPage() {
         </div>
       </section>
 
-      {/* ── Page Content ─────────────────────────────────────────────── */}
+      {/* Page Content */}
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-10">
 
         {/* Back Link */}
@@ -433,7 +433,7 @@ export default function GuestPayPage() {
               />
             )}
 
-            {/* ── Invoice Breakdown Card ─────────────────────────────── */}
+            {/* Invoice Breakdown Card */}
             <div
               id="invoice-summary-card"
               data-testid="invoice-summary-card"
@@ -592,7 +592,7 @@ export default function GuestPayPage() {
               </div>
             </div>
 
-            {/* ── Payment History ────────────────────────────────────── */}
+            {/* Payment History */}
             {payments.length > 0 && (
               <div
                 id="payment-history-card"
@@ -644,7 +644,7 @@ export default function GuestPayPage() {
               </div>
             )}
 
-            {/* ── Payment Form (when balance > 0) ────────────────────── */}
+            {/* Payment Form (when balance > 0) */}
             {!isSettled ? (
               <div
                 id="make-payment-card"

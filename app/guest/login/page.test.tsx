@@ -1,23 +1,10 @@
 /** @vitest-environment jsdom */
 
-/**
- * Unit tests for Guest Login Page - P01-M01-T27
- *
- * Strategy:
- *   - Rendering: all fields, button, navigation links
- *   - Client validation: required-field errors, no fetch on bad input
- *   - Password reveal toggle: type switches between 'password' and 'text'
- *   - Successful submission: correct API call, redirect to /guest/reservations
- *   - Return-URL redirect: respects ?redirect= query param for safe relative URLs
- *   - Server error handling: 401 → wrong credentials, 403 → inactive, 500 → generic
- *   - Submit button state: disabled + loading text while in-flight
- */
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import GuestLoginPage from './page';
 
-/* ─── Mocks ──────────────────────────────────────────────────────────────────── */
+// Mocks
 
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
@@ -37,7 +24,7 @@ vi.mock('next/link', () => ({
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-/* ─── Helpers ────────────────────────────────────────────────────────────────── */
+// Helpers
 
 function fillForm(username = 'alice_p', password = 'password123') {
   fireEvent.change(screen.getByLabelText(/username/i), { target: { value: username } });
@@ -55,7 +42,7 @@ function successResponse() {
   });
 }
 
-/* ─── Tests ──────────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('GuestLoginPage - rendering', () => {
   beforeEach(() => {

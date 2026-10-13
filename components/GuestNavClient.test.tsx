@@ -1,28 +1,10 @@
-/**
- * GuestNavClient - Unit tests for the interactive guest navigation bar.
- *
- * @vitest-environment jsdom
- *
- * Task: P01-M01-T24
- * Framework: Vitest + @testing-library/react (JSDOM)
- *
- * What is tested:
- *  1. Logo and static links always render
- *  2. Public nav links (Search Rooms) always render
- *  3. Login/Register shown when NOT logged in; hidden when logged in
- *  4. My Reservations + greeting shown when logged in
- *  5. Logout button calls POST /api/guest/logout and navigates to /
- *  6. Hamburger toggle opens / closes mobile menu (ARIA attributes)
- *  7. Mobile menu: correct links for logged-in / logged-out states
- *  8. Theme toggle button is not rendered
- *  9. Active route link gets active class
- */
+// @vitest-environment jsdom
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import GuestNavClient from './GuestNavClient';
 
-/* ─── Mock next/navigation ──────────────────────────────────────────────────── */
+// Mock next/navigation
 
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
@@ -33,7 +15,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush, refresh: mockRefresh }),
 }));
 
-/* ─── Mock next/link ────────────────────────────────────────────────────────── */
+// Mock next/link
 
 vi.mock('next/link', () => ({
   default: ({ href, children, id, className, 'aria-label': ariaLabel }: {
@@ -49,12 +31,12 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-/* ─── Mock fetch ────────────────────────────────────────────────────────────── */
+// Mock fetch
 
 const mockFetch = vi.fn().mockResolvedValue({ ok: true });
 vi.stubGlobal('fetch', mockFetch);
 
-/* ─── Mock localStorage + matchMedia ───────────────────────────────────────── */
+// Mock localStorage + matchMedia
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -82,7 +64,7 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-/* ─── Helpers ───────────────────────────────────────────────────────────────── */
+// Helpers
 
 function renderNav(props: { isLoggedIn?: boolean; guestName?: string | null } = {}) {
   const { isLoggedIn = false, guestName = null } = props;
@@ -91,7 +73,7 @@ function renderNav(props: { isLoggedIn?: boolean; guestName?: string | null } = 
   );
 }
 
-/* ─── Test suites ───────────────────────────────────────────────────────────── */
+// Test suites
 
 describe('GuestNavClient', () => {
   beforeEach(() => {

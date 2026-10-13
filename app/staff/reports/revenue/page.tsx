@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface MonthlyRevenueRow {
   branch_id: number;
@@ -32,7 +31,7 @@ type PageState =
   | { stage: 'success'; data: MonthlyRevenueRow[] }
   | { stage: 'error'; message: string };
 
-/* ─── Constants ──────────────────────────────────────────────────────────── */
+// Constants
 
 const DEFAULT_BRANCH_OPTIONS = [
   { id: 1, name: 'Colombo' },
@@ -48,7 +47,7 @@ const MONTH_NAMES = [
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 function fmt(val: string): string {
   const n = parseFloat(val);
@@ -62,10 +61,10 @@ function sumCol(rows: MonthlyRevenueRow[], key: keyof MonthlyRevenueRow): string
   return `LKR ${total.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-/* ─── CSS ────────────────────────────────────────────────────────────────── */
+// CSS
 
 const CSS = `
-/* ── Monthly Revenue Page ─────────────────────────────────────── */
+// Monthly Revenue Page
 .rp-page { min-height: calc(100vh - 4rem); background: var(--color-bg); padding: 2rem 1rem 4rem; }
 
 .rp-breadcrumb {
@@ -221,7 +220,7 @@ const CSS = `
 }
 `;
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function MonthlyRevenuePage() {
   const [branchOptions, setBranchOptions] = useState(DEFAULT_BRANCH_OPTIONS);

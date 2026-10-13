@@ -1,8 +1,5 @@
-
-
 import { pool } from '@/lib/db/pool';
 import type { RoomStatus } from '@/types/enums';
-
 
 export interface AvailableRoom {
   room_id: number;
@@ -84,8 +81,6 @@ export const availabilityRepository = {
     }));
   },
 
-  /**
-   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
-   */
+  // No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
   _resetMockStore: (): void => {},
 };

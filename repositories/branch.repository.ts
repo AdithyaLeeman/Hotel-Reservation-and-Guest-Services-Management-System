@@ -1,15 +1,8 @@
-/**
- * Branch Repository - data access layer for hotel branches.
- * Queries the PostgreSQL branch table using pg Pool.
- */
-
 import { pool } from '@/lib/db/pool';
 import type { Branch } from '@/types/domain';
 
 export const branchRepository = {
-  /**
-   * List all branches ordered by branch_id.
-   */
+  // List all branches ordered by branch_id.
   listBranches: async (): Promise<Branch[]> => {
     const result = await pool.query<{
       branch_id: number | string;
@@ -25,9 +18,7 @@ export const branchRepository = {
     }));
   },
 
-  /**
-   * Find a branch by its primary key (branch_id).
-   */
+  // Find a branch by its primary key (branch_id).
   findBranchById: async (branchId: number): Promise<Branch | null> => {
     const result = await pool.query<{
       branch_id: number | string;

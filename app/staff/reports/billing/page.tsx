@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface GuestBillingSummaryRow {
   guest_id: string;
@@ -39,7 +38,7 @@ type PageState =
   | { stage: 'success'; data: GuestBillingSummaryRow[] }
   | { stage: 'error'; message: string };
 
-/* ─── Constants ──────────────────────────────────────────────────────────── */
+// Constants
 
 const DEFAULT_BRANCH_OPTIONS = [
   { id: 1, name: 'Colombo' },
@@ -49,7 +48,7 @@ const DEFAULT_BRANCH_OPTIONS = [
 
 const PAYMENT_STATUS_OPTIONS = ['Unpaid', 'PartiallyPaid', 'Paid'];
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 function fmt(val: string): string {
   const n = parseFloat(val);
@@ -90,10 +89,10 @@ function ReservationBadge({ status }: { status: string }) {
   return <span className={`rb ${map[status] ?? 'rb--unknown'}`}>{status}</span>;
 }
 
-/* ─── CSS ────────────────────────────────────────────────────────────────── */
+// CSS
 
 const CSS = `
-/* ── Billing Summary Page ─────────────────────────────────────── */
+// Billing Summary Page
 .bs-page { min-height: calc(100vh - 4rem); background: var(--color-bg); padding: 2rem 1rem 4rem; }
 
 .bs-breadcrumb {
@@ -250,7 +249,7 @@ const CSS = `
 }
 `;
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function GuestBillingSummaryPage() {
   const [branchOptions, setBranchOptions] = useState(DEFAULT_BRANCH_OPTIONS);

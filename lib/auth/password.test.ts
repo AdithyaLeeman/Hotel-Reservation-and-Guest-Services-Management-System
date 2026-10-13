@@ -1,10 +1,3 @@
-/**
- * Unit tests for lib/auth/password.ts (P01-M01-T10)
- *
- * Covers: hashPassword, verifyPassword
- * Strategy: happy path + negative path + security invariant (hash uniqueness).
- */
-
 import { describe, it, expect } from 'vitest';
 import { hashPassword, verifyPassword } from './password';
 

@@ -1,22 +1,3 @@
-/**
- * Route: /api/staff/rooms
- *
- * GET  - list rooms with optional filtering (status, typeId, branchId)
- * POST - create a new room (Manager/Admin only)
- *
- * Security:
- *   - Authentication: requires staff role (Receptionist, Manager, Admin)
- *   - Role-Based Access Control (AGENTS.md §10, docs/07_api-and-pages.md):
- *       GET  → Receptionist, Manager, Admin
- *       POST → Manager, Admin only (Receptionist receives 403)
- *   - Branch Scoping:
- *       Receptionist: scoped to session.branchId. Querying another branch yields 403.
- *       Manager/Admin: all-branch access (can query any branch or omit for all branches).
- *
- * Owned by: Member 2 (M2) | Tasks: P02-M02-T10, P02-M02-T11
- * Lecture alignment: L06 (REST API), L07 (RBAC, application security)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { getSession } from '@/lib/auth/session';
@@ -32,9 +13,7 @@ import {
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // Fallback dev session for local mock-first development
-// ---------------------------------------------------------------------------
 function getDevStaffSession(): Partial<SessionData> {
   return {
     userId: 'user-mock-staff-002',
@@ -60,9 +39,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers conforming to docs/21_shared-contracts.md Section 6
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
@@ -103,9 +80,7 @@ function zodFieldErrors(error: ZodError): Record<string, string> {
   return fields;
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/rooms (P02-M02-T10)
-// ---------------------------------------------------------------------------
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
@@ -181,9 +156,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // POST /api/staff/rooms (P02-M02-T11)
-// ---------------------------------------------------------------------------
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {

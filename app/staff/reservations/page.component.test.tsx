@@ -1,19 +1,5 @@
 // @vitest-environment jsdom
-/**
- * Tests for /staff/reservations page (P03-M03-T21)
- *
- * Strategy: render the page with @testing-library/react, mock global.fetch to
- * control API responses, and verify correct UI state transitions for loading,
- * success (data rendering), client-side filters/search, empty state, and
- * error/retry.
- *
- * Environment: jsdom - enforced via @vitest-environment docblock because the
- * environmentMatchGlobs entry in vitest.config.mjs does not activate the jsdom
- * pool for app/**\/*.component.test.tsx in vitest v5 (pre-existing config issue;
- * same behaviour affects app/staff/checkin/page.test.tsx).
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T21 (Mock-First)
- */
+// @vitest-environment docblock
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
@@ -26,7 +12,7 @@ import {
 import StaffReservationsPage from './page';
 import type { ActiveReservationRow } from '@/repositories/reservation.repository';
 
-/* ─── Mock: Next.js navigation (Link uses router internally) ─────────────── */
+// Mock: Next.js navigation (Link uses router internally)
 
 vi.mock('next/link', () => ({
   default: ({
@@ -48,7 +34,7 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 /** Build a minimal ActiveReservationRow for tests. */
 function makeRow(overrides: Partial<ActiveReservationRow> = {}): ActiveReservationRow {
@@ -97,14 +83,14 @@ function mockFetchNetworkError() {
   return vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network failure'));
 }
 
-/* ─── Tests ──────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('/staff/reservations page', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  /* ── Loading state ─────────────────────────────────────────────────────── */
+  // Loading state
 
   it('shows a loading spinner on initial render', () => {
     // fetch never resolves during this test so the loading state persists
@@ -117,7 +103,7 @@ describe('/staff/reservations page', () => {
     ).toBeTruthy();
   });
 
-  /* ── Page structure ─────────────────────────────────────────────────────── */
+  // Page structure
 
   it('renders the page heading, subtitle, and filter controls', async () => {
     mockFetchSuccess([]);
@@ -139,7 +125,7 @@ describe('/staff/reservations page', () => {
     expect(screen.getByLabelText(/guest name or reservation id/i)).toBeTruthy();
   });
 
-  /* ── Success: data rendering ────────────────────────────────────────────── */
+  // Success: data rendering
 
   it('renders reservation rows and stats when data is loaded', async () => {
     const rows = [
@@ -217,7 +203,7 @@ describe('/staff/reservations page', () => {
     expect(link?.getAttribute('href')).toBe('/staff/reservations/res-mock-abc');
   });
 
-  /* ── Empty state ────────────────────────────────────────────────────────── */
+  // Empty state
 
   it('shows the empty state when no reservations are returned', async () => {
     mockFetchSuccess([]);
@@ -231,7 +217,7 @@ describe('/staff/reservations page', () => {
     expect(screen.getByText(/no active reservations/i)).toBeTruthy();
   });
 
-  /* ── Client-side filtering ───────────────────────────────────────────────── */
+  // Client-side filtering
 
   it('filters rows by status when the status select changes', async () => {
     const rows = [
@@ -336,7 +322,7 @@ describe('/staff/reservations page', () => {
     expect(screen.queryByRole('button', { name: /clear filters/i })).toBeNull();
   });
 
-  /* ── Error state and retry ───────────────────────────────────────────────── */
+  // Error state and retry
 
   it('shows an error alert when the API call fails', async () => {
     mockFetchError(500, 'An unexpected error occurred.');
@@ -390,7 +376,7 @@ describe('/staff/reservations page', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
-  /* ── Accessibility ───────────────────────────────────────────────────────── */
+  // Accessibility
 
   it('renders the reservations table with an accessible label', async () => {
     mockFetchSuccess([makeRow()]);
@@ -402,7 +388,7 @@ describe('/staff/reservations page', () => {
     expect(screen.getByRole('table', { name: /active reservations/i })).toBeTruthy();
   });
 
-  /* ── Required element IDs ────────────────────────────────────────────────── */
+  // Required element IDs
 
   it('has all required element IDs', async () => {
     mockFetchSuccess([makeRow({ reservation_id: 'res-mock-001' })]);

@@ -1,5 +1,3 @@
-
-
 import { getSession, destroySession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 

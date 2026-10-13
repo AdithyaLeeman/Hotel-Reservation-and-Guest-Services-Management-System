@@ -1,8 +1,3 @@
-/**
- * Room Service - business logic layer for room inventory management.
- * Owned by: Member 2 (M2) | Task: P02-M02-T06 (Mock-First)
- */
-
 import { roomRepository, type CreateRoomInput, type RoomWithDetails } from '@/repositories/room.repository';
 import type { Room, RoomType } from '@/types/domain';
 import type { RoomStatus } from '@/types/enums';
@@ -40,9 +35,7 @@ export class RoomValidationError extends Error {
   }
 }
 
-
 // Input types
-
 
 export interface ListRoomsFilter {
   branchId?: number;
@@ -52,10 +45,8 @@ export interface ListRoomsFilter {
 
 export interface UpdateRoomStatusInput {
   status: RoomStatus;
-  /**
-   * The role of the authenticated staff member making this request.
-   * Read from server-side session - never from request body.
-   */
+  // The role of the authenticated staff member making this request.
+  // Read from server-side session - never from request body.
   requesterRole: string;
 }
 
@@ -64,10 +55,8 @@ export interface UpdateRoomStatusInput {
 // 
 
 export const roomService = {
-  /**
-   * List rooms, optionally filtered by branch, status, and/or room type.
-   * Returns rooms joined with their room_type detail.
-   */
+  // List rooms, optionally filtered by branch, status, and/or room type.
+  // Returns rooms joined with their room_type detail.
   async listRooms(
     filterOrBranchId?: number | ListRoomsFilter
   ): Promise<RoomWithDetails[]> {
@@ -124,9 +113,7 @@ export const roomService = {
     return roomsWithDetails;
   },
 
-  /**
-   * Get a single room by ID with details.
-   */
+  // Get a single room by ID with details.
   async getRoomById(roomId: number): Promise<RoomWithDetails> {
     const room = await roomRepository.findById(roomId);
     if (!room) {
@@ -149,9 +136,7 @@ export const roomService = {
     };
   },
 
-  /**
-   * Create a new room.
-   */
+  // Create a new room.
   async createRoom(input: CreateRoomInput): Promise<Room> {
     // Validate room type exists
     const roomType = await roomRepository.findRoomTypeById(input.type_id);
@@ -177,9 +162,7 @@ export const roomService = {
     }
   },
 
-  /**
-   * Update a room's operational status.
-   */
+  // Update a room's operational status.
   async updateRoomStatus(
     roomId: number,
     input: UpdateRoomStatusInput

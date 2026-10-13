@@ -1,10 +1,8 @@
--- =============================================================================
 -- Seed:      P06-M01-T02_seed_demo_accounts.sql
 -- Owner:     Member 1 (Leeman K.A.R., 240386C)
 -- Phase:     Phase 6 Integration - Full Demo Seed Data
 -- Purpose:   Seed staff accounts (Admin, Manager, Receptionists) and 5 Guests
 -- Password:  SkyNest@2026 (for all seeded demo accounts)
--- =============================================================================
 
 -- 1. Staff User Accounts (Clean short usernames)
 INSERT INTO user_account (user_id, username, password_hash, role, status) VALUES

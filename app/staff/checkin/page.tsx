@@ -1,34 +1,9 @@
-/**
- * Page: /staff/checkin
- *
- * Staff Check-In page - allows Receptionist/Manager/Admin to search for a
- * reservation by ID, view its details, and trigger the check-in action which
- * calls POST /api/staff/reservations/[id]/checkin.
- *
- * This is a Client Component because it needs:
- *   - Controlled form inputs (reservation ID search)
- *   - Optimistic UI feedback during the async check-in API call
- *   - Status badge rendering based on fetch result
- *
- * Mock data strategy (Phase 4 / mock-first):
- *   Reservation details are fetched from GET /api/staff/reservations (already
- *   implemented) using the reservation ID supplied by the user.
- *   The check-in action calls POST /api/staff/reservations/[id]/checkin (T12).
- *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- *   No changes to this page - it already calls the real API routes. The routes
- *   themselves swap their mock repositories for real DB calls in Phase 6.
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T16 (Mock-First)
- * Lecture alignment: L08 (transactions, atomicity of check-in)
- */
-
 'use client';
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 type ReservationStatus = 'Booked' | 'CheckedIn' | 'CheckedOut' | 'Cancelled';
 
@@ -83,7 +58,7 @@ const MOCK_RESERVATIONS: Record<string, ReservationSummary> = {
   },
 };
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 function statusBadgeClass(status: ReservationStatus): string {
   switch (status) {
@@ -100,7 +75,7 @@ function formatDate(iso: string): string {
   });
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────── */
+// Sub-components
 
 function ReservationCard({
   reservation,
@@ -211,14 +186,14 @@ function ReservationCard({
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function StaffCheckinPage() {
   const [query, setQuery]     = useState('');
   const [state, setState]     = useState<PageState>({ stage: 'idle' });
   const [isPending, startTransition] = useTransition();
 
-  /* ── Search handler ── */
+  // Search handler
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = query.trim();
@@ -274,7 +249,7 @@ export default function StaffCheckinPage() {
     }, 200);
   }
 
-  /* ── Check-in handler ── */
+  // Check-in handler
   function handleCheckIn() {
     if (state.stage !== 'found') return;
     const { reservation } = state;
@@ -309,7 +284,7 @@ export default function StaffCheckinPage() {
     });
   }
 
-  /* ── Reset ── */
+  // Reset
   function handleReset() {
     setQuery('');
     setState({ stage: 'idle' });
@@ -325,7 +300,7 @@ export default function StaffCheckinPage() {
           className="flex-1 container-page py-8 space-y-6"
           aria-label="Guest check-in"
         >
-          {/* ── Page header ── */}
+          {/* Page header */}
           <header id="checkin-header" className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-[var(--color-text)]">
@@ -344,7 +319,7 @@ export default function StaffCheckinPage() {
             </Link>
           </header>
 
-          {/* ── Search form ── */}
+          {/* Search form */}
           <section aria-labelledby="search-heading">
             <h2
               id="search-heading"
@@ -403,7 +378,7 @@ export default function StaffCheckinPage() {
             </form>
           </section>
 
-          {/* ── Result area ── */}
+          {/* Result area */}
           <section aria-labelledby="result-heading" aria-live="polite">
             <h2
               id="result-heading"

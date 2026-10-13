@@ -1,14 +1,6 @@
-/**
- * Room Repository tests - P06-M02-T01 (real DB wire-up)
- * Mocks `pool.query` so tests stay fast and DB-independent.
- * All original assertions are preserved.
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-// ---------------------------------------------------------------------------
 // Seed data mirrors the 15-room + 3-type + 5-amenity seed scripts
-// ---------------------------------------------------------------------------
 const SEED_ROOM_TYPES = [
   { type_id: 1, type_name: 'Single', capacity: 1, daily_rate: '10000.00' },
   { type_id: 2, type_name: 'Double', capacity: 2, daily_rate: '18000.00' },
@@ -41,9 +33,7 @@ const BASE_SEED_ROOMS = [
   { room_id: 15, room_number: '202', branch_id: 3, type_id: 3, status: 'Occupied'    },
 ] as const;
 
-// ---------------------------------------------------------------------------
 // Mutable in-memory store (reset in beforeEach)
-// ---------------------------------------------------------------------------
 let rooms: Array<{ room_id: number; room_number: string; branch_id: number; type_id: number; status: string }> = [];
 let nextId = 16;
 
@@ -52,9 +42,7 @@ function resetStore(): void {
   nextId = 16;
 }
 
-// ---------------------------------------------------------------------------
 // Mock pool - intercepts every pool.query call
-// ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {
     query: vi.fn(),
@@ -69,9 +57,7 @@ function mockQuery(rows: unknown[]): void {
   vi.mocked(pool.query).mockResolvedValueOnce({ rows, rowCount: rows.length } as never);
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('Room Repository (Mock)', () => {
   beforeEach(() => {
     resetStore();

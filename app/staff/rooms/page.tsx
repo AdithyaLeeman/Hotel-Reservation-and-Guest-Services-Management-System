@@ -1,28 +1,10 @@
 'use client';
 
-/**
- * Staff Rooms Management Page - /staff/rooms
- *
- * Owned by: Member 2 (M2) | Task: P02-M02-T15
- * Type: 🟡 MOCK-FIRST - consumes GET /api/staff/rooms (currently mock data).
- *
- * Responsibilities:
- *   - List all rooms visible to the authenticated staff member.
- *   - Receptionist: scoped to their branch (enforced on server, reflected in UI).
- *   - Manager/Admin: can filter by any branch.
- *   - Filters: branch, status, room type (all sent as query params → server filters).
- *   - Actions: open Create Room modal (Manager/Admin), open Update Status modal.
- *
- * Theme: dark (#0a0a0a) matching reservations / admin pages.
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import RoomForm from '@/components/RoomForm';
 import type { RoomWithDetails } from '@/repositories/room.repository';
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 export interface BranchOption {
   id: number;
@@ -49,9 +31,7 @@ export const DEFAULT_ROOM_TYPES: RoomTypeOption[] = [
 const STATUS_OPTIONS = ['Available', 'Occupied', 'Maintenance'] as const;
 type RoomStatus = (typeof STATUS_OPTIONS)[number];
 
-// ---------------------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------------------
 
 type SortKey = 'room_number' | 'branch_id' | 'type_name' | 'status';
 type SortDir = 'asc' | 'desc';
@@ -62,9 +42,7 @@ interface FilterState {
   typeId: string;
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 /** pg returns numeric columns as strings - compare as strings */
 function branchName(branchId: number | string, branchList: BranchOption[] = DEFAULT_BRANCHES): string {
@@ -84,9 +62,7 @@ function formatRate(rate: string | undefined): string {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Status badge - dark theme variants
-// ---------------------------------------------------------------------------
 
 function statusBadgeStyle(status: string): React.CSSProperties {
   const map: Record<RoomStatus, React.CSSProperties> = {
@@ -104,9 +80,7 @@ function statusIcon(status: string): string {
   return '?';
 }
 
-// ---------------------------------------------------------------------------
 // Sort helper
-// ---------------------------------------------------------------------------
 
 function sortRooms(
   rooms: RoomWithDetails[],
@@ -141,9 +115,7 @@ function sortRooms(
   });
 }
 
-// ---------------------------------------------------------------------------
 // Shared dark-theme styles
-// ---------------------------------------------------------------------------
 
 const TH: React.CSSProperties = {
   padding: '0.875rem 1rem',
@@ -180,9 +152,7 @@ const SELECT: React.CSSProperties = {
   colorScheme: 'dark',
 };
 
-// ---------------------------------------------------------------------------
 // Page component
-// ---------------------------------------------------------------------------
 
 type ModalMode = 'create' | 'update-status';
 
@@ -339,7 +309,7 @@ export default function StaffRoomsPage() {
       >
         <div className="max-w-[1300px] mx-auto px-4 sm:px-6 py-8">
 
-          {/* ── Page header ── */}
+          {/* Page header */}
           <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3.5">
               <div className="w-11 h-11 rounded-sm bg-[#c5a880]/20 border border-[#c5a880]/60 flex items-center justify-center text-[#c5a880] shadow-sm flex-shrink-0">
@@ -370,14 +340,14 @@ export default function StaffRoomsPage() {
             </button>
           </div>
 
-          {/* ── Success toast ── */}
+          {/* Success toast */}
           {successMsg && (
             <div role="status" aria-live="polite" className="mb-4 bg-[#064e3b]/30 border border-[#065f46]/50 rounded-lg px-4 py-3 text-[#d1fae5] text-sm font-medium">
               ✓ {successMsg}
             </div>
           )}
 
-          {/* ── Error alert ── */}
+          {/* Error alert */}
           {error && (
             <div role="alert" className="mb-4 bg-[#7f1d1d]/30 border border-[#991b1b]/50 rounded-lg px-4 py-3 text-[#fca5a5] text-sm">
               <p className="font-semibold mb-1">Error loading rooms</p>
@@ -393,7 +363,7 @@ export default function StaffRoomsPage() {
             </div>
           )}
 
-          {/* ── Filter bar ── */}
+          {/* Filter bar */}
           <div className="card p-5 mb-5 bg-[#1c1917] border border-[#2e2a27] rounded-xl shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#c5a880] mb-3">
               Filter &amp; Search
@@ -446,7 +416,7 @@ export default function StaffRoomsPage() {
             </div>
           </div>
 
-          {/* ── Table panel ── */}
+          {/* Table panel */}
           <div className="card overflow-hidden bg-[#1c1917] border border-[#2e2a27] rounded-xl shadow-sm">
             {loading ? (
               <div role="status" aria-label="Loading rooms" className="flex flex-col items-center justify-center p-20 gap-4 text-center">

@@ -1,27 +1,10 @@
-/**
- * Route: /api/staff/reservations/[id]
- *
- * GET - get full detail for any reservation (staff access, no guest ownership check)
- *
- * Security:
- *   - Requires a staff role (Receptionist / Manager / Admin)
- *   - Receptionist: enforces branch scope (reservation must belong to their branch)
- *   - No guest ownership restriction - staff can view any reservation
- *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T22
- * Lecture alignment: L06 (REST), L07 (RBAC)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { reservationService } from '@/services/reservation.service';
 import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // DEV SESSION STUB - fallback when cookies are not present in dev mode
-// ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-003',
@@ -46,9 +29,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T): NextResponse {
   return NextResponse.json(
@@ -68,17 +49,13 @@ function isStaffRole(role: string | undefined): role is StaffRole {
   return STAFF_ROLES.includes(role as StaffRole);
 }
 
-// ---------------------------------------------------------------------------
 // Route params type
-// ---------------------------------------------------------------------------
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/reservations/[id] - full reservation detail (staff)
-// ---------------------------------------------------------------------------
 
 export async function GET(
   _req: NextRequest,

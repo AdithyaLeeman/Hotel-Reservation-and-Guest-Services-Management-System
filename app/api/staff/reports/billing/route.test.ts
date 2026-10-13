@@ -73,9 +73,7 @@ describe('GET /api/staff/reports/billing - P05-M05-T12', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // RBAC - Allowed Roles (Manager & Admin)
-  // -------------------------------------------------------------------------
   describe('RBAC - Allowed Roles', () => {
     it('returns 200 with data for Manager role', async () => {
       vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
