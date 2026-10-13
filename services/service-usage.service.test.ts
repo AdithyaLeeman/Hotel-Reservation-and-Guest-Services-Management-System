@@ -1,16 +1,6 @@
-/**
- * Service Usage Service Tests - P06-M04-T01 (real DB wire-up)
- * Mocks the repository so tests stay fast and DB-independent.
- * All original assertions are preserved.
- *
- * Run: npm test -- services/service-usage.service.test.ts
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-// ---------------------------------------------------------------------------
 // Seed catalogue mirrors database/seeds/P04-M04-T02_seed_services.sql
-// ---------------------------------------------------------------------------
 const SEED_CATALOGUE = [
   { service_id: 1, service_name: 'Room Service',     current_price: '1500.00', status: 'Active' as const },
   { service_id: 2, service_name: 'Spa Treatment',    current_price: '5000.00', status: 'Active' as const },
@@ -70,9 +60,7 @@ function resetUsageRows(): void {
   nextUsageId = 3;
 }
 
-// ---------------------------------------------------------------------------
 // Hoisted mock fns for repository methods
-// ---------------------------------------------------------------------------
 const {
   mockListCatalogue,
   mockFindById,
@@ -87,9 +75,7 @@ const {
   mockListUsage:     vi.fn(),
 }));
 
-// ---------------------------------------------------------------------------
 // Mock the repository - service calls go through these fns
-// ---------------------------------------------------------------------------
 vi.mock('@/repositories/service-usage.repository', () => ({
   serviceUsageRepository: {
     listCatalogue:        mockListCatalogue,
@@ -117,9 +103,7 @@ vi.mock('@/lib/db/pool', () => ({
 import { serviceUsageService, ServiceUsageServiceError } from './service-usage.service';
 import { serviceUsageRepository } from '@/repositories/service-usage.repository';
 
-// ---------------------------------------------------------------------------
 // Configure repository mocks with seed behavior
-// ---------------------------------------------------------------------------
 function configureRepoMocks(): void {
   resetUsageRows();
 
@@ -207,9 +191,7 @@ function configureRepoMocks(): void {
   });
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('Service Usage Service (Mock)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -217,9 +199,7 @@ describe('Service Usage Service (Mock)', () => {
     serviceUsageRepository._resetMockStore(); // no-op in real impl; API compatible
   });
 
-  // -------------------------------------------------------------------------
   // listCatalogue
-  // -------------------------------------------------------------------------
   describe('listCatalogue', () => {
     it('returns all 6 seeded Active services', async () => {
       const items = await serviceUsageService.listCatalogue();
@@ -234,9 +214,7 @@ describe('Service Usage Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // addCatalogueItem
-  // -------------------------------------------------------------------------
   describe('addCatalogueItem', () => {
     it('adds a new service and returns it', async () => {
       const item = await serviceUsageService.addCatalogueItem({
@@ -271,9 +249,7 @@ describe('Service Usage Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // logUsage - price snapshot rule
-  // -------------------------------------------------------------------------
   describe('logUsage', () => {
     it('logs usage and returns the record with charged_price snapshot', async () => {
       const usage = await serviceUsageService.logUsage(
@@ -344,9 +320,7 @@ describe('Service Usage Service (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   // listUsageByReservation
-  // -------------------------------------------------------------------------
   describe('listUsageByReservation', () => {
     it('returns usage rows for RES-MOCK-001 with service_name and line_total', async () => {
       const rows = await serviceUsageService.listUsageByReservation('RES-MOCK-001');

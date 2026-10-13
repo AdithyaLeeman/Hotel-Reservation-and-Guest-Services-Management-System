@@ -9,20 +9,11 @@ export interface InsertUserAccountInput {
   role: UserRole;
 }
 
-
 export type UserAccountWithHash = UserAccount & { password_hash: string };
 
-
 export const userRepository = {
-  /**
-   * Insert a new user_account row inside an existing transaction.
-   * Called during guest registration - must be wrapped with guestRepository.insertGuest
-   * in the same transaction so both succeed or both rollback.
-   *
-   * @param client - Active PoolClient (from withTransaction)
-   * @param input  - username, password_hash (already bcrypt-hashed), role
-   * @returns The newly created UserAccount row (no password_hash)
-   */
+  // Insert a new user_account row inside an existing transaction.
+  // Called during guest registration - must be wrapped with guestRepository.insertGuest
   insertUserAccount: async (
     client: PoolClient,
     input: InsertUserAccountInput
@@ -36,15 +27,8 @@ export const userRepository = {
     return result.rows[0];
   },
 
-  /**
-   * Find a user_account by username - INCLUDES password_hash for login verification.
-   * NEVER pass the returned object to the HTTP response.
-   *
-   * Uses pool directly (read-only; no transaction needed).
-   *
-   * @param username - The login username to look up
-   * @returns UserAccountWithHash if found, null otherwise
-   */
+  // Find a user_account by username - INCLUDES password_hash for login verification.
+  // NEVER pass the returned object to the HTTP response.
   findByUsername: async (
     username: string
   ): Promise<UserAccountWithHash | null> => {
@@ -58,13 +42,8 @@ export const userRepository = {
     return result.rows[0] ?? null;
   },
 
-  /**
-   * Find a user_account by user_id - does NOT include password_hash.
-   * Safe for session population and public-facing use.
-   *
-   * @param userId - UUID primary key
-   * @returns UserAccount if found, null otherwise
-   */
+  // Find a user_account by user_id - does NOT include password_hash.
+  // Safe for session population and public-facing use.
   findById: async (userId: string): Promise<UserAccount | null> => {
     const result = await pool.query<UserAccount>(
       `SELECT user_id, username, role, status
@@ -75,15 +54,8 @@ export const userRepository = {
     return result.rows[0] ?? null;
   },
 
-  /**
-   * Find a user_account joined with employee to get branch_id.
-   * INCLUDES password_hash - only for internal staff login verification.
-   * NEVER expose to route handlers or responses.
-   * Supports login by either username OR work email.
-   *
-   * @param username - The staff login username or email
-   * @returns Row combining user account, hash, and employee context if found
-   */
+  // Find a user_account joined with employee to get branch_id.
+  // INCLUDES password_hash - only for internal staff login verification.
   findStaffByUsername: async (
     username: string
   ): Promise<(UserAccountWithHash & { employee_id: number; branch_id: number | null }) | null> => {

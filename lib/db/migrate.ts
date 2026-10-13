@@ -2,30 +2,10 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { pool } from './pool';
 
-/**
- * Migration runner - P01-M01-T03
- *
- * Reads database/migrations/manifest.md for the authoritative apply order.
- * Tracks applied files in the schema_migrations table so runs are idempotent.
- * Each migration file is executed inside its own transaction; a failure rolls
- * back that file only and stops the runner so the DB is never left in a
- * half-applied state.
- *
- * Usage:
- *   npm run migrate
- *
- * Requires:
- *   DATABASE_URL set in .env.local
- *
- * Lecture alignment: L05 (transactions), L06 (schema management)
- */
-
 const MIGRATIONS_DIR = join(process.cwd(), 'database', 'migrations');
 const MANIFEST_PATH = join(MIGRATIONS_DIR, 'manifest.md');
 
-// ---------------------------------------------------------------------------
 // Ensure the tracking table exists
-// ---------------------------------------------------------------------------
 async function ensureTrackingTable(): Promise<void> {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -36,11 +16,9 @@ async function ensureTrackingTable(): Promise<void> {
   `);
 }
 
-// ---------------------------------------------------------------------------
 // Parse manifest.md - return filenames in the exact order listed.
 // Lines inside the fenced code block that are not blank and not comments
 // (#) and end in .sql are treated as migration filenames.
-// ---------------------------------------------------------------------------
 export function parseManifest(content: string): string[] {
   const files: string[] = [];
   let inApplyBlock = false;
@@ -65,9 +43,7 @@ export function parseManifest(content: string): string[] {
   return files;
 }
 
-// ---------------------------------------------------------------------------
 // Simple FNV-1a 32-bit checksum - catches accidental edits to applied files
-// ---------------------------------------------------------------------------
 export function checksum(content: string): string {
   let hash = 0x811c9dc5;
   for (let i = 0; i < content.length; i++) {
@@ -77,9 +53,7 @@ export function checksum(content: string): string {
   return hash.toString(16).padStart(8, '0');
 }
 
-// ---------------------------------------------------------------------------
 // Fetch the set of already-applied migration filenames
-// ---------------------------------------------------------------------------
 async function appliedMigrations(): Promise<Set<string>> {
   const result = await pool.query<{ filename: string }>(
     'SELECT filename FROM schema_migrations ORDER BY applied_at'
@@ -87,9 +61,7 @@ async function appliedMigrations(): Promise<Set<string>> {
   return new Set(result.rows.map((r) => r.filename));
 }
 
-// ---------------------------------------------------------------------------
 // Apply a single migration file inside an explicit transaction
-// ---------------------------------------------------------------------------
 async function applyMigration(filename: string): Promise<void> {
   const filePath = join(MIGRATIONS_DIR, filename);
   let sql: string;
@@ -123,9 +95,7 @@ async function applyMigration(filename: string): Promise<void> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // Main entry point
-// ---------------------------------------------------------------------------
 export async function runMigrations(): Promise<void> {
   console.log('[migrate] Starting...');
 

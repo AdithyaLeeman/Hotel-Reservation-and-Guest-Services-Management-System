@@ -1,24 +1,5 @@
 // @vitest-environment jsdom
-/**
- * Component tests for /staff/reservations/[id] page (P03-M03-T22)
- *
- * Strategy: render the page with @testing-library/react, mock global.fetch to
- * control API responses, and verify correct UI state transitions for:
- *   - Loading skeleton
- *   - Successful reservation detail rendering (all fields)
- *   - Guest information display
- *   - Dates, status badge, and rooms table
- *   - 404 / not-found state with back link
- *   - API / network error with retry button
- *   - Booked status: Check In + Cancel Reservation buttons present
- *   - CheckedIn status: Check Out + Services link present
- *   - Terminal states (CheckedOut, Cancelled): no action buttons
- *   - Correct API endpoint called when an action is confirmed
- *
- * Environment: jsdom -- enforced via @vitest-environment docblock.
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T22 (Mock-First)
- */
+// @vitest-environment docblock
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
@@ -30,7 +11,7 @@ import {
 import StaffReservationDetailPage from './page';
 import type { ReservationDetail } from '@/repositories/reservation.repository';
 
-/* ---- Mocks ---------------------------------------------------------------- */
+// Mocks
 
 vi.mock('next/link', () => ({
   default: ({
@@ -52,7 +33,7 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-/* ---- Helpers -------------------------------------------------------------- */
+// Helpers
 
 /** Build a resolved Promise<{ id: string }> with required Promise shape for Next.js 15 */
 function makeParams(id = 'res-mock-001'): Promise<{ id: string }> {
@@ -139,7 +120,7 @@ function mockFetchSequence(
   });
 }
 
-/* ---- Tests ---------------------------------------------------------------- */
+// Tests
 
 describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
   beforeEach(() => {
@@ -150,7 +131,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     vi.restoreAllMocks();
   });
 
-  /* -- Loading state -------------------------------------------------------- */
+  // Loading state
 
   it('renders the loading skeleton on initial mount', () => {
     mockFetchSuccess(makeDetail());
@@ -160,7 +141,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     expect(screen.getByRole('status', { name: /loading reservation details/i })).toBeTruthy();
   });
 
-  /* -- Successful rendering ------------------------------------------------- */
+  // Successful rendering
 
   it('renders reservation ID after successful fetch', async () => {
     const detail = makeDetail({ reservation_id: 'res-mock-001' });
@@ -204,7 +185,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     expect(els.length).toBeGreaterThan(0);
   });
 
-  /* -- Guest information ---------------------------------------------------- */
+  // Guest information
 
   it('renders guest full name', async () => {
     mockFetchSuccess(makeDetail({ guest_full_name: 'Nimal Silva' }));
@@ -238,7 +219,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Dates and duration --------------------------------------------------- */
+  // Dates and duration
 
   it('renders check-in and check-out dates', async () => {
     mockFetchSuccess(makeDetail({
@@ -297,7 +278,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Rooms table ---------------------------------------------------------- */
+  // Rooms table
 
   it('renders room number, type, and rate per night', async () => {
     mockFetchSuccess(makeDetail({
@@ -337,7 +318,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Back link ------------------------------------------------------------ */
+  // Back link
 
   it('renders back link to /staff/reservations', async () => {
     mockFetchSuccess(makeDetail());
@@ -352,7 +333,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     expect(hasBackLink).toBe(true);
   });
 
-  /* -- 404 state ------------------------------------------------------------ */
+  // 404 state
 
   it('shows not-found state when API returns 404', async () => {
     mockFetch404();
@@ -378,7 +359,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     });
   });
 
-  /* -- Error state ---------------------------------------------------------- */
+  // Error state
 
   it('shows error message and retry button on API failure', async () => {
     mockFetchError(500, 'Something broke on the server.');
@@ -429,7 +410,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Booked status actions ------------------------------------------------ */
+  // Booked status actions
 
   it('shows Check In and Cancel Reservation buttons for Booked status', async () => {
     mockFetchSuccess(makeDetail({ reservation_status: 'Booked' }));
@@ -573,7 +554,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- CheckedIn status actions --------------------------------------------- */
+  // CheckedIn status actions
 
   it('shows Check Out and Services link for CheckedIn status', async () => {
     mockFetchSuccess(makeDetail({ reservation_status: 'CheckedIn' }));
@@ -658,7 +639,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     });
   });
 
-  /* -- Terminal states ------------------------------------------------------ */
+  // Terminal states
 
   it('shows no action buttons for CheckedOut status', async () => {
     mockFetchSuccess(makeDetail({ reservation_status: 'CheckedOut' }));
@@ -710,7 +691,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Action error feedback ------------------------------------------------ */
+  // Action error feedback
 
   it('shows action error message inside modal when action API fails', async () => {
     const detail = makeDetail({ reservation_status: 'Booked' });
@@ -735,7 +716,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     );
   });
 
-  /* -- Dev mock notice ----------------------------------------------------- */
+  // Dev mock notice
 
   it('does not render development mock notice after live db wireup', async () => {
     mockFetchSuccess(makeDetail());
@@ -745,7 +726,7 @@ describe('/staff/reservations/[id] page (P03-M03-T22)', () => {
     expect(screen.queryByText(/Development mode/i)).toBeNull();
   });
 
-  /* -- Fetch called with correct URL --------------------------------------- */
+  // Fetch called with correct URL
 
   it('fetches detail from correct GET URL with reservation ID', async () => {
     const fetchSpy = mockFetchSuccess(makeDetail());

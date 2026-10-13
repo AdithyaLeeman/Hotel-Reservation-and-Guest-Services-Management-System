@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import GuestRegisterPage from './page';
 
-/* ─── Mocks ──────────────────────────────────────────────────────────────────── */
+// Mocks
 
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
@@ -22,7 +22,7 @@ vi.mock('next/link', () => ({
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-/* ─── Helpers ────────────────────────────────────────────────────────────────── */
+// Helpers
 
 function fillRequiredFields() {
   fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Alice Perera' } });
@@ -42,7 +42,7 @@ function successResponse() {
   });
 }
 
-/* ─── Tests ──────────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('GuestRegisterPage - rendering', () => {
   beforeEach(() => { mockFetch.mockClear(); mockPush.mockClear(); mockRefresh.mockClear(); });

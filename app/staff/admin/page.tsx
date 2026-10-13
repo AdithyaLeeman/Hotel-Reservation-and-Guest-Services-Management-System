@@ -1,26 +1,10 @@
-/**
- * Staff Administration Panel - /staff/admin
- *
- * Admin-only page for managing staff accounts, viewing branch info,
- * and system administration tasks.
- *
- * Features (v2 - interactive):
- *   - Add Staff Member modal (create Receptionist / Manager)
- *   - Change Branch inline modal
- *   - Toggle account status (Active / Suspended)
- *   - Reservation Audit Log table (from vw_audit_log)
- *
- * Access: Admin role only (enforced server-side via session check).
- * Theme: Royella luxury 5-star hotel dark & gold aesthetic.
- */
-
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface StaffRow {
   employee_id: number;
@@ -70,7 +54,7 @@ interface AdminData {
   audit: AuditRow[];
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────────── */
+// Helpers
 
 function roleBadgeStyle(role: string): React.CSSProperties {
   const map: Record<string, React.CSSProperties> = {
@@ -108,7 +92,7 @@ function formatDate(iso: string): string {
   }
 }
 
-/* ─── Add Staff Modal ─────────────────────────────────────────────────────── */
+// Add Staff Modal
 
 interface AddStaffModalProps {
   branches: BranchRow[];
@@ -275,7 +259,7 @@ function AddStaffModal({ branches, onClose, onSuccess }: AddStaffModalProps) {
   );
 }
 
-/* ─── Change Branch Modal ─────────────────────────────────────────────────── */
+// Change Branch Modal
 
 interface ChangeBranchModalProps {
   staff: StaffRow;
@@ -356,7 +340,7 @@ function ChangeBranchModal({ staff, branches, onClose, onSuccess }: ChangeBranch
   );
 }
 
-/* ─── Page ────────────────────────────────────────────────────────────────── */
+// Page
 
 export default function AdminPage() {
   const router = useRouter();
@@ -478,7 +462,7 @@ export default function AdminPage() {
     >
       <div style={{ maxWidth: 1300, margin: '0 auto', padding: '2rem 1.5rem' }}>
 
-        {/* ── Toast ── */}
+        {/* Toast */}
         {toastMsg && (
           <div style={{
             position: 'fixed', top: '1.5rem', right: '1.5rem', zIndex: 2000,
@@ -490,7 +474,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ── Header ── */}
+        {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <nav style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.75rem', fontSize: '0.8125rem', color: '#a8a29e' }}>
             <Link href="/staff/dashboard" style={{ color: '#a8a29e', textDecoration: 'none' }} className="hover:text-[#c5a880] transition-colors">
@@ -513,7 +497,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* ── System Stats ── */}
+        {/* System Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '2rem' }}>
           {[
             {
@@ -571,7 +555,7 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* ── Branches ── */}
+        {/* Branches */}
         <section style={{ marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#c5a880', marginBottom: '1rem', margin: 0 }}>
             Branches ({branches.length})
@@ -599,7 +583,7 @@ export default function AdminPage() {
           </div>
         </section>
 
-        {/* ── Tabs ── */}
+        {/* Tabs */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #2e2a27' }}>
           {(['staff', 'audit'] as const).map(tab => (
             <button
@@ -619,7 +603,7 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* ── Staff Accounts Tab ── */}
+        {/* Staff Accounts Tab */}
         {activeTab === 'staff' && (
           <section>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -730,7 +714,7 @@ export default function AdminPage() {
           </section>
         )}
 
-        {/* ── Audit Log Tab ── */}
+        {/* Audit Log Tab */}
         {activeTab === 'audit' && (
           <section>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -796,7 +780,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ── Modals ── */}
+      {/* Modals */}
       {showAddModal && (
         <AddStaffModal
           branches={branches}

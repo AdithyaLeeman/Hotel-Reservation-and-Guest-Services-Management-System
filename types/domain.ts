@@ -1,19 +1,3 @@
-/**
- * Domain model types - TypeScript representations of DB row shapes.
- *
- * Convention:
- * - Types here match DB column names (snake_case mapped from pg result rows)
- * - Use string for NUMERIC(12,2) money values received from pg
- * - Use string for UUID values
- * - Use string for DATE values (ISO 8601 format from pg)
- * - Use string for TIMESTAMP WITH TIME ZONE values
- *
- * See docs/21_shared-contracts.md Section 3 (money) and Section 4 (dates).
- *
- * TODO: Add domain types as each member builds their domain layer.
- * Place complex domain types in types/domain/ subdirectory.
- */
-
 import type {
   UserRole,
   AccountStatus,
@@ -142,12 +126,6 @@ export interface BillingSummary {
   payment_status: PaymentStatus;
 }
 
-/**
- * The authoritative billing view result.
- * All values come from vw_invoice_totals - NEVER recomputed in TypeScript.
- *
- * See docs/08_business-rules-and-enforcement.md - Calculation Placement Matrix.
- */
 export interface InvoiceTotals {
   invoice_id: string;
   reservation_id: string;

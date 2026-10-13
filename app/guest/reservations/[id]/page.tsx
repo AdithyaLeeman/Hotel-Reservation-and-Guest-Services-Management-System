@@ -1,31 +1,5 @@
 'use client';
 
-/**
- * Guest Reservation Detail Page - /guest/reservations/[id]
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T17
- * Type: MOCK-FIRST - calls GET /api/guest/reservations/[id] (currently mock data).
- *
- * Responsibilities:
- *   - Read `id` from the dynamic URL segment via useParams
- *   - Fetch full ReservationDetail from GET /api/guest/reservations/[id]
- *   - Render all detail fields: guest info, branch, dates, status, source,
- *     discount, rooms (number, type, rate per night)
- *   - Handle loading skeleton, 404/not-found, error, and success states
- *   - Provide navigation back to /guest/reservations (T16)
- *
- * Security:
- *   Ownership is enforced server-side at the DB level via fn_get_reservation_detail().
- *   The API returns 404 for both "not found" and "wrong guest" to prevent info leakage.
- *   This component sends NO guest_id - it is read from the session by the route handler.
- *
- * Entry points:
- *   - T15 (confirm page) "View Reservation" CTA → /guest/reservations/[id]
- *   - T16 (list page) "View Details →" link  → /guest/reservations/[id]
- *
- * TODO (P06-M03-T01): Replace dev-session stub in the API with real iron-session.
- */
-
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -33,9 +7,7 @@ import Link from 'next/link';
 import type { ReservationDetail, ReservationRoomDetail } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 interface StatusBadgeConfig {
   container: string;
@@ -66,9 +38,7 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
   },
 };
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 /** Format ISO date as "01 Oct 2026" - display only. */
 function formatDate(iso: string): string {
@@ -113,9 +83,7 @@ function formatRate(rate: string): string {
   });
 }
 
-// ---------------------------------------------------------------------------
 // API response types
-// ---------------------------------------------------------------------------
 
 interface ApiSuccess {
   data: ReservationDetail;
@@ -126,9 +94,7 @@ interface ApiError {
   error: { code: string; message: string };
 }
 
-// ---------------------------------------------------------------------------
 // Loading skeleton
-// ---------------------------------------------------------------------------
 
 function DetailSkeleton() {
   return (
@@ -170,9 +136,7 @@ function DetailSkeleton() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Not-found state
-// ---------------------------------------------------------------------------
 
 function NotFoundState() {
   return (
@@ -219,9 +183,7 @@ function NotFoundState() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Error state
-// ---------------------------------------------------------------------------
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
@@ -278,9 +240,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   );
 }
 
-// ---------------------------------------------------------------------------
 // Detail label-value row
-// ---------------------------------------------------------------------------
 
 function DetailRow({ label, value, id }: { label: string; value: React.ReactNode; id: string }) {
   return (
@@ -295,9 +255,7 @@ function DetailRow({ label, value, id }: { label: string; value: React.ReactNode
   );
 }
 
-// ---------------------------------------------------------------------------
 // Rooms list
-// ---------------------------------------------------------------------------
 
 function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
   if (rooms.length === 0) {
@@ -368,9 +326,7 @@ function RoomsList({ rooms }: { rooms: ReservationRoomDetail[] }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Success detail view
-// ---------------------------------------------------------------------------
 
 function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
   const nights      = countNights(detail.check_in_date, detail.check_out_date);
@@ -380,7 +336,7 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      {/* ── Left Column: Primary Reservation & Rooms (7 cols) ───────────── */}
+      {/* Left Column: Primary Reservation & Rooms (7 cols) */}
       <div className="lg:col-span-7 flex flex-col gap-8">
 
         {/* Reservation summary card */}
@@ -551,7 +507,7 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
 
       </div>
 
-      {/* ── Right Column: Guest Info & Billing Action (5 cols) ─────────── */}
+      {/* Right Column: Guest Info & Billing Action (5 cols) */}
       <div className="lg:col-span-5 flex flex-col gap-8">
 
         {/* Billing & Payment CTA card */}
@@ -644,9 +600,7 @@ function ReservationDetailView({ detail }: { detail: ReservationDetail }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Page component
-// ---------------------------------------------------------------------------
 
 type LoadState = 'loading' | 'success' | 'not_found' | 'error';
 
@@ -678,13 +632,8 @@ export default function ReservationDetailPage() {
 
     async function load() {
       try {
-        /**
-         * GET /api/guest/reservations/[id]
-         * guest_id is sourced server-side from the session - not sent here.
-         * Returns 404 for both "not found" and "wrong guest" to prevent info leakage.
-         * All setState calls are after the first `await` - never synchronous within
-         * the effect body, satisfying react-hooks/set-state-in-effect.
-         */
+        // GET /api/guest/reservations/[id]
+        // guest_id is sourced server-side from the session - not sent here.
         const response = await fetch(`/api/guest/reservations/${id}`);
         const json     = (await response.json()) as ApiSuccess | ApiError;
 
@@ -733,7 +682,7 @@ export default function ReservationDetailPage() {
           min-h-screen relative text-neutral-100 bg-[#0d0c0b]
         "
       >
-        {/* ── Ambient background with subtle blur ──────────────────────── */}
+        {/* Ambient background with subtle blur */}
         <div
           aria-hidden="true"
           className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
@@ -748,7 +697,7 @@ export default function ReservationDetailPage() {
 
         <div className="relative z-10">
 
-          {/* ── Hero header ─────────────────────────────────────────────── */}
+          {/* Hero header */}
           <section
             aria-labelledby="detail-heading"
             className="
@@ -810,7 +759,7 @@ export default function ReservationDetailPage() {
             </div>
           </section>
 
-          {/* ── Content ─────────────────────────────────────────────────── */}
+          {/* Content */}
           <section
             className="max-w-[1600px] w-full mx-auto px-4 sm:px-8 lg:px-12 py-10"
             aria-live="polite"

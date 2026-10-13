@@ -1,13 +1,10 @@
-
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import StaffNavClient from './StaffNavClient';
 
-/* ─── Mocks ─────────────────────────────────────────────────────────────────── */
+// Mocks
 
 // next/navigation mocks
 const mockPush = vi.fn();
@@ -47,7 +44,7 @@ Object.defineProperty(window, 'matchMedia', {
   value: vi.fn(() => ({ matches: false })),
 });
 
-/* ─── Helpers ────────────────────────────────────────────────────────────────── */
+// Helpers
 
 function renderNav(
   role: 'Receptionist' | 'Manager' | 'Admin',
@@ -59,7 +56,7 @@ function renderNav(
   );
 }
 
-/* ─── Tests ──────────────────────────────────────────────────────────────────── */
+// Tests
 
 describe('StaffNavClient - role-conditional link rendering', () => {
   beforeEach(() => {

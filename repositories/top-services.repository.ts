@@ -1,24 +1,6 @@
-/**
- * Top-Services Repository - data access layer for vw_top_services.
- * Owned by: Member 3 (M3) | Task: P05-M03-T02 (Mock-First)
- *
- * Parallel development mode:
- * Operates with an in-memory mock store derived from the seed data in
- * service_catalogue + service_usage (6 services, sample usage records).
- *
- * Mock swap plan (Phase 6 / P06-M03-T01):
- * - getTopServices() → SELECT * FROM vw_top_services
- *   (view already handles ranking, aggregation, and ordering)
- *
- * Contract: matches vw_top_services column set exactly.
- * See database/views/vw_top_services.sql
- */
-
 import { pool } from '@/lib/db/pool';
 
-// ---------------------------------------------------------------------------
 // Row type - mirrors vw_top_services columns exactly
-// ---------------------------------------------------------------------------
 
 export interface TopServiceRow {
   service_id: number;
@@ -29,7 +11,6 @@ export interface TopServiceRow {
   usage_rank: number;       // RANK() OVER (ORDER BY total_quantity DESC)
 }
 
-// ---------------------------------------------------------------------------
 // Mock data - derived from service-usage.repository.ts seed data.
 // Mirrors what vw_top_services would return for the seed usage records.
 //
@@ -38,7 +19,6 @@ export interface TopServiceRow {
 // Mock swap: replace getTopServices() body with:
 //   const { rows } = await pool.query('SELECT * FROM vw_top_services');
 //   return rows;
-// ---------------------------------------------------------------------------
 
 let mockTopServices: TopServiceRow[] = [
   {
@@ -91,18 +71,10 @@ let mockTopServices: TopServiceRow[] = [
   },
 ];
 
-// ---------------------------------------------------------------------------
 // Repository
-// ---------------------------------------------------------------------------
 
 export const topServicesRepository = {
-  /**
-   * Return all rows from vw_top_services, ordered by usage_rank ascending.
-   *
-   * Mock swap:
-   *   const { rows } = await pool.query('SELECT * FROM vw_top_services');
-   *   return rows;
-   */
+  // Return all rows from vw_top_services, ordered by usage_rank ascending.
   getTopServices: async (): Promise<TopServiceRow[]> => {
     if (process.env.NODE_ENV === 'test') {
       return mockTopServices
@@ -130,10 +102,8 @@ export const topServicesRepository = {
     }
   },
 
-  /**
-   * Reset mock store to initial seed state.
-   * Called by test suites in beforeEach to guarantee isolation.
-   */
+  // Reset mock store to initial seed state.
+  // Called by test suites in beforeEach to guarantee isolation.
   _resetMockStore: (): void => {
     mockTopServices = [
       {

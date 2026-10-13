@@ -1,5 +1,3 @@
-
-
 import { describe, it, expect, beforeEach } from 'vitest';
 import { paymentRepository } from './payment.repository';
 

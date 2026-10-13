@@ -1,10 +1,3 @@
-/**
- * Dashboard Repository - live database metrics and activity for Staff Dashboard
- *
- * DB-first: All metrics derived from PostgreSQL queries and vw_audit_log.
- * No hardcoded or mock figures.
- */
-
 import { pool } from '@/lib/db/pool';
 
 export interface EmployeeInfo {
@@ -43,9 +36,7 @@ export interface DashboardActivity {
 }
 
 export const dashboardRepository = {
-  /**
-   * Get employee and branch information by employee_id.
-   */
+  // Get employee and branch information by employee_id.
   getEmployeeInfo: async (employeeId: number): Promise<EmployeeInfo | null> => {
     const res = await pool.query<{
       full_name: string;
@@ -68,9 +59,7 @@ export const dashboardRepository = {
     };
   },
 
-  /**
-   * Get KPI figures for Receptionist view (scoped by branch if provided).
-   */
+  // Get KPI figures for Receptionist view (scoped by branch if provided).
   getReceptionistKpis: async (
     branchId?: number | null
   ): Promise<ReceptionistKpiData> => {
@@ -115,9 +104,7 @@ export const dashboardRepository = {
     };
   },
 
-  /**
-   * Get KPI figures for Manager / Admin view (all branches or branch-scoped).
-   */
+  // Get KPI figures for Manager / Admin view (all branches or branch-scoped).
   getManagerKpis: async (
     branchId?: number | null
   ): Promise<ManagerKpiData> => {
@@ -163,9 +150,7 @@ export const dashboardRepository = {
     };
   },
 
-  /**
-   * Get recent audit activities from vw_audit_log.
-   */
+  // Get recent audit activities from vw_audit_log.
   getRecentActivity: async (limit = 5): Promise<DashboardActivity[]> => {
     const res = await pool.query<{
       audit_id: string;

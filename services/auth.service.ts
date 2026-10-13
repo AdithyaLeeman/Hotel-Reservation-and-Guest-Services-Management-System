@@ -6,7 +6,6 @@ import type { GuestRegisterInput, GuestLoginInput, StaffLoginInput } from '@/lib
 import type { UserAccount, Guest } from '@/types/domain';
 import type { SessionData } from '@/types/session';
 
-
 export interface RegisterGuestResult {
   user: UserAccount;
   guest: Guest;
@@ -23,18 +22,7 @@ export class AuthServiceError extends Error {
 }
 
 export const authService = {
-  /**
-   * Register a new guest account.
-   *
-   * Atomically inserts one user_account row (role='Guest') and one guest row
-   * in the same PostgreSQL transaction. If either insert fails (e.g. duplicate
-   * username/email UNIQUE violation) the entire transaction rolls back and the
-   * pg DatabaseError is re-thrown to the route handler.
-   *
-   * @param input - Validated guest registration fields
-   * @returns { user, guest } - safe to serialize (no password_hash)
-   * @throws DatabaseError (SQLSTATE 23505) on duplicate username or email
-   */
+  // Register a new guest account.
   registerGuest: async (input: GuestRegisterInput): Promise<RegisterGuestResult> => {
     const password_hash = await hashPassword(input.password);
 
@@ -59,17 +47,7 @@ export const authService = {
     });
   },
 
-  /**
-   * Authenticate a guest login.
-   *
-   * Finds the user_account by username, verifies the bcrypt password, checks
-   * account status, then fetches the guest profile for session population.
-   *
-   * @param input - Validated username + password
-   * @returns SessionData - caller must write this to iron-session and save()
-   * @throws AuthServiceError('INVALID_CREDENTIALS') - wrong username or password
-   * @throws AuthServiceError('ACCOUNT_INACTIVE')    - account suspended/inactive
-   */
+  // Authenticate a guest login.
   loginGuest: async (input: GuestLoginInput): Promise<SessionData> => {
     // 1. Look up the user_account (includes password_hash for verification)
     const user = await userRepository.findByUsername(input.username);
@@ -104,17 +82,7 @@ export const authService = {
     };
   },
 
-  /**
-   * Authenticate a staff login (Receptionist, Manager, Admin).
-   *
-   * Finds the user_account joined with employee for branch_id, verifies
-   * credentials, checks account status, then returns session data.
-   *
-   * @param input - Validated username + password
-   * @returns SessionData - caller must write to iron-session and save()
-   * @throws AuthServiceError('INVALID_CREDENTIALS') - wrong username or password
-   * @throws AuthServiceError('ACCOUNT_INACTIVE')    - account suspended/inactive
-   */
+  // Authenticate a staff login (Receptionist, Manager, Admin).
   loginStaff: async (input: StaffLoginInput): Promise<SessionData> => {
     // 1. Look up user_account + employee in one JOIN query
     const user = await userRepository.findStaffByUsername(input.username);

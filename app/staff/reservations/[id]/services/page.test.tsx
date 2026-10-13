@@ -1,22 +1,10 @@
 /** @vitest-environment jsdom */
 
-/**
- * Tests for /staff/reservations/[id]/services page (P04-M04-T17)
- *
- * Strategy: render with @testing-library/react, mock fetch for both
- * GET /api/staff/services (catalogue) and POST /api/staff/reservations/[id]/services.
- * Verify form render, catalogue load, successful log, and error handling.
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T17 (Mock-First)
- */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ServiceUsageLoggingPage from './page';
 
-// ---------------------------------------------------------------------------
 // Mocks
-// ---------------------------------------------------------------------------
 
 vi.mock('@/components/StaffNav', () => ({
   default: () => <nav data-testid="staff-nav">StaffNav</nav>,
@@ -50,9 +38,7 @@ const MOCK_NEW_USAGE = {
   channel:       'FrontDesk',
 };
 
-// ---------------------------------------------------------------------------
 // fetch mock helper
-// ---------------------------------------------------------------------------
 function mockFetchSequence(responses: Array<{ ok: boolean; body: object }>) {
   let call = 0;
   return vi.spyOn(global, 'fetch').mockImplementation(async () => {
@@ -66,9 +52,7 @@ function mockFetchSequence(responses: Array<{ ok: boolean; body: object }>) {
   });
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('/staff/reservations/[id]/services page', () => {
   beforeEach(() => {
     vi.clearAllMocks();

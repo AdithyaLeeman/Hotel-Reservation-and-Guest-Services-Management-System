@@ -1,9 +1,3 @@
-/**
- * One-shot script: re-apply sp_create_reservation to fix
- * "FOR UPDATE is not allowed with aggregate functions"
- *
- * Run: node scripts/apply-reservation-fix.js
- */
 const fs   = require('fs');
 const path = require('path');
 const { Client } = require('pg');

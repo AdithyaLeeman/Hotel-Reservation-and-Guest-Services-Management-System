@@ -1,13 +1,12 @@
 'use client';
 
-
 import { useState, useId } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
-/* ─── Types ──────────────────────────────────────────────────────────────────── */
+// Types
 
 interface StaffLoginFormState {
   username: string;
@@ -27,12 +26,10 @@ interface ApiErrorResponse {
   };
 }
 
-/* ─── Client-side validation ─────────────────────────────────────────────────── */
+// Client-side validation
 
-/**
- * Lightweight UX-only validation - mirrors StaffLoginSchema.
- * The server always re-validates authoritatively.
- */
+// Lightweight UX-only validation - mirrors StaffLoginSchema.
+// The server always re-validates authoritatively.
 function validateForm(values: StaffLoginFormState): FieldErrors {
   const errors: FieldErrors = {};
   if (!values.username.trim()) {
@@ -44,7 +41,7 @@ function validateForm(values: StaffLoginFormState): FieldErrors {
   return errors;
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────────── */
+// Sub-components
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -58,7 +55,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-/* ─── Inner page (reads searchParams) ────────────────────────────────────────── */
+// Inner page (reads searchParams)
 
 function StaffLoginForm() {
   const router = useRouter();
@@ -158,7 +155,7 @@ function StaffLoginForm() {
 
   return (
     <>
-      {/* ── SEO ── */}
+      {/* SEO */}
       <title>Staff Login - SkyNest Hotels</title>
 
       <main
@@ -168,7 +165,7 @@ function StaffLoginForm() {
           text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
-        {/* ── Hero header ── */}
+        {/* Hero header */}
         <section
           aria-labelledby="staff-login-heading"
           className="
@@ -201,7 +198,7 @@ function StaffLoginForm() {
           </div>
         </section>
 
-        {/* ── Form card ── */}
+        {/* Form card */}
         <section className="flex-1 flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-md">
 
@@ -259,7 +256,7 @@ function StaffLoginForm() {
                 </p>
               </div>
 
-              {/* ── Username ── */}
+              {/* Username */}
               <div>
                 <label
                   htmlFor={id('username')}
@@ -284,7 +281,7 @@ function StaffLoginForm() {
                 <FieldError id={errId('username')} message={fieldErrors.username} />
               </div>
 
-              {/* ── Password ── */}
+              {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label
@@ -341,7 +338,7 @@ function StaffLoginForm() {
                 <FieldError id={errId('password')} message={fieldErrors.password} />
               </div>
 
-              {/* ── Submit ── */}
+              {/* Submit */}
               <button
                 id="staff-login-submit-btn"
                 type="submit"
@@ -376,7 +373,7 @@ function StaffLoginForm() {
                 )}
               </button>
 
-              {/* ── Security notice ── */}
+              {/* Security notice */}
               <p className="text-center text-xs text-neutral-500 dark:text-neutral-400">
                 Staff accounts are managed by your system administrator.
               </p>
@@ -393,7 +390,7 @@ function StaffLoginForm() {
   );
 }
 
-/* ─── Page export - wraps form in Suspense for useSearchParams ───────────────── */
+// Page export - wraps form in Suspense for useSearchParams
 
 export default function StaffLoginPage() {
   return (

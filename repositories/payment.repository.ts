@@ -1,25 +1,3 @@
-/**
- * Payment Repository - calls sp_post_payment() and sp_checkout(), reads payment table.
- *
- * DB-first rule (AGENTS.md §5):
- *   - sp_post_payment() handles idempotency + balance check inside PostgreSQL
- *   - sp_checkout() enforces outstanding_balance = 0 guard inside PostgreSQL
- *   - TypeScript NEVER performs financial arithmetic
- *
- * P06-M05-T01 - Wire payment to real DB with test mock store support.
- *
- * SQLSTATE reference (docs/21_shared-contracts.md §14):
- *   22023 - payment amount ≤ 0
- *   23503 - invoice not found (FK violation)
- *   23505 - duplicate transaction_reference (unique violation)
- *   23514 - check violation (amount ≤ 0)
- *   45020 - amount exceeds outstanding balance
- *   45030 - outstanding balance > 0 (checkout blocked)
- *   45031 - reservation not in CheckedIn status
- *
- * Lecture alignment: L05 (ACID / transactions), L08 (stored procedures), L11 (concurrency)
- */
-
 import { pool } from '@/lib/db/pool';
 import { withTransaction } from '@/lib/db/transaction';
 import type { Payment } from '@/types/domain';
@@ -42,13 +20,8 @@ function isUuid(str: string | null | undefined): boolean {
 }
 
 export const paymentRepository = {
-  /**
-   * Call sp_post_payment() to record a payment against an invoice.
-   * In test environment or with mock/string IDs, uses the in-memory mock store.
-   *
-   * @param params  Validated payment parameters
-   * @returns       The persisted Payment record
-   */
+  // Call sp_post_payment() to record a payment against an invoice.
+  // In test environment or with mock/string IDs, uses the in-memory mock store.
   postPayment: async (params: PostPaymentParams): Promise<Payment> => {
     // Amount validation (BR-14 / SQLSTATE 23514)
     const amountNum = parseFloat(params.amount_paid);
@@ -155,16 +128,12 @@ export const paymentRepository = {
     });
   },
 
-  /**
-   * Compatibility alias for postPayment
-   */
+  // Compatibility alias for postPayment
   callPostPayment: async (params: PostPaymentParams): Promise<Payment> => {
     return paymentRepository.postPayment(params);
   },
 
-  /**
-   * Retrieve all payment receipts for an invoice in chronological order.
-   */
+  // Retrieve all payment receipts for an invoice in chronological order.
   listByInvoiceId: async (invoiceId: string): Promise<Payment[]> => {
     if (process.env.NODE_ENV === 'test' || !isUuid(invoiceId)) {
       return mockPayments
@@ -220,14 +189,8 @@ export const paymentRepository = {
     }
   },
 
-  /**
-   * Call sp_checkout() to atomically:
-   *   1. Verify reservation is in CheckedIn status (SQLSTATE 45031 if not)
-   *   2. Verify outstanding_balance = 0  (SQLSTATE 45030 if not)
-   *   3. Transition reservation → CheckedOut
-   *   4. Release all assigned rooms → Available
-   *   5. Mark billing_summary.payment_status → Paid
-   */
+  // Call sp_checkout() to atomically:
+  // 1. Verify reservation is in CheckedIn status (SQLSTATE 45031 if not)
   callCheckout: async (reservationId: string, employeeId: number): Promise<void> => {
     if (process.env.NODE_ENV === 'test' || !isUuid(reservationId)) {
       return;
@@ -241,9 +204,7 @@ export const paymentRepository = {
     });
   },
 
-  /**
-   * Mock store helpers for test suite compatibility.
-   */
+  // Mock store helpers for test suite compatibility.
   _resetMockStore: (): void => {
     mockPayments = [];
     nextPaymentId = 1;

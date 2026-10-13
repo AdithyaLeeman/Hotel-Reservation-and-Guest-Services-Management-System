@@ -1,15 +1,7 @@
-/**
- * Reservation Repository tests - P06-M03-T01 (real DB wire-up)
- * Mocks `pool.query` / `pool.connect` so tests stay fast and DB-independent.
- * All original assertions are preserved.
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { CreateReservationParams } from './reservation.repository';
 
-// ---------------------------------------------------------------------------
 // Seed data mirrors the reservation seed / mock data from Phase 3
-// ---------------------------------------------------------------------------
 const SEED_RESERVATIONS = [
   {
     reservation_id: 'res-mock-001',
@@ -123,19 +115,15 @@ const SEED_ACTIVE = [
   },
 ];
 
-// ---------------------------------------------------------------------------
 // Hoisted mock fns - must be declared via vi.hoisted so they are available
 // inside the vi.mock factory (which is hoisted above all imports)
-// ---------------------------------------------------------------------------
 const { mockClientQuery, mockClientRelease, mockPoolQuery } = vi.hoisted(() => ({
   mockClientQuery: vi.fn(),
   mockClientRelease: vi.fn(),
   mockPoolQuery: vi.fn(),
 }));
 
-// ---------------------------------------------------------------------------
 // Mock pool - intercepts every pool.query and pool.connect call
-// ---------------------------------------------------------------------------
 vi.mock('@/lib/db/pool', () => ({
   pool: {
     query: mockPoolQuery,
@@ -156,9 +144,7 @@ function mockQuery(rows: unknown[]): void {
   vi.mocked(pool.query).mockResolvedValueOnce({ rows, rowCount: rows.length } as never);
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('Reservation Repository (Mock)', () => {
   beforeEach(() => {
     // _resetMockStore is now a no-op; retained for shared-contract compatibility
@@ -168,7 +154,6 @@ describe('Reservation Repository (Mock)', () => {
     mockClientQuery.mockResolvedValue({ rows: [], rowCount: 0 });
   });
 
-  // -------------------------------------------------------------------------
   describe('listByGuestId', () => {
     it('returns reservations belonging to the specified guest, ordered newest first', async () => {
       const guest001 = SEED_RESERVATIONS
@@ -204,7 +189,6 @@ describe('Reservation Repository (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('callCreateReservation', () => {
     const newBookingParams: CreateReservationParams = {
       guest_id: 'guest-mock-001',
@@ -278,7 +262,6 @@ describe('Reservation Repository (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('findDetailById', () => {
     it('returns full detail when reservation belongs to the requesting guest', async () => {
       mockQuery([SEED_DETAIL_001]);  // fn_get_reservation_detail
@@ -321,7 +304,6 @@ describe('Reservation Repository (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('listActive', () => {
     it('returns only Booked and CheckedIn reservations', async () => {
       const active = SEED_ACTIVE.filter(
@@ -348,7 +330,6 @@ describe('Reservation Repository (Mock)', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
   describe('callCancelReservation', () => {
     it('successfully cancels a Booked reservation', async () => {
       // BEGIN, CALL sp_cancel_reservation, COMMIT - all succeed

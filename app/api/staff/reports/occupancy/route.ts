@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import {
@@ -75,24 +74,6 @@ function isIsoDate(s: string): boolean {
 }
 
 // ─── Route handler ─────────────────────────────────────────────────────────────
-/**
- * GET /api/staff/reports/occupancy
- *
- * Returns room occupancy data from `vw_room_occupancy` (mock-first).
- * Access: Manager | Admin only.
- *
- * Query params:
- *   branchId    - integer, filter to one branch
- *   fromDate    - YYYY-MM-DD, inclusive lower bound on period_date
- *   toDate      - YYYY-MM-DD, inclusive upper bound on period_date
- *   roomStatus  - 'Available' | 'Occupied' | 'Maintenance'
- *
- * Response 200:
- *   { data: OccupancyReportRow[], meta: { requestId, count } }
- *
- * Task: P05-M02-T02
- * Owner: M2 - Karunarathna W.P. 240331F
- */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     // 1. Authentication

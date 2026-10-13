@@ -1,33 +1,9 @@
-/**
- * Reservation Repository - data access layer for guest and staff reservations.
- *
- * Security invariant (CRITICAL):
- *   guest_id is ALWAYS sourced from the server-side session - never from
- *   request parameters or body. Every guest query includes WHERE guest_id = $1
- *   with the session-derived ID. Violation is a security defect.
- *
- * P06-M03-T01 - Mock store replaced with real parameterized pg Pool / CALL queries.
- * All SQL is parameterized (no string concatenation - AGENTS.md §8).
- * Money/NUMERIC columns returned as strings from pg (AGENTS.md §8).
- *
- * DB routines used:
- *   sp_create_reservation()     - P03-M03-T03 (atomic create + overlap check)
- *   fn_get_reservation_detail() - P03-M03-T04 (full detail join)
- *   sp_cancel_reservation()     - P03-M03-T05 (status-guarded cancel)
- *   vw_active_reservations      - P03-M03-T06 (staff list view)
- *
- * Owned by: Member 3 (M3) - Hiripitiya S.K., 240238C
- * Tasks:    P03-M03-T07, T08, T09 (repository methods)
- */
-
 import type { PoolClient } from '@/lib/db/pool';
 import { pool } from '@/lib/db/pool';
 import type { Reservation } from '@/types/domain';
 import type { BookingSource, ReservationStatus } from '@/types/enums';
 
-// ---------------------------------------------------------------------------
 // Input / output types
-// ---------------------------------------------------------------------------
 
 /** Parameters for sp_create_reservation() */
 export interface CreateReservationParams {
@@ -90,35 +66,12 @@ export interface ActiveReservationRow {
   created_at: string;
 }
 
-// ---------------------------------------------------------------------------
 // Repository
-// ---------------------------------------------------------------------------
 
 export const reservationRepository = {
-  // -------------------------------------------------------------------------
   // P03-M03-T07 - Create reservation (calls sp_create_reservation)
-  // -------------------------------------------------------------------------
 
-  /**
-   * Calls sp_create_reservation() stored procedure atomically.
-   *
-   * The procedure owns the entire transaction:
-   *   - Overlap check via SELECT FOR UPDATE (concurrency lock - L12)
-   *   - Branch consistency check (SQLSTATE 45002)
-   *   - Maintenance exclusion check (SQLSTATE 45003)
-   *   - INSERT into reservation + reservation_rooms (with rate_per_night snapshot)
-   *
-   * Caller must NOT wrap in BEGIN/COMMIT - the procedure manages its own transaction.
-   *
-   * @param client  - pg PoolClient acquired by the caller
-   * @param params  - CreateReservationParams (guest_id MUST come from session)
-   * @returns       - { reservation_id } of the newly created reservation
-   *
-   * SQLSTATE errors propagated from the procedure:
-   *   45001 - room overlap
-   *   45002 - branch mismatch
-   *   45003 - room in Maintenance
-   */
+  // Calls sp_create_reservation() stored procedure atomically.
   callCreateReservation: async (
     client: PoolClient,
     params: CreateReservationParams
@@ -153,19 +106,9 @@ export const reservationRepository = {
     return { reservation_id: result.rows[0].p_reservation_id };
   },
 
-  // -------------------------------------------------------------------------
   // P03-M03-T08 - List reservations for a guest (guest portal)
-  // -------------------------------------------------------------------------
 
-  /**
-   * Returns all reservations for a specific guest, ordered newest first.
-   *
-   * SECURITY: guestId MUST come from session.guestId, never from the request.
-   * The WHERE guest_id = $1 predicate enforces ownership at the query level.
-   *
-   * @param guestId  - session.guestId
-   * @returns        - array of Reservation rows (empty if none found)
-   */
+  // Returns all reservations for a specific guest, ordered newest first.
   listByGuestId: async (guestId: string): Promise<Reservation[]> => {
     const result = await pool.query<Reservation>(
       `SELECT
@@ -193,21 +136,9 @@ export const reservationRepository = {
     }));
   },
 
-  // -------------------------------------------------------------------------
   // P03-M03-T09 - Get full reservation detail (guest-owned or staff access)
-  // -------------------------------------------------------------------------
 
-  /**
-   * Returns full reservation detail by calling fn_get_reservation_detail().
-   *
-   * SECURITY: Pass guestId (from session) for guest access - the DB function
-   * enforces ownership and raises P0002 on mismatch to prevent info leakage.
-   * Pass null for staff access (no ownership restriction).
-   *
-   * @param reservationId  - UUID of the reservation
-   * @param guestId        - session.guestId for guest access; null for staff
-   * @returns              - ReservationDetail including rooms, or null if not found
-   */
+  // Returns full reservation detail by calling fn_get_reservation_detail().
   findDetailById: async (
     reservationId: string,
     guestId: string | null
@@ -306,14 +237,10 @@ export const reservationRepository = {
     }
   },
 
-  // -------------------------------------------------------------------------
   // Convenience: findById (no ownership - staff use only)
-  // -------------------------------------------------------------------------
 
-  /**
-   * Find a reservation by ID only (no guest ownership check - staff use).
-   * Returns the base Reservation row (no joined data).
-   */
+  // Find a reservation by ID only (no guest ownership check - staff use).
+  // Returns the base Reservation row (no joined data).
   findById: async (reservationId: string): Promise<Reservation | null> => {
     const result = await pool.query<Reservation>(
       `SELECT
@@ -336,19 +263,10 @@ export const reservationRepository = {
     };
   },
 
-  // -------------------------------------------------------------------------
   // P03-M03-T08 - List active reservations (staff, via vw_active_reservations)
-  // -------------------------------------------------------------------------
 
-  /**
-   * List active (Booked + CheckedIn) reservations for staff dashboards.
-   * Reads from vw_active_reservations with optional branch_id filter for
-   * Receptionist scope enforcement (see docs/08_business-rules).
-   *
-   * @param branchId  - if provided, scopes to this branch (Receptionist RBAC)
-   *                    if null, returns all branches (Manager / Admin)
-   * @returns         - array of ActiveReservationRow
-   */
+  // List active (Booked + CheckedIn) reservations for staff dashboards.
+  // Reads from vw_active_reservations with optional branch_id filter for
   listActive: async (branchId: number | null): Promise<ActiveReservationRow[]> => {
     const query = branchId !== null
       ? `SELECT * FROM vw_active_reservations WHERE branch_id = $1 ORDER BY created_at DESC`
@@ -364,24 +282,9 @@ export const reservationRepository = {
     }));
   },
 
-  // -------------------------------------------------------------------------
   // P03-M03-T09 - Cancel reservation (calls sp_cancel_reservation)
-  // -------------------------------------------------------------------------
 
-  /**
-   * Calls sp_cancel_reservation() to mark a reservation as 'Cancelled'.
-   *
-   * The procedure:
-   *   - Locks the row (FOR UPDATE) to prevent concurrent state changes
-   *   - Guards: only 'Booked' reservations can be cancelled (45010 otherwise)
-   *   - Enforces guest ownership when guestId is provided (P0002 on mismatch)
-   *   - Raises P0002 if not found
-   *
-   * @param reservationId      - UUID of the reservation to cancel
-   * @param guestId            - session.guestId for guest cancellations;
-   *                             null for staff override (no ownership check)
-   * @param cancelledByUserId  - session.userId of the actor (audit trail)
-   */
+  // Calls sp_cancel_reservation() to mark a reservation as 'Cancelled'.
   callCancelReservation: async (
     reservationId: string,
     guestId: string | null,
@@ -404,14 +307,9 @@ export const reservationRepository = {
     }
   },
 
-  // -------------------------------------------------------------------------
   // Backward-compatible alias for existing callers using findByIdAndGuestId
-  // -------------------------------------------------------------------------
 
-  /**
-   * @deprecated Use findDetailById(reservationId, guestId) for full detail.
-   * Kept for backward compatibility with existing stubs that reference this name.
-   */
+  // Kept for backward compatibility with existing stubs that reference this name.
   findByIdAndGuestId: async (
     reservationId: string,
     guestId: string
@@ -430,14 +328,10 @@ export const reservationRepository = {
     return result.rows[0] ?? null;
   },
 
-  // -------------------------------------------------------------------------
   // Test helper - no-op for shared-contract / test compatibility
-  // -------------------------------------------------------------------------
 
-  /**
-   * No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
-   * The mock store has been removed; this stub ensures existing test setups
-   * that call _resetMockStore() continue to compile and run without error.
-   */
+  // No-op mock store reset for test compatibility (docs/21_shared-contracts.md).
+  // The mock store has been removed; this stub ensures existing test setups
+  // that call _resetMockStore() continue to compile and run without error.
   _resetMockStore: (): void => {},
 };

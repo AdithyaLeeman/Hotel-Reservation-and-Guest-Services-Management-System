@@ -1,15 +1,6 @@
 'use client';
 
-/**
- * Guest Login Page - P01-M01-T27
- *
- * - Calls POST /api/guest/login with { username, password }
- * - On success: server writes iron-session; page redirects to /guest/reservations
- *   (or the ?redirect= return URL if present)
- * - Mirrors the design system used in /guest/register/page.tsx (T26)
- * - All styling uses CSS custom properties defined in app/globals.css
- * - Accessible: unique ids via useId(), aria-invalid, aria-describedby, role="alert"
- */
+// Guest Login Page - P01-M01-T27
 
 import { useState, useId } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
@@ -17,7 +8,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
-/* ─── Types ──────────────────────────────────────────────────────────────────── */
+// Types
 
 interface LoginFormState {
   username: string;
@@ -37,12 +28,10 @@ interface ApiErrorResponse {
   };
 }
 
-/* ─── Client-side validation ─────────────────────────────────────────────────── */
+// Client-side validation
 
-/**
- * Lightweight UX-only validation - mirrors GuestLoginSchema.
- * The server always re-validates authoritatively.
- */
+// Lightweight UX-only validation - mirrors GuestLoginSchema.
+// The server always re-validates authoritatively.
 function validateForm(values: LoginFormState): FieldErrors {
   const errors: FieldErrors = {};
 
@@ -57,7 +46,7 @@ function validateForm(values: LoginFormState): FieldErrors {
   return errors;
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────────── */
+// Sub-components
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -71,7 +60,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-/* ─── Inner Page (reads searchParams) ────────────────────────────────────────── */
+// Inner Page (reads searchParams)
 
 function GuestLoginForm() {
   const router = useRouter();
@@ -161,7 +150,7 @@ function GuestLoginForm() {
     }
   }
 
-  /* ── Input class helper ── */
+  // Input class helper
   const inputClass = (field: keyof FieldErrors) =>
     [
       'block w-full px-4 py-2.5 rounded-xl text-sm',
@@ -176,7 +165,7 @@ function GuestLoginForm() {
 
   return (
     <>
-      {/* ── SEO ── */}
+      {/* SEO */}
       <title>Guest Login - SkyNest Hotels</title>
 
       <main
@@ -186,7 +175,7 @@ function GuestLoginForm() {
           text-[#1c1917] dark:text-[#f8f6f0]
         "
       >
-        {/* ── Hero header ── */}
+        {/* Hero header */}
         <section
           aria-labelledby="login-heading"
           className="
@@ -219,7 +208,7 @@ function GuestLoginForm() {
           </div>
         </section>
 
-        {/* ── Form card ── */}
+        {/* Form card */}
         <section className="flex-1 flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-md">
 
@@ -277,7 +266,7 @@ function GuestLoginForm() {
                 </p>
               </div>
 
-              {/* ── Username ── */}
+              {/* Username */}
               <div>
                 <label
                   htmlFor={id('username')}
@@ -302,7 +291,7 @@ function GuestLoginForm() {
                 <FieldError id={errId('username')} message={fieldErrors.username} />
               </div>
 
-              {/* ── Password ── */}
+              {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label
@@ -359,7 +348,7 @@ function GuestLoginForm() {
                 <FieldError id={errId('password')} message={fieldErrors.password} />
               </div>
 
-              {/* ── Submit ── */}
+              {/* Submit */}
               <button
                 id="guest-login-submit-btn"
                 type="submit"
@@ -394,7 +383,7 @@ function GuestLoginForm() {
                 )}
               </button>
 
-              {/* ── Register link ── */}
+              {/* Register link */}
               <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
                 Don&apos;t have an account?{' '}
                 <Link
@@ -418,7 +407,7 @@ function GuestLoginForm() {
   );
 }
 
-/* ─── Page export - wraps form in Suspense for useSearchParams ───────────────── */
+// Page export - wraps form in Suspense for useSearchParams
 
 export default function GuestLoginPage() {
   return (

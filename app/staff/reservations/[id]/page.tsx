@@ -1,31 +1,3 @@
-/**
- * Page: /staff/reservations/[id]
- *
- * Staff Reservation Detail - allows Receptionist/Manager/Admin to view
- * the full details of a single reservation and perform lifecycle actions:
- *   - Check In  (Booked -> CheckedIn)
- *   - Cancel    (Booked -> Cancelled)
- *   - Check Out (CheckedIn -> CheckedOut)
- *   - Navigate to Service Logging (CheckedIn)
- *
- * This is a Client Component because it needs:
- *   - useParams-style params unwrapped via React.use()
- *   - useState / useEffect for fetch-on-mount and action outcomes
- *   - Confirmation modal for destructive / state-changing actions
- *
- * API consumed:
- *   GET   /api/staff/reservations/[id]          -> { data: ReservationDetail }
- *   PATCH /api/staff/reservations/[id]/cancel   -> { data: { reservation_status } }
- *   POST  /api/staff/reservations/[id]/checkin  -> { data: { status } }
- *   POST  /api/staff/reservations/[id]/checkout -> { data: { status } }
- *
- * Layout note:
- *   StaffNav is rendered by app/staff/layout.tsx -- do NOT add it here.
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T22 (Mock-First)
- * Lecture alignment: L06 (REST), L07 (RBAC, branch scoping)
- */
-
 'use client';
 
 import { useState, useEffect, use } from 'react';
@@ -33,7 +5,7 @@ import Link from 'next/link';
 import type { ReservationDetail, ReservationRoomDetail } from '@/repositories/reservation.repository';
 import type { ReservationStatus } from '@/types/enums';
 
-/* ---- Types ---------------------------------------------------------------- */
+// Types
 
 type LoadState = 'loading' | 'success' | 'not_found' | 'error';
 
@@ -54,7 +26,7 @@ interface ApiError {
   error: { code: string; message: string };
 }
 
-/* ---- Constants ------------------------------------------------------------ */
+// Constants
 
 const STATUS_BADGE_CLASS: Record<ReservationStatus, string> = {
   Booked:     'badge badge-booked',
@@ -76,7 +48,7 @@ const ACTION_LABEL: Record<ActionKind, string> = {
   checkout: 'Check Out',
 };
 
-/* ---- Helpers -------------------------------------------------------------- */
+// Helpers
 
 /** Format ISO date string as "01 Oct 2026" */
 function formatDate(iso: string): string {
@@ -120,7 +92,7 @@ function formatRate(rate: string): string {
   });
 }
 
-/* ---- Sub-components ------------------------------------------------------- */
+// Sub-components
 
 /** Skeleton shown while loading */
 function LoadingSkeleton() {
@@ -486,7 +458,7 @@ function ConfirmModal({
   );
 }
 
-/* ---- Page ----------------------------------------------------------------- */
+// Page
 
 export default function StaffReservationDetailPage({
   params,
@@ -661,8 +633,6 @@ export default function StaffReservationDetailPage({
               Reservations
             </Link>
           </header>
-
-
 
           {/* Content area */}
           <section aria-live="polite" aria-busy={isLoading}>

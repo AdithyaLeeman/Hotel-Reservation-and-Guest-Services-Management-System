@@ -1,17 +1,5 @@
 import { z } from 'zod';
 
-/**
- * Zod schemas for reservation and availability endpoints.
- *
- * Note on date validation:
- * - Dates are ISO 8601 strings (YYYY-MM-DD) from the client
- * - DB enforces check_out_date > check_in_date via CHECK constraint
- * - Client-side date order is validated here for early feedback
- *
- * TODO (P03-M03-T04): Validate room_ids is non-empty array of positive integers.
- * Lecture alignment: L07 (input validation)
- */
-
 const isoDateString = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format');

@@ -1,33 +1,11 @@
 'use client';
 
-/**
- * Public Availability Search Page - /search
- *
- * Owned by: Member 2 (M2) | Task: P02-M02-T13
- * Type: 🟡 MOCK-FIRST - consumes GET /api/availability (currently mock data).
- *
- * Responsibilities:
- *   - Let guests select branch, check-in date, check-out date
- *   - Fetch available rooms from GET /api/availability
- *   - Render results using <RoomCard> components
- *   - Show loading, error, and empty states
- *
- * Business rules (AGENTS.md §5):
- *   - Availability logic runs entirely inside PostgreSQL via fn_get_available_rooms().
- *   - This component NEVER filters or computes availability in JavaScript.
- *   - Rate figures are display-only; no multiplication is performed here.
- *
- * TODO: replace API call with real backend when SP2.2 is executed (P06-M02-T01).
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import type { FormEvent } from 'react';
 import RoomCard from '@/components/RoomCard';
 import type { AvailableRoom } from '@/repositories/availability.repository';
 
-// ---------------------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------------------
 
 interface SearchFormState {
   branchId: string;
@@ -49,9 +27,7 @@ interface SearchResult {
   nightsRequested: number;
 }
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 export interface BranchItem {
   id: number;
@@ -84,9 +60,7 @@ function tomorrowIso(): string {
   return d.toISOString().slice(0, 10);
 }
 
-// ---------------------------------------------------------------------------
 // Client-side validation (shape only - semantic validation is in the API)
-// ---------------------------------------------------------------------------
 
 function validateForm(form: SearchFormState): FormErrors {
   const errors: FormErrors = {};
@@ -105,9 +79,7 @@ function validateForm(form: SearchFormState): FormErrors {
   return errors;
 }
 
-// ---------------------------------------------------------------------------
 // Page component
-// ---------------------------------------------------------------------------
 
 export default function SearchPage() {
   const today    = todayIso();
@@ -261,7 +233,7 @@ export default function SearchPage() {
 
       <main className="min-h-screen bg-[#faf8f5] dark:bg-[#121110] text-[#1c1917] dark:text-[#f8f6f0]">
 
-        {/* ── Hero / search form section ──────────────────────────────── */}
+        {/* Hero / search form section */}
         <section
           aria-labelledby="search-heading"
           className="
@@ -303,7 +275,7 @@ export default function SearchPage() {
             </p>
           </div>
 
-          {/* ── Search form card ── */}
+          {/* Search form card */}
           <div className="relative max-w-4xl mx-auto">
             <form
               id="availability-search-form"
@@ -530,7 +502,7 @@ export default function SearchPage() {
           </div>
         </section>
 
-        {/* ── Results section ─────────────────────────────────────────── */}
+        {/* Results section */}
         <section
           aria-label="Search results"
           aria-live="polite"

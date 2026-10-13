@@ -1,22 +1,10 @@
 // @vitest-environment jsdom
-/**
- * Component Tests for Room Occupancy Report Page (P05-M02-T01)
- *
- * File: app/staff/reports/occupancy/page.test.tsx
- * Strategy:
- *   - Render with @testing-library/react in jsdom environment.
- *   - Mock global.fetch to control GET /api/staff/reports/occupancy responses.
- *   - Verify KPI cards, filters, table rendering, sorting, empty state, and error handling.
- *
- * Owned by: Member 2 (M2) - Karunarathna W.P. 240331F
- * Task: P05-M02-T01
- */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import OccupancyReportPage from './page';
 
-/* ─── Mock Data ──────────────────────────────────────────────────────────── */
+// Mock Data
 
 const MOCK_OCCUPANCY_ROWS = [
   {
@@ -74,7 +62,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     vi.restoreAllMocks();
   });
 
-  /* ── 1. Initial State & Loading ── */
+  // 1. Initial State & Loading
   it('renders page heading and loading indicator initially', async () => {
     mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -93,7 +81,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     });
   });
 
-  /* ── 2. Data Rendering & KPI Calculation ── */
+  // 2. Data Rendering & KPI Calculation
   it('renders KPI summary cards and table rows on successful data fetch', async () => {
     mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -124,7 +112,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     expect(screen.getByLabelText('Status: Maintenance')).toBeTruthy();
   });
 
-  /* ── 3. Filters ── */
+  // 3. Filters
   it('allows applying branch and status filters and passes query params to fetch', async () => {
     const fetchSpy = mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -160,7 +148,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     });
   });
 
-  /* ── 4. Date validation error ── */
+  // 4. Date validation error
   it('shows error if fromDate is after toDate', async () => {
     mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -186,7 +174,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     });
   });
 
-  /* ── 5. Reset Filters ── */
+  // 5. Reset Filters
   it('clears active filters and restores full query when Reset Filters is clicked', async () => {
     const fetchSpy = mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -215,7 +203,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     });
   });
 
-  /* ── 6. Column Sorting ── */
+  // 6. Column Sorting
   it('sorts table rows when column headers are clicked', async () => {
     mockFetchResponse(true, { data: MOCK_OCCUPANCY_ROWS });
 
@@ -236,7 +224,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     expect(screen.getByRole('columnheader', { name: /room/i }).getAttribute('aria-sort')).toBe('descending');
   });
 
-  /* ── 7. Empty State ── */
+  // 7. Empty State
   it('displays empty state when API returns an empty array', async () => {
     mockFetchResponse(true, { data: [] });
 
@@ -249,7 +237,7 @@ describe('OccupancyReportPage (P05-M02-T01)', () => {
     expect(screen.queryByRole('table')).toBeNull();
   });
 
-  /* ── 8. Error Handling ── */
+  // 8. Error Handling
   it('displays error alert when API request fails (e.g. 403 Forbidden)', async () => {
     mockFetchResponse(
       false,

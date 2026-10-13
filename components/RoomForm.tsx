@@ -1,30 +1,5 @@
 'use client';
 
-/**
- * RoomForm - modal dialog for creating a room or updating a room's status.
- *
- * Owned by: Member 2 (M2) | Task: P02-M02-T16
- * Type: PARALLEL - no DB dependency.
- *
- * Modes:
- *   'create'        - POST /api/staff/rooms     (Manager/Admin only; API enforces)
- *   'update-status' - PATCH /api/staff/rooms/[id] (Receptionist allowed except Maintenance)
- *
- * Business rules enforced in UI (server enforces authoritatively):
- *   - Maintenance status is flagged as Manager/Admin only in the UI label.
- *   - All money displayed as LKR - never recomputed here.
- *
- * UI Rules (context/07-ui-rules.md):
- *   - Every field has a visible label - never placeholder-only.
- *   - Required fields marked with *.
- *   - Validation errors shown inline below the field.
- *   - Disabled submit while request is in flight.
- *   - Backdrop click and Escape key close the dialog.
- *   - Unique, descriptive id attributes on all interactive elements.
- *
- * See context/07-ui-rules.md §Dialogs and §Forms.
- */
-
 import {
   useState,
   useEffect,
@@ -34,9 +9,7 @@ import {
 } from 'react';
 import type { RoomWithDetails } from '@/repositories/room.repository';
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 const DEFAULT_BRANCHES = [
   { id: 1, name: 'Colombo' },
@@ -56,9 +29,7 @@ const STATUS_OPTIONS = [
   { value: 'Maintenance', label: 'Maintenance (Manager/Admin only)', managerOnly: true },
 ] as const;
 
-// ---------------------------------------------------------------------------
 // Props
-// ---------------------------------------------------------------------------
 
 export type RoomFormMode = 'create' | 'update-status';
 
@@ -70,9 +41,7 @@ export interface RoomFormProps {
   onClose: () => void;
 }
 
-// ---------------------------------------------------------------------------
 // Create-mode form state
-// ---------------------------------------------------------------------------
 
 interface CreateFormState {
   room_number: string;
@@ -89,9 +58,7 @@ interface CreateFormErrors {
   form?: string;
 }
 
-// ---------------------------------------------------------------------------
 // Update-status form state
-// ---------------------------------------------------------------------------
 
 interface UpdateFormState {
   status: string;
@@ -102,9 +69,7 @@ interface UpdateFormErrors {
   form?: string;
 }
 
-// ---------------------------------------------------------------------------
 // Shared field helpers
-// ---------------------------------------------------------------------------
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -115,9 +80,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Component
-// ---------------------------------------------------------------------------
 
 export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormProps) {
   const dialogRef  = useRef<HTMLDivElement>(null);
@@ -351,7 +314,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
         {/* Body */}
         <div className="px-6 py-5 bg-[#1c1917]">
 
-          {/* ── CREATE MODE ── */}
+          {/* CREATE MODE */}
           {mode === 'create' && (
             <form
               id="form-create-room"
@@ -510,7 +473,7 @@ export default function RoomForm({ mode, room, onSuccess, onClose }: RoomFormPro
             </form>
           )}
 
-          {/* ── UPDATE STATUS MODE ── */}
+          {/* UPDATE STATUS MODE */}
           {mode === 'update-status' && room && (
             <form
               id="form-update-room-status"

@@ -1,23 +1,3 @@
-/**
- * Database Pool - singleton pg Pool for the entire application.
- *
- * P01-M01-T02: Implement real pg Pool
- *
- * Uses a single Pool instance per process (Next.js caches modules in dev
- * via the `global` trick below to survive hot-reloads without exhausting
- * connection limits).
- *
- * Environment variable required:
- *   DATABASE_URL=postgres://user:password@host:5432/dbname
- *
- * Optional overrides (all have sensible defaults):
- *   DB_POOL_MAX          max connections (default: 10)
- *   DB_POOL_IDLE_MS      idle timeout in ms (default: 30000)
- *   DB_POOL_CONNECT_MS   connection timeout in ms (default: 5000)
- *
- * See context/05-library-patterns.md for query and transaction patterns.
- */
-
 import { Pool, types } from 'pg';
 export type { PoolClient } from 'pg';
 
@@ -25,11 +5,9 @@ export type { PoolClient } from 'pg';
 // OID 1082: DATE - return as clean ISO 8601 string (YYYY-MM-DD) without timezone shift (AGENTS.md & docs/21_shared-contracts.md §4)
 types.setTypeParser(1082, (val: string) => val);
 
-// ------------------------------------------------------------------
 // Singleton guard - prevents multiple Pool instances during Next.js
 // hot-reloads in development (each reload re-evaluates modules but
 // the `global` object persists for the lifetime of the Node process).
-// ------------------------------------------------------------------
 declare global {
   var __pgPool: Pool | undefined;
 }

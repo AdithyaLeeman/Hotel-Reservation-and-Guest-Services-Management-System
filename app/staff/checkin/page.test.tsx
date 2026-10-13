@@ -1,30 +1,16 @@
 /** @vitest-environment jsdom */
 
-/**
- * Tests for /staff/checkin page (P04-M04-T16)
- *
- * Strategy: render the page with @testing-library/react, interact with the
- * search form and check-in button, verify correct UI state transitions.
- * The fetch call is mocked so no real network requests are made.
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T16 (Mock-First)
- */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import StaffCheckinPage from './page';
 
-// ---------------------------------------------------------------------------
 // Mocks
-// ---------------------------------------------------------------------------
 
 vi.mock('@/components/StaffNav', () => ({
   default: () => <nav data-testid="staff-nav">StaffNav</nav>,
 }));
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 function mockFetch(ok: boolean, body: object) {
   return vi.spyOn(global, 'fetch').mockResolvedValueOnce({
     ok,
@@ -33,9 +19,7 @@ function mockFetch(ok: boolean, body: object) {
   } as Response);
 }
 
-// ---------------------------------------------------------------------------
 // Tests
-// ---------------------------------------------------------------------------
 describe('/staff/checkin page', () => {
   beforeEach(() => {
     vi.useFakeTimers();

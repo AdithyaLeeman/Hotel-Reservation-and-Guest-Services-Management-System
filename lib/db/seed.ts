@@ -1,11 +1,3 @@
-/**
- * Seed runner - applies all seed SQL files in order.
- * Run with: npm run seed
- *
- * TODO (P01-M01-T03 and each seed task): Populate with real seed logic.
- * Reads seed files from database/seeds/ and applies them in filename order.
- */
-
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import { pool } from './pool';

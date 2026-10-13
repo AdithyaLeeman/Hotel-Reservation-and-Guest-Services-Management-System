@@ -1,4 +1,3 @@
--- =============================================================================
 -- Seed:      P06-M01-T02_seed_demo_reservations.sql
 -- Owner:     Member 1 (Leeman K.A.R., 240386C)
 -- Phase:     Phase 6 Integration - Full Demo Seed Data
@@ -7,7 +6,6 @@
 --            "5 guests with 8 total bookings across varying check-in/check-out
 --             periods and statuses, room availability records, service usage,
 --             and at least 3 partial payments"
--- =============================================================================
 
 -- Clean up any existing demo reservations first to ensure idempotency
 DELETE FROM payment WHERE invoice_id IN (
@@ -73,9 +71,7 @@ DELETE FROM reservation WHERE reservation_id IN (
   '44444444-4444-4444-8444-444444444408'
 );
 
--- =============================================================================
 -- 1. Insert 8 Reservations
--- =============================================================================
 INSERT INTO reservation (
   reservation_id, guest_id, branch_id, check_in_date, check_out_date,
   reservation_status, discount_percentage, processed_by_employee_id, created_by_user_id, booking_source, created_at
@@ -104,9 +100,7 @@ INSERT INTO reservation (
   -- Res 8: Kamal Perera, Colombo, Cancelled (Cancelled prior to stay)
   ('44444444-4444-4444-8444-444444444408', '33333333-3333-4333-8333-333333333303', 1, '2026-09-01', '2026-09-03', 'Cancelled', NULL, 1, '22222222-2222-4222-8222-222222222203', 'Online', '2026-08-25 09:15:00+00');
 
--- =============================================================================
 -- 2. Link Reservations to Rooms (reservation_rooms)
--- =============================================================================
 -- Res 1: Colombo 103 (Double)
 INSERT INTO reservation_rooms (reservation_id, room_id, rate_per_night)
 SELECT '44444444-4444-4444-8444-444444444401', room_id, 8000.00 FROM room WHERE branch_id = 1 AND room_number = '103';
@@ -139,15 +133,11 @@ SELECT '44444444-4444-4444-8444-444444444407', room_id, 8000.00 FROM room WHERE 
 INSERT INTO reservation_rooms (reservation_id, room_id, rate_per_night)
 SELECT '44444444-4444-4444-8444-444444444408', room_id, 5000.00 FROM room WHERE branch_id = 1 AND room_number = '102';
 
--- =============================================================================
 -- 3. Synchronize Physical Room Status for CheckedIn Reservations
--- =============================================================================
 UPDATE room SET status = 'Occupied' WHERE branch_id = 1 AND room_number = '201';
 UPDATE room SET status = 'Occupied' WHERE branch_id = 2 AND room_number = '102';
 
--- =============================================================================
 -- 4. Service Usages (Historical Snapshot Pricing)
--- =============================================================================
 -- Res 1: Room Service (1200.00)
 INSERT INTO service_usage (room_id, reservation_id, service_id, usage_date, quantity, charged_price, logged_by_employee_id, request_channel)
 SELECT r.room_id, '44444444-4444-4444-8444-444444444401', s.service_id, '2026-09-11 12:30:00+00', 1, 1200.00, 1, 'Room Intercom'
@@ -188,9 +178,7 @@ SELECT r.room_id, '44444444-4444-4444-8444-444444444407', s.service_id, '2026-08
 FROM room r, service_catalogue s
 WHERE r.branch_id = 3 AND r.room_number = '102' AND s.service_name = 'Minibar Usage';
 
--- =============================================================================
 -- 5. Invoices (billing_summary with active tax snapshot)
--- =============================================================================
 INSERT INTO billing_summary (invoice_id, reservation_id, invoice_date, tax_id, tax_percentage_applied, payment_status) VALUES
   ('55555555-5555-4555-8555-555555555501', '44444444-4444-4444-8444-444444444401', '2026-09-12 11:00:00+00', 1, 8.00, 'Paid'),
   ('55555555-5555-4555-8555-555555555502', '44444444-4444-4444-8444-444444444402', CURRENT_TIMESTAMP - INTERVAL '1 day', 1, 8.00, 'PartiallyPaid'),
@@ -200,9 +188,7 @@ INSERT INTO billing_summary (invoice_id, reservation_id, invoice_date, tax_id, t
   ('55555555-5555-4555-8555-555555555506', '44444444-4444-4444-8444-444444444406', '2026-08-07 10:30:00+00', 1, 8.00, 'Paid'),
   ('55555555-5555-4555-8555-555555555507', '44444444-4444-4444-8444-444444444407', '2026-08-23 11:15:00+00', 1, 8.00, 'Paid');
 
--- =============================================================================
 -- 6. Payments (including AT LEAST 3 partial payments)
--- =============================================================================
 -- Res 1: Paid in full (10000.00 partial + 8480.00 final = 18480.00)
 INSERT INTO payment (invoice_id, amount_paid, payment_date, payment_method, processed_by_employee_id, paid_by_user_id, transaction_reference) VALUES
   ('55555555-5555-4555-8555-555555555501', 10000.00, '2026-09-10 14:00:00+00', 'Cash', 1, '22222222-2222-4222-8222-222222222201', 'TXN-RES1-PARTIAL'),

@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth/session';
 import type { StaffRole } from '@/types/enums';
 import { dashboardRepository } from '@/repositories/dashboard.repository';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface KpiCard {
   id: string;
@@ -23,7 +23,7 @@ interface QuickAction {
   minRole: StaffRole;
 }
 
-/* ─── Role rank helper ────────────────────────────────────────────────────── */
+// Role rank helper
 
 const RANK: Record<StaffRole, number> = {
   Receptionist: 1,
@@ -74,7 +74,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   },
 ];
 
-/* ─── Sub-components ──────────────────────────────────────────────────────── */
+// Sub-components
 
 function KpiCardEl({ card }: { card: KpiCard }) {
   return (
@@ -142,7 +142,7 @@ function ActionCard({ action }: { action: QuickAction }) {
   );
 }
 
-/* ─── Page (Server Component) ─────────────────────────────────────────────── */
+// Page (Server Component)
 
 export const metadata = {
   title: 'Dashboard - SkyNest Hotels Staff Portal',
@@ -351,7 +351,6 @@ export default async function StaffDashboardPage() {
     recentActivities = [];
   }
 
-
   // Greeting based on server time
   const hour = new Date().getHours();
   const greeting =
@@ -375,7 +374,7 @@ export default async function StaffDashboardPage() {
           className="flex-1 container-page py-8 space-y-8"
           aria-label="Staff dashboard"
         >
-          {/* ── Page header ── */}
+          {/* Page header */}
           <header
             id="dashboard-header"
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
@@ -407,7 +406,7 @@ export default async function StaffDashboardPage() {
             </span>
           </header>
 
-          {/* ── KPI row (Live from Database) ── */}
+          {/* KPI row (Live from Database) */}
           <section aria-labelledby="kpi-heading">
             <h2
               id="kpi-heading"
@@ -422,7 +421,7 @@ export default async function StaffDashboardPage() {
             </div>
           </section>
 
-          {/* ── Quick Actions ── */}
+          {/* Quick Actions */}
           <section aria-labelledby="quick-actions-heading">
             <h2
               id="quick-actions-heading"
@@ -437,7 +436,7 @@ export default async function StaffDashboardPage() {
             </div>
           </section>
 
-          {/* ── Two-column lower section ── */}
+          {/* Two-column lower section */}
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Recent Activity (2/3 width - Live from vw_audit_log) */}
             <section
@@ -547,7 +546,7 @@ export default async function StaffDashboardPage() {
           </div>
         </main>
 
-        {/* ── Footer ── */}
+        {/* Footer */}
         <footer
           id="staff-dashboard-footer"
           className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-text-subtle)]"

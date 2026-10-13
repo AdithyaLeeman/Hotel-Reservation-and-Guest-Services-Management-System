@@ -1,9 +1,3 @@
-/**
- * Tests for Availability Repository - P06-M02-T01 (real DB wire-up)
- * Mocks `pool.query` so tests stay fast and DB-independent.
- * All original assertions are preserved.
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { AvailableRoom } from './availability.repository';
 

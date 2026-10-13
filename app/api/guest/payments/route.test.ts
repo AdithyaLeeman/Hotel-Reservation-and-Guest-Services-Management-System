@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { paymentRepository } from '@/repositories/payment.repository';
 import * as sessionModule from '@/lib/auth/session';
 
-
 vi.mock('@/lib/auth/session', () => ({
   getSession: vi.fn(),
 }));
-
 
 function makeReq(body: unknown): NextRequest {
   return new NextRequest('http://localhost:3000/api/guest/payments', {
@@ -21,7 +18,6 @@ function makeReq(body: unknown): NextRequest {
   });
 }
 
-
 function mockGuestSession(userId = 'user-mock-guest-001'): void {
   vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
     userId,
@@ -29,7 +25,6 @@ function mockGuestSession(userId = 'user-mock-guest-001'): void {
     guestId: 'guest-mock-001',
   } as any);
 }
-
 
 function mockStaffSession(): void {
   vi.spyOn(sessionModule, 'getSession').mockResolvedValue({
@@ -39,7 +34,6 @@ function mockStaffSession(): void {
     branchId: 1,
   } as any);
 }
-
 
 const VALID_BODY = {
   invoice_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
@@ -80,7 +74,6 @@ describe('POST /api/guest/payments - P05-M05-T10', () => {
       expect(json.error.message).toContain('Receptionist');
     });
   });
-
 
   describe('Input validation', () => {
     it('returns 400 for malformed JSON body', async () => {
@@ -153,8 +146,6 @@ describe('POST /api/guest/payments - P05-M05-T10', () => {
       expect(json.error.fields).toHaveProperty('payment_method');
     });
   });
-
-
 
   describe('Happy path', () => {
     it('returns 201 with Payment record on valid Cash payment', async () => {

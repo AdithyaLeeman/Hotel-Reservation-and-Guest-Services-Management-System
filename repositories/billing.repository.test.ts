@@ -1,18 +1,3 @@
-/**
- * Billing Repository - integration tests (P06-M05-T01)
- *
- * These tests run against the real PostgreSQL database.
- * Set DATABASE_URL in .env.test.local before running.
- *
- * Run: npx vitest run repositories/billing.repository.test.ts
- *
- * Prerequisites:
- *   - Migrations applied: P04-M05-T01, T02, and all prior
- *   - Routines deployed: sp_finalize_invoice, vw_invoice_totals
- *   - At least one active row in tax_policies
- *   - A valid reservation UUID in a non-Cancelled status
- */
-
 import { describe, it, expect, beforeAll } from 'vitest';
 import { billingRepository } from './billing.repository';
 import { pool } from '@/lib/db/pool';

@@ -1,41 +1,9 @@
-/**
- * Page: /staff/reservations/[id]/services
- *
- * Service Usage Logging page - allows Receptionist/Manager/Admin to:
- *   1. View the current service usage breakdown for a checked-in reservation.
- *   2. Log a new service usage entry by selecting from the catalogue,
- *      entering quantity and date, then calling
- *      POST /api/staff/reservations/[id]/services (T13).
- *
- * This is a Client Component because it needs:
- *   - Controlled form inputs (service select, quantity, date)
- *   - Optimistic UI updates after logging a new service
- *   - Fetch calls to GET /api/staff/services (catalogue) and
- *     POST /api/staff/reservations/[id]/services (log usage)
- *
- * Mock data strategy (Phase 4 / mock-first):
- *   Catalogue items come from GET /api/staff/services (T14).
- *   Existing usage rows come from a local mock until
- *   GET /api/staff/reservations/[id]/services is wired in Phase 6.
- *
- * DB-first price snapshot rule (MANDATORY):
- *   charged_price is NEVER computed here. The POST API (T13) and ultimately
- *   sp_log_service_usage() own the price snapshot.
- *
- * Mock swap plan (Phase 6 / P06-M04-T01):
- *   Replace MOCK_RESERVATION and MOCK_USAGE_ROWS with real API calls.
- *   No structural changes to this page needed.
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T17 (Mock-First)
- * Lecture alignment: L06 (price snapshot), L08 (service charge calculation)
- */
-
 'use client';
 
 import { useState, useEffect, useTransition, use } from 'react';
 import Link from 'next/link';
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+// Types
 
 interface CatalogueItem {
   service_id: number;
@@ -63,7 +31,7 @@ interface LogForm {
 
 type SubmitState = 'idle' | 'submitting' | 'success' | 'error';
 
-/* ─── Mock data ──────────────────────────────────────────────────────────── */
+// Mock data
 
 // TODO (P06-M04-T01): replace with real API call
 const MOCK_RESERVATION = {
@@ -97,7 +65,7 @@ interface ReservationInfo {
   status: string;
 }
 
-/* ─── Helpers ────────────────────────────────────────────────────────────── */
+// Helpers
 
 function formatDate(iso: string): string {
   if (!iso) return '-';
@@ -117,7 +85,7 @@ function todayIso(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-/* ─── Page ───────────────────────────────────────────────────────────────── */
+// Page
 
 export default function ServiceUsageLoggingPage({
   params,
@@ -150,7 +118,7 @@ export default function ServiceUsageLoggingPage({
   const [errorMessage, setErrorMessage] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  /* ── Fetch catalogue on mount ── */
+  // Fetch catalogue on mount
   useEffect(() => {
     fetch('/api/staff/services')
       .then((r) => r.json())
@@ -227,14 +195,14 @@ export default function ServiceUsageLoggingPage({
     }
   }, [reservationId]);
 
-  /* ── Form field handler ── */
+  // Form field handler
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  /* ── Submit handler ── */
+  // Submit handler
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitState('submitting');
@@ -340,7 +308,7 @@ export default function ServiceUsageLoggingPage({
           className="flex-1 container-page py-8 space-y-6"
           aria-label="Service usage logging"
         >
-          {/* ── Page header ── */}
+          {/* Page header */}
           <header id="service-usage-header" className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold font-serif text-[var(--color-text)]">
@@ -364,10 +332,10 @@ export default function ServiceUsageLoggingPage({
             </Link>
           </header>
 
-          {/* ── Two-column layout ── */}
+          {/* Two-column layout */}
           <div className="grid lg:grid-cols-5 gap-6">
 
-            {/* ── Log form (left, 2/5) ── */}
+            {/* Log form (left, 2/5) */}
             <section
               aria-labelledby="log-form-heading"
               className="lg:col-span-2"
@@ -572,7 +540,7 @@ export default function ServiceUsageLoggingPage({
               </form>
             </section>
 
-            {/* ── Usage breakdown (right, 3/5) ── */}
+            {/* Usage breakdown (right, 3/5) */}
             <section
               aria-labelledby="usage-breakdown-heading"
               className="lg:col-span-3"

@@ -1,29 +1,10 @@
-/**
- * Route: /api/staff/reservations/[id]/cancel
- *
- * PATCH - cancel a reservation (staff override, no guest ownership check)
- *
- * Security:
- *   - Requires a staff role (Receptionist / Manager / Admin)
- *   - Receptionist scope: enforces that the reservation belongs to their branch
- *     (checked via detail lookup before cancellation)
- *   - No guest ownership check - staff can cancel any 'Booked' reservation
- *   - employee_id and branchId always come from session, never from body
- *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T20
- * Lecture alignment: L06 (REST), L07 (RBAC, branch scoping)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { reservationService, ServiceError } from '@/services/reservation.service';
 import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // DEV SESSION STUB - fallback when cookies are not present in dev mode
-// ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
     userId:     'user-mock-003',
@@ -48,9 +29,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T): NextResponse {
   return NextResponse.json(
@@ -70,17 +49,13 @@ function isStaffRole(role: string | undefined): role is StaffRole {
   return STAFF_ROLES.includes(role as StaffRole);
 }
 
-// ---------------------------------------------------------------------------
 // Route params type
-// ---------------------------------------------------------------------------
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// ---------------------------------------------------------------------------
 // PATCH /api/staff/reservations/[id]/cancel - staff cancel
-// ---------------------------------------------------------------------------
 
 export async function PATCH(
   _req: NextRequest,

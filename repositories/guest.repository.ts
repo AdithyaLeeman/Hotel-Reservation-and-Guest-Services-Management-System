@@ -2,8 +2,6 @@ import { pool } from '@/lib/db/pool';
 import type { PoolClient } from '@/lib/db/pool';
 import type { Guest } from '@/types/domain';
 
-
-
 export interface InsertGuestInput {
   user_id: string;
   full_name: string;
@@ -12,16 +10,9 @@ export interface InsertGuestInput {
   identification?: string;
 }
 
-
 export const guestRepository = {
-  /**
-   * Insert a new guest row inside an existing transaction.
-   * Must be called after userRepository.insertUserAccount() in the SAME transaction.
-   *
-   * @param client - Active PoolClient (from withTransaction)
-   * @param input  - Guest profile fields linked to the new user_account
-   * @returns The newly created Guest row
-   */
+  // Insert a new guest row inside an existing transaction.
+  // Must be called after userRepository.insertUserAccount() in the SAME transaction.
   insertGuest: async (
     client: PoolClient,
     input: InsertGuestInput
@@ -41,13 +32,8 @@ export const guestRepository = {
     return result.rows[0];
   },
 
-  /**
-   * Find a guest profile by the linked user_account user_id.
-   * Used after login to populate session.guestId.
-   *
-   * @param userId - UUID from user_account.user_id
-   * @returns Guest if found, null otherwise
-   */
+  // Find a guest profile by the linked user_account user_id.
+  // Used after login to populate session.guestId.
   findByUserId: async (userId: string): Promise<Guest | null> => {
     const result = await pool.query<Guest>(
       `SELECT guest_id, user_id, full_name, email, phone, identification
@@ -58,13 +44,8 @@ export const guestRepository = {
     return result.rows[0] ?? null;
   },
 
-  /**
-   * Find a guest profile by the guest_id primary key.
-   * Used to verify ownership before exposing reservation data.
-   *
-   * @param guestId - UUID from guest.guest_id (session.guestId)
-   * @returns Guest if found, null otherwise
-   */
+  // Find a guest profile by the guest_id primary key.
+  // Used to verify ownership before exposing reservation data.
   findById: async (guestId: string): Promise<Guest | null> => {
     const result = await pool.query<Guest>(
       `SELECT guest_id, user_id, full_name, email, phone, identification

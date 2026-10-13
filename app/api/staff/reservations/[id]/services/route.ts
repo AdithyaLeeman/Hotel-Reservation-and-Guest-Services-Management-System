@@ -1,34 +1,3 @@
-/**
- * Route: POST /api/staff/reservations/[id]/services
- *
- * Logs a service usage entry against a checked-in reservation.
- * Delegates to serviceUsageService.logUsage() which (mock-first) snapshots
- * the current_price from the service catalogue into service_usage.charged_price.
- *
- * Security:
- *   - Requires staff role: Receptionist, Manager, or Admin
- *   - Receptionist: scoped to their own branchId
- *   - Manager / Admin: can log service usage on any reservation
- *
- * HTTP responses:
- *   201  - service usage logged successfully
- *   400  - validation error (missing/invalid body fields)
- *   401  - not authenticated
- *   403  - wrong role or branch scope violation
- *   404  - reservation or service not found
- *   409  - reservation is not in CheckedIn status
- *   422  - service is inactive or quantity is invalid
- *   500  - unexpected error
- *
- * DB-first price snapshot rule (MANDATORY - see AGENTS.md Section 5):
- *   TypeScript NEVER computes charged_price.
- *   sp_log_service_usage() (Phase 6) / the mock repository snapshots
- *   service_catalogue.current_price at the moment of logging.
- *
- * Owned by: Member 4 (M4) | Task: P04-M04-T13 (Mock-First)
- * Lecture alignment: L06 (stored procedures), L08 (price snapshot rule)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSession } from '@/lib/auth/session';
@@ -58,9 +27,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Response helpers
-// ---------------------------------------------------------------------------
 function ok<T>(data: T, status = 201): NextResponse {
   return NextResponse.json(
     { data, meta: { requestId: crypto.randomUUID() } },
@@ -80,9 +47,7 @@ function err(
   );
 }
 
-// ---------------------------------------------------------------------------
 // Role guard
-// ---------------------------------------------------------------------------
 const STAFF_ROLES = ['Receptionist', 'Manager', 'Admin'] as const;
 type StaffRole = (typeof STAFF_ROLES)[number];
 
@@ -90,9 +55,7 @@ function isStaffRole(role: string | undefined): role is StaffRole {
   return STAFF_ROLES.includes(role as StaffRole);
 }
 
-// ---------------------------------------------------------------------------
 // Request body schema
-// ---------------------------------------------------------------------------
 const LogServiceUsageBody = z.object({
   service_id: z
     .number({ error: 'service_id is required.' })
@@ -113,9 +76,7 @@ const LogServiceUsageBody = z.object({
 
 type LogServiceUsageBody = z.infer<typeof LogServiceUsageBody>;
 
-// ---------------------------------------------------------------------------
 // POST /api/staff/reservations/[id]/services
-// ---------------------------------------------------------------------------
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -185,9 +146,7 @@ export async function POST(
   }
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/staff/reservations/[id]/services
-// ---------------------------------------------------------------------------
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

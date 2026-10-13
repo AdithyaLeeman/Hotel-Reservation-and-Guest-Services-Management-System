@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { getSession } from '@/lib/auth/session';
@@ -32,7 +31,6 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-
 function ok<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(
     { data, meta: { requestId: crypto.randomUUID() } },
@@ -61,7 +59,6 @@ function zodFieldErrors(error: ZodError): Record<string, string> {
   return fields;
 }
 
-
 export async function POST(req: NextRequest): Promise<NextResponse> {
   
   const session = await resolveSession();
@@ -78,14 +75,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-
   let rawBody: unknown;
   try {
     rawBody = await req.json();
   } catch {
     return err(400, ERROR_CODES.VALIDATION_ERROR, 'Request body must be valid JSON.');
   }
-
 
   let input: ReturnType<typeof PostPaymentSchema.parse>;
   try {

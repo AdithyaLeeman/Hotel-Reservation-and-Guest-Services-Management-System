@@ -1,34 +1,12 @@
 'use client';
 
-/**
- * My Reservations List Page - /guest/reservations
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T16
- * Type: MOCK-FIRST - calls GET /api/guest/reservations (currently mock data).
- *
- * Responsibilities:
- *   - Fetch all reservations for the authenticated guest on mount
- *   - Render a card per reservation showing: reference, branch, dates,
- *     duration, status badge, and booking source
- *   - Each card links forward to /guest/reservations/[id] (T17)
- *   - Show loading skeleton, empty state, and error state
- *   - "Book a Room" CTA links back to /search
- *
- * Security: guest_id is sourced server-side from the session inside
- * GET /api/guest/reservations - never passed from this component.
- *
- * TODO (P06-M03-T01): Replace dev-session stub in the API with real iron-session.
- */
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import type { Reservation } from '@/types/domain';
 import type { ReservationStatus } from '@/types/enums';
 
-// ---------------------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------------------
 
 const BRANCHES: Record<number, string> = {
   1: 'Colombo',
@@ -36,9 +14,7 @@ const BRANCHES: Record<number, string> = {
   3: 'Galle',
 };
 
-// ---------------------------------------------------------------------------
 // Status badge config - Luxury bespoke pills
-// ---------------------------------------------------------------------------
 
 interface StatusBadgeConfig {
   container: string;
@@ -69,9 +45,7 @@ const STATUS_BADGE_STYLE: Record<ReservationStatus, StatusBadgeConfig> = {
   },
 };
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 
 /** Format ISO date as "01 Oct 2026" - display only. */
 function formatDate(iso: string): string {
@@ -86,13 +60,7 @@ function formatDate(iso: string): string {
   });
 }
 
-/**
- * Count nights between two ISO date strings - DISPLAY ONLY.
- *
- * Used solely for the nights badge on reservation cards (cosmetic).
- * Authoritative billing uses PostgreSQL date arithmetic in fn_calc_room_charges().
- * context/04-code-standards.md rule applies to financial calculations, not display labels.
- */
+// Count nights between two ISO date strings - DISPLAY ONLY.
 function countNights(checkIn: string, checkOut: string): number {
   if (!checkIn || !checkOut) return 0;
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();
@@ -112,9 +80,7 @@ function shortId(id: string): string {
   return id.slice(0, 8).toUpperCase();
 }
 
-// ---------------------------------------------------------------------------
 // API response types
-// ---------------------------------------------------------------------------
 
 interface ApiSuccess {
   data: Reservation[];
@@ -125,9 +91,7 @@ interface ApiError {
   error: { code: string; message: string };
 }
 
-// ---------------------------------------------------------------------------
 // Skeleton loader
-// ---------------------------------------------------------------------------
 
 function ReservationSkeleton() {
   return (
@@ -161,13 +125,9 @@ function ReservationSkeleton() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Reservation card
-// ---------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
 // Reservation card - Enlarged luxury card layout
-// ---------------------------------------------------------------------------
 
 function ReservationCard({ reservation }: { reservation: Reservation }) {
   const {
@@ -344,9 +304,7 @@ function ReservationCard({ reservation }: { reservation: Reservation }) {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Empty state
-// ---------------------------------------------------------------------------
 
 function EmptyState() {
   return (
@@ -405,9 +363,7 @@ function EmptyState() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Error state
-// ---------------------------------------------------------------------------
 
 function ErrorState({
   message,
@@ -461,9 +417,7 @@ function ErrorState({
   );
 }
 
-// ---------------------------------------------------------------------------
 // Page component
-// ---------------------------------------------------------------------------
 
 type LoadState = 'loading' | 'success' | 'error';
 
@@ -475,10 +429,8 @@ export default function MyReservationsPage() {
   // Incrementing retryKey re-triggers the fetch effect (only from a click handler).
   const [retryKey, setRetryKey] = useState(0);
 
-  /**
-   * Called from the retry button (a user click handler) - setState here is fine.
-   * Incrementing retryKey causes the useEffect below to re-run.
-   */
+  // Called from the retry button (a user click handler) - setState here is fine.
+  // Incrementing retryKey causes the useEffect below to re-run.
   function handleRetry() {
     setLoadState('loading');
     setErrorMessage('');
@@ -490,14 +442,8 @@ export default function MyReservationsPage() {
 
     async function load() {
       try {
-        /**
-         * GET /api/guest/reservations
-         * guest_id is sourced server-side from the session - not passed here.
-         * Response: { data: Reservation[], meta: { requestId } }
-         *
-         * All setState calls are after the first `await` - never synchronous
-         * within the effect body, satisfying react-hooks/set-state-in-effect.
-         */
+        // GET /api/guest/reservations
+        // guest_id is sourced server-side from the session - not passed here.
         const response = await fetch('/api/guest/reservations');
         const json = (await response.json()) as ApiSuccess | ApiError;
 
@@ -554,7 +500,7 @@ export default function MyReservationsPage() {
           <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-[#c5a880]/5 rounded-full blur-3xl pointer-events-none" />
         </div>
 
-        {/* ── Hero header ─────────────────────────────────────────────── */}
+        {/* Hero header */}
         <section
           aria-labelledby="reservations-list-heading"
           className="
@@ -613,7 +559,7 @@ export default function MyReservationsPage() {
           </div>
         </section>
 
-        {/* ── Content ─────────────────────────────────────────────────── */}
+        {/* Content */}
         <section
           className="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-12"
           aria-label="Reservations list"

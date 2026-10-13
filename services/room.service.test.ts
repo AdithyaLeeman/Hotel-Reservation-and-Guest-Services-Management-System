@@ -8,10 +8,8 @@ import {
 } from './room.service';
 import { roomRepository } from '../repositories/room.repository';
 
-// ---------------------------------------------------------------------------
 // Mock the repository - the real repo now talks to PostgreSQL.
 // Service-layer tests stay fast and DB-independent.
-// ---------------------------------------------------------------------------
 vi.mock('../repositories/room.repository', () => {
   // In-memory state isolated to this test file
   const ROOM_TYPES = [

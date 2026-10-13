@@ -1,15 +1,3 @@
-/**
- * Route: GET /api/staff/admin/data
- *
- * Returns all data needed for the Admin panel in one response:
- *   - staff list (employee + user_account + branch)
- *   - branches list
- *   - system stats
- *   - audit log (last 100 entries from vw_audit_log)
- *
- * Security: Admin role only.
- */
-
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { pool } from '@/lib/db/pool';

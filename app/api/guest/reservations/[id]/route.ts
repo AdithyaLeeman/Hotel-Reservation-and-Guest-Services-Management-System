@@ -1,31 +1,12 @@
-/**
- * Route: /api/guest/reservations/[id]
- *
- * GET    - get full detail for one of the guest's reservations
- * DELETE - cancel a reservation (guest-initiated)
- *
- * Security:
- *   - Ownership is enforced at the DB level via fn_get_reservation_detail()
- *     and sp_cancel_reservation() - both use guest_id from session as a
- *     SQL predicate, so Guest A cannot access Guest B's reservations.
- *   - guest_id is read from session.guestId - never from URL params or body
- *   - TODO (P01-M01-T07/T14): Replace DEV_SESSION stub with real iron-session
- *
- * Owned by: Member 3 (M3) | Tasks: P03-M03-T13
- * Lecture alignment: L06 (REST), L07 (security), L08 (ownership enforcement)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { reservationService, ServiceError } from '@/services/reservation.service';
 import { getSession } from '@/lib/auth/session';
 import { ERROR_CODES } from '@/types/api';
 import type { SessionData } from '@/types/session';
 
-// ---------------------------------------------------------------------------
 // DEV SESSION STUB - guarded so it never applies in production.
 // Replace with real iron-session once P01-M01-T07 lands:
 //   const session = await getSession();
-// ---------------------------------------------------------------------------
 function getDevSession(): Partial<SessionData> {
   return {
     userId:  'user-mock-001',
@@ -49,9 +30,7 @@ async function resolveSession(): Promise<Partial<SessionData>> {
   return {};
 }
 
-// ---------------------------------------------------------------------------
 // Shared response helpers
-// ---------------------------------------------------------------------------
 
 function ok<T>(data: T): NextResponse {
   return NextResponse.json(
@@ -64,17 +43,13 @@ function err(status: number, code: string, message: string): NextResponse {
   return NextResponse.json({ error: { code, message } }, { status });
 }
 
-// ---------------------------------------------------------------------------
 // Route params type
-// ---------------------------------------------------------------------------
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// ---------------------------------------------------------------------------
 // GET /api/guest/reservations/[id] - reservation detail
-// ---------------------------------------------------------------------------
 
 export async function GET(
   _req: NextRequest,
@@ -107,9 +82,7 @@ export async function GET(
   }
 }
 
-// ---------------------------------------------------------------------------
 // DELETE /api/guest/reservations/[id] - cancel reservation (guest)
-// ---------------------------------------------------------------------------
 
 export async function DELETE(
   _req: NextRequest,

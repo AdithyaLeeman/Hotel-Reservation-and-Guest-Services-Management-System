@@ -1,10 +1,4 @@
-
 import { pool } from '@/lib/db/pool';
-
-/**
- * Occupancy Report Repository - P05-M02-T02
- * Queries live PostgreSQL view `vw_room_occupancy`.
- */
 
 export interface OccupancyReportRow {
   branch_id: number;

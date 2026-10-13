@@ -11,7 +11,6 @@ export default async function StaffNav() {
 
   const staffName: string | null = null;
 
-
   const branchName: string | null = null;
 
   return (

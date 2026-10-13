@@ -13,9 +13,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET, POST } from './route';
 
-// ---------------------------------------------------------------------------
 // Mock the service layer
-// ---------------------------------------------------------------------------
 vi.mock('@/services/service-usage.service', () => {
   const ServiceUsageServiceError = class extends Error {
     code: string;
@@ -39,9 +37,7 @@ import {
   ServiceUsageServiceError,
 } from '@/services/service-usage.service';
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
 function makeGetRequest() {
   return new NextRequest('http://localhost/api/staff/services', { method: 'GET' });
 }
@@ -72,9 +68,7 @@ const MOCK_NEW_ITEM = {
   status:        'Active',
 };
 
-// ---------------------------------------------------------------------------
 // GET tests
-// ---------------------------------------------------------------------------
 describe('GET /api/staff/services', () => {
   beforeEach(() => vi.clearAllMocks());
 
@@ -112,9 +106,7 @@ describe('GET /api/staff/services', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // POST tests
-// ---------------------------------------------------------------------------
 describe('POST /api/staff/services', () => {
   beforeEach(() => vi.clearAllMocks());
 

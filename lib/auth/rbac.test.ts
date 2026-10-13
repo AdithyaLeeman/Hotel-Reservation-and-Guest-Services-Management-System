@@ -1,14 +1,3 @@
-/**
- * Unit tests for lib/auth/rbac.ts (P01-M01-T19)
- *
- * Covers: requireRole, requireBranchScope, authErrorResponse
- * Strategy: happy path + all error states + type narrowing assertion.
- *
- * Note: IronSession is a Proxy object. We create minimal mock objects that
- * match the required fields rather than using the actual iron-session library,
- * since these are pure logic guards that do not depend on the cookie layer.
- */
-
 import { describe, it, expect } from 'vitest';
 import {
   requireRole,
@@ -19,9 +8,7 @@ import {
 import type { SessionData } from '@/types/session';
 import type { IronSession } from 'iron-session';
 
-// ---------------------------------------------------------------------------
 // Minimal mock session factory
-// ---------------------------------------------------------------------------
 
 function makeSession(
   overrides: Partial<SessionData> & { userId?: string } = {}
@@ -37,9 +24,7 @@ function makeSession(
   } as unknown as IronSession<SessionData>;
 }
 
-// ---------------------------------------------------------------------------
 // requireRole
-// ---------------------------------------------------------------------------
 
 describe('requireRole', () => {
   it('does not throw when the session role is in the allowed list', () => {
@@ -84,9 +69,7 @@ describe('requireRole', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // requireBranchScope
-// ---------------------------------------------------------------------------
 
 describe('requireBranchScope', () => {
   it('does not throw for Receptionist accessing their own branch', () => {
@@ -116,9 +99,7 @@ describe('requireBranchScope', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // authErrorResponse
-// ---------------------------------------------------------------------------
 
 describe('authErrorResponse', () => {
   it('returns a 401 Response for AuthError(401)', async () => {
@@ -139,9 +120,7 @@ describe('authErrorResponse', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // AuthError class
-// ---------------------------------------------------------------------------
 
 describe('AuthError', () => {
   it('extends Error and has correct name and status', () => {

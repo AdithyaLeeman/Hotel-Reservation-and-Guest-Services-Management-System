@@ -1,19 +1,6 @@
-/**
- * Tests for lib/db/migrate.ts (P01-M01-T03)
- *
- * Strategy: logic class.
- *
- * Pure helpers (parseManifest, checksum) are tested directly with real inputs.
- * DB-touching paths use vi.hoisted + vi.mock to place mocks before module
- * evaluation, so the auto-invocation of runMigrations() at module load does
- * not hit a real DB or filesystem.
- */
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// ---------------------------------------------------------------------------
 // vi.hoisted ensures these values are created before vi.mock factories run
-// ---------------------------------------------------------------------------
 const { mockPoolQuery, mockPoolConnect, mockPoolEnd, mockReadFile } = vi.hoisted(() => {
   const mockPoolQuery = vi.fn().mockResolvedValue({ rows: [] });
   const mockPoolConnect = vi.fn();
@@ -37,9 +24,7 @@ vi.mock('fs/promises', () => ({
 // Import the module AFTER mocks are registered
 import { parseManifest, checksum } from './migrate';
 
-// ---------------------------------------------------------------------------
 // Fixtures
-// ---------------------------------------------------------------------------
 
 const SAMPLE_MANIFEST = `\`\`\`
 # Phase 1
@@ -50,9 +35,7 @@ P01-M01-T06-01_create_user_account.sql
 P02-M02-T01-01_create_room.sql
 \`\`\``;
 
-// ---------------------------------------------------------------------------
 // parseManifest
-// ---------------------------------------------------------------------------
 
 describe('parseManifest', () => {
   it('returns sql filenames in manifest order', () => {
@@ -101,9 +84,7 @@ describe('parseManifest', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // checksum
-// ---------------------------------------------------------------------------
 
 describe('checksum', () => {
   it('returns a consistent 8-character lowercase hex string', () => {
@@ -135,9 +116,7 @@ describe('checksum', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // Pool interaction
-// ---------------------------------------------------------------------------
 
 describe('pool interaction', () => {
   // Fresh client mock, recreated per test via beforeEach

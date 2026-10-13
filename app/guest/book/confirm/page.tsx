@@ -1,35 +1,10 @@
 'use client';
 
-/**
- * Booking Confirmation Page - /guest/book/confirm?id={reservation_id}
- *
- * Owned by: Member 3 (M3) | Task: P03-M03-T15
- * Type: MOCK-FIRST - no API call needed; reservation_id comes from T14's POST response.
- *
- * Responsibilities:
- *   - Read reservation_id from the URL query param `id` (set by T14 on success)
- *   - Show a success confirmation banner with the booking reference
- *   - Provide CTAs to view the full reservation detail (T17) or book another room
- *   - Show a clear error state if `id` is missing or malformed
- *
- * Intentionally lightweight:
- *   This page is a success landing, NOT a detail view. No API call is made here.
- *   Full reservation detail is shown on /guest/reservations/[id] (T17).
- *
- * Flow:
- *   /search → RoomCard → /guest/reservations/new (T14) → /guest/book/confirm (T15)
- *                                                               ↓
- *                                              /guest/reservations/[id] (T17)
- */
-
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-
-// ---------------------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------------------
 
 /** Shown when the `id` param is missing or invalid. */
 function MissingIdBanner() {
@@ -99,10 +74,8 @@ function MissingIdBanner() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Page component (inner - must be wrapped in Suspense because it uses
 // useSearchParams, per Next.js App Router requirements)
-// ---------------------------------------------------------------------------
 
 function BookingConfirmContent() {
   const searchParams = useSearchParams();
@@ -121,7 +94,7 @@ function BookingConfirmContent() {
           dark:from-neutral-950 dark:via-neutral-900 dark:to-slate-900
         "
       >
-        {/* ── Hero header ─────────────────────────────────────────────── */}
+        {/* Hero header */}
         <section
           aria-labelledby="confirm-heading"
           className="
@@ -205,7 +178,7 @@ function BookingConfirmContent() {
           </div>
         </section>
 
-        {/* ── Main content ─────────────────────────────────────────────── */}
+        {/* Main content */}
         <section className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 py-10">
 
           {/* Missing / invalid id */}
@@ -458,10 +431,8 @@ function BookingConfirmContent() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Default export - wraps the client component in Suspense so Next.js can
 // prerender the shell and avoid the missing-suspense-with-csr-bailout error.
-// ---------------------------------------------------------------------------
 
 export default function BookingConfirmPage() {
   return (

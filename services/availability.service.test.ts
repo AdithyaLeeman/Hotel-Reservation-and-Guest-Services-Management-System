@@ -1,8 +1,3 @@
-/**
- * Tests for Availability Service - P02-M02-T08
- * Owned by: Member 2 (M2)
- */
-
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import {
   availabilityService,
@@ -10,10 +5,8 @@ import {
 } from '../services/availability.service';
 import { availabilityRepository } from '../repositories/availability.repository';
 
-// ---------------------------------------------------------------------------
 // Mock the repository - real repo now delegates to PostgreSQL fn_get_available_rooms.
 // Service tests stay fast and DB-independent.
-// ---------------------------------------------------------------------------
 vi.mock('../repositories/availability.repository', () => ({
   availabilityRepository: {
     getAvailableRooms: vi.fn(async () => []),
