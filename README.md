@@ -45,7 +45,7 @@ The entire system — including PostgreSQL 16, automatic schema migrations, stor
 ```bash
 # 1. Clone the repository
 git clone https://github.com/AdithyaLeeman/Hotel-Reservation-and-Guest-Services-Management-System.git
-cd hotel-management
+cd Hotel-Reservation-and-Guest-Services-Management-System
 
 # 2. Build and launch all containers in detached mode
 docker compose up --build -d
